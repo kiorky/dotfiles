@@ -167,6 +167,7 @@ autocmd! BufNewFile,BufRead *.siv,*.sieve      set ft=sieve
 autocmd! BufNewFile,BufRead *.rst,*.txt,*.rest set ft=rst tw=80
 autocmd! BufNewFile,BufRead *.django set ft=django
 autocmd! BufNewFile,BufRead *.jinja set ft=sls
+autocmd! BufNewFile,BufRead Dockerfile* set ft=Dockerfile
 " }}}
 " Omnicompletion {{{
 "autocmd FileType python     set omnifunc=:q!
