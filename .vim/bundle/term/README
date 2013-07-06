@@ -1,0 +1,19 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2812
+
+Terminal library for Unix CUI terminal.
+
+Example:
+  " Display current time at bottom of screen.
+  " move cursor
+  call term#position(&lines, 1)
+  " fg=blue bg=red
+  call term#attr(0, 34, 41)
+  " print text
+  call term#text(strftime("%c"))
+  " reset attribute
+  call term#attr()
+  " output
+  call term#out()
+
+Try :call term#demo()
+

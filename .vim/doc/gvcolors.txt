@@ -1,0 +1,42 @@
+*gvcolors.txt*	GVIM Colors Display Tool			Aug 09, 2005
+
+Author:    Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+           (remove embedded NOSPAM from email address first)
+Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*gvcolors-copyright*
+           The VIM LICENSE applies to gvcolors.vim and gvcolors.txt
+           (see |copyright|) except use "gvcolors" instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+
+==============================================================================
+1. Usage							*gvcolors*
+>
+        gvim gvcolors.vim
+        :so %
+<
+    It will display all the colors available under X by setting up colors for
+    just those named colors showing on the display.
+
+    <leftmouse>  will bring the selected color to the top screen line
+    <rightmouse> will toggle between dark and light colored background.
+
+    If you attempt to show more than 188 colors using vim v6.3, the additional
+    colors will be set to Ignore highlighting.  The reason is that vim has a
+    limit on the number of highlighting colors it can handle at one time.
+
+
+==============================================================================
+2. History						*gvcolors-history*
+
+v6 07/15/04 : * allows rightmouse to click between dark & bright backgrounds
+                (earlier versions only allowed shift-leftmouse)
+              * double-click with leftmouse will pull the color line up
+                to the top of the screen, thereby displaying its rgb values
+              * <gvcolors.vim> is now folded
+              * version 7 now supports 1000s of highlighting groups;
+                gvcolors takes advantage of that
+
+==============================================================================
+vim:tw=78:ts=8:ft=help
+
+

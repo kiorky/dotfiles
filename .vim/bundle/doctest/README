@@ -1,0 +1,3 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1867
+
+Syntax file for highlighting Python doctest files. This is usefull for when you have your doctests in a seperate from your source code (in a .txt file). The syntax highlighter will color the ReST headers, code blocks and expected values.

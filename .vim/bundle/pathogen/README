@@ -1,0 +1,15 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2332
+
+Manage your 'runtimepath' with ease.  In practical terms, pathogen.vim makes it super easy to install plugins and runtime files in their own private directories.
+
+Add this to your vimrc:
+
+    call pathogen#infect()
+
+Now any plugins you wish to install can be extracted to a subdirectory under ~/.vim/bundle, and they will be added to the 'runtimepath'.
+
+Use :Helptags to run :helptags on every doc/ directory in your 'runtimepath'.
+
+For more detailed, better formatted documentation, see the README on GitHub:
+
+http://github.com/tpope/vim-pathogen

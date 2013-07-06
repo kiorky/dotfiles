@@ -1,0 +1,20 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=451
+
+EasyAccents makes entering accented characters easy in insert mode.  Of course there are many European keyboards that have accented characters on keys, but US-style keyboards don't.  During insert mode,  a' becomes an accented a, etc.  It works with utf8 encoding.
+
+EasyAccents may be toggled on and off with:
+  :EZA
+
+You can get just the two characters o', for example, by simply escaping the ':  o&#039 -> o'
+
+History/Features:
+
+v5: included g:EasyAccents_VowelFirst option
+    fixed insert vs append bug
+
+v4: EasyAccents handles a' a` A' o: etc : during insert mode, these pairs of
+characters become the associated accented characters.  Use <Leader>ea (\ea) to
+toggle EasyAccents on and off.  Especially helpful for US style keyboards.
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#EASYACCENTS)
+

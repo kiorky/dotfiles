@@ -1,0 +1,70 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=642
+
+GetLatestVimScripts is a plugin that automates retrieval of the latest versions of the scripts that you yourself use!
+
+   * automatic up-to-date plugins
+   * automatic installation for cooperating plugins
+   * automatic constructions of GetLatestVimScripts.dat for cooperating plugins
+
+
+-----
+Usage:
+-----
+
+    :GetLatestVimScripts
+-or-
+    :GLVS
+
+Downloaded files are placed in the .vim/GetLatest directory (vimfiles\GetLatest).  Those scripts that have an :AutoInstall: in their GetLatestVimScripts comment will be (you guessed it!) automatically installed.
+
+GetLatestVimScripts depends on a file called GetLatest/GetLatestVimScripts.dat.  This file tells GetLatestVimScripts what plugins you're interested in and want to keep up-to-date.  Each line in the file has the form:
+
+    ScriptID SrcID ScriptName
+
+where
+
+    ScriptID  : you'll see it on the top of your browser in its "Location:" box whenever you click on the script at http://vim.sf.net/ .
+    SrcID     : start it off with a "1"; :GetLatestVimScripts will download the file and keep this entry updated automatically
+    ScriptName: the name or title of the script (may have spaces, etc)
+
+In the distribution is <GetLatestVimScripts.dist>; its an example of a <GetLatestVimScripts.dat> file.  In fact, you
+can rename it to <GetLatestVimScripts.dat> and use it if you wish; it contains lines telling GetLatestVimScripts
+to automate retrieval of <Align.vim>, <Mines.vim>, etc.  Please feel free to edit the file as you wish.
+
+GetLatestVimScripts examines the plugins you currently have for lines that look like: (Align.vim's is shown)
+
+    " GetLatestVimScripts: 294 1 :AutoInstall: Align.vim
+
+Plugins that have such lines enable GetLatestVimScripts to automatically build the GetLatestVimScripts.dat file
+for you.  The :AutoInstall: in the comment tells GetLatestVimScripts that the plugin is safe to automatically install, too.
+
+------------
+How It Works
+------------
+
+Vim.sf.net has a separate SrcID for every script that is uploaded.  With Netscape, Mozilla, and Internet-Explorer, when you move the cursor on top of the script you'd like to download, you'll see a line resembling ...src_id=###.  As new scripts and newly uploaded scripts are placed on vim.sf.net, the src_id is incremented.  Hence the newer ones will have greater SrcIDs, so GetLatestVimScripts compares the SrcID in your <GetLatestVimScripts.dat> file with what vim.sf.net has; if there's a newer one, GetLatestVimScripts will "wget" it.
+
+The GetLatestVimScripts script will modify the GetLatestVimScripts.dat file whenever it downloads a new source file to reflect the latest SrcID, too.
+
+
+----------------------------------------
+Semi-Automatic Script Dependency Support
+----------------------------------------
+
+GetLatestVimScripts will examine your plugins for comment lines of the form
+
+    " GetLatestVimScripts: ScriptID SrcID ScriptName
+
+Such lines will be appropriately appended to the GetLatest/GetLatestVimScripts.dat file (if not already present) whenever :GetLatestVimScripts is invoked.  Thus if your newly downloaded script has such lines in it, thereby indicating that it depends upon the presence of specific scripts, GetLatestVimScripts will keep such dependent scripts up to date, too.
+
+
+--------
+Required
+--------
+
+    wget
+
+ie. you'll need to have wget somewhere on your path for GetLatestVimScripts to work.
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#GETSCRIPT)
+

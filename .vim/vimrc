@@ -1,0 +1,280 @@
+"home folder and directories {{{
+" setting user dir
+fun! g:GetHome()
+    return g:home
+endfun
+let g:home=eval("$HOME")."/.vim"
+" register embedded pyflakes & rope {{{
+let $PYTHONPATH = $PYTHONPATH.":".g:home."/bin"
+let $PATH = $PATH.":".g:home."/bin"
+" }}}
+" backups dirs
+let g:bck_dirs=g:home."/backups"
+let &backupdir=g:bck_dirs
+let &directory=g:bck_dirs
+" }}}
+" vim default settings {{{
+""  pathogen {{{
+execute pathogen#infect()
+" }}}
+" highlight / colorscheme
+set bg=dark modeline hlsearch
+hi Function term=underline cterm=bold ctermfg=LightGray
+" default encoding
+set encoding=utf-8
+" drop old vim compatibility
+set nocompatible
+" show line numbers
+set nu viminfo='100,f1
+" set what the backspace key do
+set backspace=indent,eol,start
+" delete end of line
+"set list listchars=tab:←→,trail:¤
+"virtual bloc mode full
+set virtualedit=all
+" xterm full colors
+set t_Co=256
+" utilisation de la souris
+set mouse=
+
+" }}}
+" Plugins configuration {{{
+" autotag genrator {{{
+let g:AGTuseLocalTags = 1
+" }}}
+" Section: Tail options {{{
+   let g:tail#Height	   = 100
+   let g:tail#Center_Win   = 0
+   let g:mapleader	   = "<F12>"
+   filetype plugin indent on
+   syntax enable
+" }}}
+" Syntastix {{{
+highlight SyntasticErrorSign guifg=white guibg=red
+let g:syntastic_always_populate_loc_list=1
+" let g:syntastic_python_checkers=['pylint','flake8','pyflakes','pep257','pylama','pep8','python']
+" let g:syntastic_python_checkers=['flake8','pyflakes','pep257','pylama','pep8']
+let g:syntastic_python_checkers=['pylama']
+" }}}
+" SeeTab {{{
+let g:SeeTabCtermFG="black"
+let g:SeeTabCtermBG="red"
+let g:SeeTabGuiFG="black"
+let g:SeeTabGuiBG="orange"
+" }}}
+" Astronaut plugin {{{
+"use the bold modifier for term, cterm, and gui
+let astronaut_bold=1
+" dark colors used (otherwise some terminals make everything bold, which can be all one color
+let astronaut_dark=1
+" assume that underlining works on your terminal Otherwise some groups will have dark-magenta
+let astronaut_underline=1
+" }}}
+" enhcommntify {{{
+" }}}
+" }}}
+" syntax settings {{{
+syntax on
+filetype on
+filetype plugin on
+filetype indent on
+filetype plugin indent on
+" }}}
+" diff related options {{{
+" Show tabs and trailing whitespace visually / see gentoo Ebuilds errors
+set nodiff foldcolumn=0 diffopt=filler,vertical,context:4
+let g:DirDiffDynamicDiffText=1
+let g:ebuild_error_on_trailing_whitespace=1
+" }}}
+" Mappings {{{
+" per filetypes {{{
+autocmd FileType html,xhtml,xml,zpt  map  ,,re :%s/^\(\s*\)$\n//g<CR>
+autocmd FileType html,xhtml,xml,zpt  vmap ,,re :s/^\(\s*\)$\n//g<CR>
+"}}}
+" naviguate thought windows {{{
+" <LEADER-X> (un)/comment (EnhancedCommentify)
+" new tabs for openend searched tags
+"quick open current dir
+" set backsapce to backsapce
+map  <DELETE>
+map ,o :tabe %:p:h<CR>
+map <C-T> :call OpenTagsInNewTab()<CR>
+map <C-X> :tabprev<CR>
+map <silent> <C-h> :wincmd h<CR>
+map <silent> <C-j> :wincmd j<CR>
+map <silent> <C-k> :wincmd k<CR>
+map <silent> <C-l> :wincmd l<CR>
+" make tab completion for files/buffesr act like bash
+set wildmenu
+set wildmode=list:longest,full
+"}}}
+" getting help in a fullscreen tab {{{
+map  <silent> ,<F1> :tabnew<CR>:h<CR>:on<CR>
+map  <silent> <F4> :TlistToggle<CR>
+imap <silent> <F4> :TlistToggle<CR>
+"}}}
+" Paste Mode On/Off {{{
+map  <F11> :call Paste_on_off()<CR>
+imap <F11> <ESC>:call Paste_on_off()<CR>i
+set pastetoggle=<F11>
+" }}}
+" LU on/off {{{
+map <F12> :call ToggleNU()<CR>
+imap <F12> <ESC>:call ToggleNU()<CR>i
+cmap <F12> <ESC>:call ToggleNU()<CR>i
+"}}}
+" timestamp {{{
+imap <C-T>T <ESC>ma:call InsertTimestamp()<CR>i'a
+cmap <C-T>T <ESC>ma:call InsertTimestamp()<CR>i'a
+"}}}
+" vim sessions {{{
+" loading last session
+exe "map ,,l :source ".g:GetHome()."/sessions/session.vim<CR>"
+" Saving last session
+exe "map ,,s :mksession! ".g:GetHome()."/sessions/session.vim<CR>"
+" Saving and quitting
+exe "map ,,q :wall<CR>:mksession! ".g:GetHome()."/sessions/session.vim<CR>:qall<CR>"
+map ,,b <ESC>:call CustomCloseHiddenBuffers()<CR><ESC>:<ESC>
+"}}}
+" metre en surbrillance la ligne {{{
+map _ :set cursorline! cursorcolumn!<bar>set cursorline? cursorcolumn?<CR><CR>
+"}}}
+" text re format {{{
+" reindent
+map == <ESC>maggVG='a
+" remove whitespaces
+map ,wp ma:%s/\s\s*$//g<CR>'a
+"}}}
+"}}}
+" FileExt / FileTypes Associations {{{
+" default python settings
+autocmd! BufRead,BufNewFile *.vpy,*.cpy,*.py,*.py_tmpl   set ft=python
+autocmd! bufnewfile,bufread *.pt,*.cpt,*.kupu  set ft=zpt
+autocmd! bufnewfile,bufread *.css,*.css.dtml   set ft=css
+autocmd! bufnewfile,bufread *.js,*.js.dtml     set ft=javascript
+autocmd! BufNewFile,BufRead *.zcml,*.xml       set ft=xml
+autocmd! bufnewfile,bufread *.php,*.phtml      set ft=php
+autocmd! BufNewFile,BufRead *.sql              set ft=sql
+autocmd! BufNewFile,BufRead *.cfg,*.cfg.dist   set ft=cfg
+autocmd! BufRead,BufNewFile *.java             set ft=java
+autocmd! BufRead,BufNewFile *.yaml       set ft=yaml sts=2 ts=2 ai et tw=0 sw=2
+autocmd! BufRead,BufNewFile *.sls       set  sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.sh               set ft=sh
+autocmd! BufNewFile,BufRead *.siv,*.sieve      set ft=sieve
+autocmd! BufNewFile,BufRead *.rst,*.txt,*.rest set ft=rst tw=80
+autocmd! BufNewFile,BufRead *.django set ft=django
+autocmd! BufNewFile,BufRead *.jinja set ft=sls
+" }}}
+" Omnicompletion {{{
+"autocmd FileType python     set omnifunc=:q!
+"autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType zpt        set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType mako       set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c          set omnifunc=ccomplete#Complete
+" }}}
+" Indentation {{{
+autocmd FileType cfg        set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType css        set ts=2 sts=2 sw=2 et ai sta tw=0
+autocmd FileType javascript set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType java       set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType php        set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType python     set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType rst        set ts=4 sts=4 sw=4 et ai sta tw=0  syntax=rest
+autocmd FileType sh         set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType sieve      set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType sql        set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType vim        set ts=4 sts=4 sw=4 et ai sta tw=0
+autocmd FileType xml        set ts=2 sts=2 sw=2 et ai sta tw=0
+autocmd FileType django     set ts=2 sts=2 sw=2 et ai sta tw=0
+autocmd FileType zpt        set ts=2 sts=2 sw=2 et ai sta tw=220 syntax=zpt
+autocmd FileType html       set ts=2 sts=2 sw=2 et ai sta tw=220
+autocmd FileType mako       set ts=2 sts=2 sw=2 et ai sta tw=220
+autocmd FileType htmldjango set ts=2 sts=2 sw=2 et ai sta tw=220
+" }}}
+" Abbreviations {{{
+autocmd FileType php  abbreviate dbg    require_once 'Zend/Debug.php';Zend_Debug :: dump
+autocmd FileType php  abbreviate vd    var_dump();exit (-1);
+autocmd FileType php  abbreviate zrg    Zend_Registry :: get
+autocmd FileType java abbreviate sysout System.out.println(
+" }}}
+" Misc functions {{{
+let paste_mode = 0 " 0 = normal, 1 = paste
+func! Paste_on_off()
+        if g:paste_mode == 0
+                set paste
+                let g:paste_mode = 1
+        else
+                set nopaste
+                let g:paste_mode = 0
+        endif
+        return
+endfunc
+" Line Number  Mode On/Off
+let togglenu = 0
+func! ToggleNU()
+        if g:togglenu == 0
+                set nonu
+                let g:togglenu = 1
+        else
+                set nu
+                let g:togglenu = 0
+        endif
+        return
+endfunc
+" open tags in new tab
+func! OpenTagsInNewTab()
+    let mytag = expand("<cword>")
+    exe "tabe"
+    exe "tjump ".mytag
+endfunc
+" insert a timestamp in the current line
+fun! InsertTimestamp()
+python <<EOF
+import sys
+import vim
+from time import localtime, strftime
+buf=vim.current.buffer
+now=strftime("%d/%m/%Y", localtime())
+(row,col) = buf.mark('a') # named mark
+line = buf[row-1]
+new= "%s %s %s" % (line[:col+1],now,line[col+1:])
+buf[row-1] = new
+EOF
+endfun
+" fermer les anciens buffers
+function! CustomCloseHiddenBuffers()
+    " Tableau pour memoriser la visibilite des buffers
+    let visible = {}
+    for t in range(1, tabpagenr('$'))
+        for b in tabpagebuflist(t)
+            let visible[b] = 1
+        endfor
+    endfor
+    for b in range(1, bufnr('$'))
+        if bufexists(b) && !has_key(visible, b)
+            execute 'bwipeout' b
+        endif
+    endfor
+endfun
+" }}}
+" colorscheme torte
+" colorscheme jellybeans
+" colorscheme blackboard
+" colorscheme bensday
+let g:solarized_hitrail   = 1
+" let g:solarized_termtrans = 1
+let g:solarized_degrade   = 1
+" let g:solarized_bold      =   1       |   0
+" let g:solarized_underline =   1       |   0
+" let g:solarized_italic    =   1       |   0
+let g:solarized_contrast  =   "high"
+let g:solarized_visibility=   "high"
+let g:solarized_menu      = 1
+let g:solarized_termcolors=256
+colorscheme solarized
+" vim:set et sts=4 sw=4 foldmethod=marker:

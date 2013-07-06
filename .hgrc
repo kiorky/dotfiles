@@ -1,0 +1,60 @@
+[ui]
+username = kiorky <kiorky@cryptelium.net>
+report_unstrusted = False
+
+[merge-tools]
+#kdiff3 = kdiff3
+#kdiff3.gui=True
+tmerge = hg-merge
+
+[web]
+style = gitweb
+description = See inside
+push_ssl = false
+allow_push = kiorky
+cacerts=
+
+[extensions]
+hgext.extdiff =
+color =
+mq=
+transplant=
+hgext.patchbomb =
+hgext.graphlog =
+
+[trusted]
+users=*
+groups=*
+
+[extdiff]
+#cmd.vimdiff = vim
+#opts.vimdiff = -f '+next' '+execute "DirDiff" argv(0) argv(1)'
+cmd.kdiff3 =
+cmd.kompare=
+cmd.cdiff =  /usr/bin/colordiff
+opts.cdiff = -uNpr
+
+[forest]
+walkhg = 1
+partial = 1
+
+[color]
+status.modified = blue bold
+status.added = green bold
+status.removed = red bold blue_background
+status.deleted = cyan bold underline
+status.unknown = magenta bold underline
+status.ignored = black bold
+
+[extensions]
+hggit=
+#evolve=/home/kiorky/tmp/tools/mutable-history/hgext/evolve.py
+rebase=
+histedit=
+hgk=
+#hgext.hgview=/home/kiorky/tmp/tools/hgview/hgext/hgview.py
+
+[hgview]
+# your hgview configs statements like: 
+dotradius=6
+
