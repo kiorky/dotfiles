@@ -1,4 +1,9 @@
-python3 << EOF
+if has("python3")
+    let b:py="python3"
+else
+    let b:py="python"
+endif
+exe b:py.' << EOF' 
 import sys
 import vim
 def SqlDecaps(mode):
@@ -76,6 +81,7 @@ def SqlDecaps(mode):
     if mode == "normal":
         range = "%"
     elif mode == "visual":
+
         range = "'<,'>"
 
     try:

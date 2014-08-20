@@ -13,7 +13,12 @@
 if &compatible || v:version < 603
     finish
 endif
-python3 << EOF
+if has("python3")
+    let b:py="python3"
+else
+    let b:py="python"
+endif
+exe b:py.' << EOF'
 import vim
 import os
 import sys

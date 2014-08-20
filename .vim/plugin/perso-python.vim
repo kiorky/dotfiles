@@ -1,6 +1,10 @@
 " -*- vim -*-
-
-python3 <<EOF
+if has("python3")
+    let b:py="python3"
+else
+    let b:py="python"
+endif
+exe b:py.' << EOF'
 import vim
 pdbstr1="if not sys.stdin.isatty():realstdin=sys.stdin;sys.stdin=open(\"/dev/tty\");"
 pdbstr4="import pdb;pdb.set_trace();"
