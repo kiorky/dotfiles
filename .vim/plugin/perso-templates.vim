@@ -13,7 +13,7 @@
 if &compatible || v:version < 603
     finish
 endif
-python << EOF
+python3 << EOF
 import vim
 import os
 import sys

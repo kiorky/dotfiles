@@ -1,6 +1,6 @@
 " -*- vim -*-
 
-python <<EOF
+python3 <<EOF
 import vim
 pdbstr1="if not sys.stdin.isatty():realstdin=sys.stdin;sys.stdin=open(\"/dev/tty\");"
 pdbstr4="import pdb;pdb.set_trace();"

@@ -1,4 +1,4 @@
-python << EOF
+python3 << EOF
 import sys
 import vim
 def SqlDecaps(mode):
