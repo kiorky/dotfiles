@@ -9,7 +9,7 @@ let $PYTHONPATH = $PYTHONPATH.":".g:home."/bin"
 let $PATH = $PATH.":".g:home."/bin"
 " }}}
 " backups dirs
-let g:bck_dirs=g:home."/backups"
+let g:bck_dirs=g:home."/backups,.,$TEMP"
 let &backupdir=g:bck_dirs
 let &directory=g:bck_dirs
 " }}}
