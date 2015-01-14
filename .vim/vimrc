@@ -280,6 +280,19 @@ endfun
 "colorscheme solazized
 
 
-let base16colorspace=16
-colorscheme base16-solarized
+"let base16colorspace=16
+"colorscheme base16-solarized
+
+nnoremap <silent> [oh :call gruvbox#hls_show()<CR>
+nnoremap <silent> ]oh :call gruvbox#hls_hide()<CR>
+nnoremap <silent> coh :call gruvbox#hls_toggle()<CR>
+
+if !has("gui_running")
+   let g:gruvbox_italic=0
+endif
+nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
+let g:gruvbox_termcolors=16
+colorscheme gruvbox
 " vim:set et sts=4 sw=4 foldmethod=marker:
