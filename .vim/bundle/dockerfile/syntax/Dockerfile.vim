@@ -21,7 +21,7 @@ setlocal iskeyword+=-
 syn keyword bashStatement chmod chown clear complete du egrep expr fgrep cd
 syn keyword bashStatement find gnufind gnugrep grep less ls echo
 syn keyword bashStatement mkdir mv rm rmdir rpm sed sleep sort strip tail touch
-syn keyword bashStatement aptitude apt-get add-apt-repository yum rpm pacman
+syn keyword bashStatement aptitude apt-key apt-get add-apt-repository yum rpm pacman
 syn keyword bashStatement node npm python virtualenv ruby php composer
 "syn keyword bashStatement svn git hg bzr
 
@@ -50,3 +50,6 @@ hi link bashStatement       Function
 let b:current_syntax = "dockerfile"
 
 set commentstring=#\ %s
+
+" Enable automatic comment insertion
+setlocal fo+=cro
