@@ -266,15 +266,20 @@ endfun
 " colorscheme jellybeans
 " colorscheme blackboard
 " colorscheme bensday
-let g:solarized_hitrail   = 1
-" let g:solarized_termtrans = 1
-let g:solarized_degrade   = 1
-" let g:solarized_bold      =   1       |   0
-" let g:solarized_underline =   1       |   0
-" let g:solarized_italic    =   1       |   0
-let g:solarized_contrast  =   "high"
-let g:solarized_visibility=   "high"
-let g:solarized_menu      = 1
-let g:solarized_termcolors=256
-colorscheme solarized
+"
+"let g:solarized_hitrail   = 1
+"" let g:solarized_termtrans = 1
+"let g:solarized_degrade   = 1
+"" let g:solarized_bold      =   1       |   0
+"" let g:solarized_underline =   1       |   0
+"" let g:solarized_italic    =   1       |   0
+"let g:solarized_contrast  =   "high"
+"let g:solarized_visibility=   "high"
+"let g:solarized_menu      = 1
+"let g:solarized_termcolors=256
+"colorscheme solazized
+
+
+let base16colorspace=16
+colorscheme base16-solarized
 " vim:set et sts=4 sw=4 foldmethod=marker:
