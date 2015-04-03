@@ -70,10 +70,11 @@ def makeVimTemplate(ft='sh', options=dict()):
     ENC = ''
     LICENSE = LICENSES.get(options['license'], 'gpl') % options
     LICENSE = LICENSES.get('none', 'gpl') % options
-    SHEBANG = "%(comment)s vim:set et sts=4 ts=4 tw=80:" % options 
+    SHEBANG = "%(comment)s vim:set et sts=4 ts=4 tw=80:" % options
     if ft == 'python':
         EXE = '%(comment)s!/usr/bin/env python' % options
-        MISC = '__docformat__ = \'%(python_doc)s\'\n' % options
+        MISC = 'from __future__ import absolute_import, division,  print_function\n'
+        MISC += '__docformat__ = \'%(python_doc)s\'\n' % options
         ENC = '# -*- coding: %(python_enc)s -*-' % options
     if ft == 'sh':
         EXE = '%(comment)s!/usr/bin/env bash'%options
