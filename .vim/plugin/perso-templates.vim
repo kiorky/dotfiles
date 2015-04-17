@@ -62,6 +62,21 @@ LICENSES = {
 ''',
 'none' : '',
 }
+
+PYTHON_MISC = '''\
+%(comment)s!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+__docformat__ = \'%(python_doc)s\'
+'''
+PYTHON_MISC = '''\
+%(comment)s!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+'''
+
 python_doc = {'rst':'restructuredtext en'}
 python_encoding = {'utf8':'utf-8'}
 def makeVimTemplate(ft='sh', options=dict()):
@@ -72,10 +87,9 @@ def makeVimTemplate(ft='sh', options=dict()):
     LICENSE = LICENSES.get('none', 'gpl') % options
     SHEBANG = "%(comment)s vim:set et sts=4 ts=4 tw=80:" % options
     if ft == 'python':
-        EXE = '%(comment)s!/usr/bin/env python' % options
-        MISC = 'from __future__ import absolute_import, division,  print_function\n'
-        MISC += '__docformat__ = \'%(python_doc)s\'\n' % options
-        ENC = '# -*- coding: %(python_enc)s -*-' % options
+        EXE = ''
+        ENC = ''
+        MISC = PYTHON_MISC % options
     if ft == 'sh':
         EXE = '%(comment)s!/usr/bin/env bash'%options
     if ft == 'php':
