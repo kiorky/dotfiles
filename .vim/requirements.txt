@@ -1,0 +1,8 @@
+setuptools
+pylama
+flake8
+pep8
+pep257
+pyflakes
+pylint
+mccabe 

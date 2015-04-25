@@ -29,7 +29,11 @@ if !exists('g:gruvbox_bold')
 	let g:gruvbox_bold=1
 endif
 if !exists('g:gruvbox_italic')
-	let g:gruvbox_italic=1
+	if has('gui_running') || $TERM_ITALICS == 'true'
+		let g:gruvbox_italic=1
+	else
+		let g:gruvbox_italic=0
+	endif
 endif
 if !exists('g:gruvbox_undercurl')
 	let g:gruvbox_undercurl=1
@@ -43,6 +47,14 @@ if !exists('g:gruvbox_italicize_comments')
 endif
 if !exists('g:gruvbox_italicize_strings')
 	let g:gruvbox_italicize_strings=0
+endif
+
+if !exists('g:gruvbox_improved_strings')
+	let g:gruvbox_improved_strings=0
+endif
+
+if !exists('g:gruvbox_improved_warnings')
+	let g:gruvbox_improved_warnings=0
 endif
 
 if !exists('g:gruvbox_termcolors')
@@ -440,7 +452,12 @@ call s:HL('lCursor', 'none', 'none', 'inverse')
 " }}}
 " Syntax Highlighting: {{{
 
-call s:HL('Special', 'orange')
+if g:gruvbox_improved_strings == 0
+	call s:HL('Special', 'orange')
+else
+	call s:HL('Special', 'dark1', 'orange', 'italic')
+endif
+
 if g:gruvbox_italicize_comments == 0
 	call s:HL('Comment', 'medium', 'none')
 else
@@ -488,7 +505,11 @@ call s:HL('Character', 'purple')
 if g:gruvbox_italicize_strings == 0
 	call s:HL('String',  'green')
 else
-	call s:HL('String',  'green', 'none', 'italic')
+	if g:gruvbox_improved_strings == 0
+		call s:HL('String',  'green', 'none', 'italic')
+	else
+		call s:HL('String',  'dark1', 'light1', 'italic')
+	endif
 endif
 " Boolean constant: TRUE, false
 call s:HL('Boolean',   'purple')
@@ -536,8 +557,12 @@ call s:HL('DiffText',   'dark0', 'yellow')
 " Spelling: {{{
 
 if has("spell")
-	" Not capitalised word
-	call s:HL('SpellCap',   'none', 'none', 'undercurl', 'red')
+	" Not capitalised word, or compile warnings
+	if g:gruvbox_improved_warnings == 0
+		call s:HL('SpellCap',   'none', 'none', 'undercurl', 'red')
+	else
+		call s:HL('SpellCap',   'green', 'none', 'italic,bold')
+	endif
 	" Not recognized word
 	call s:HL('SpellBad',   'none', 'none', 'undercurl', 'blue')
 	" Wrong spelling for selected region
@@ -622,6 +647,12 @@ else
 	call s:HL('GitGutterDelete', 'red', g:gruvbox_sign_column, 'inverse')
 	call s:HL('GitGutterChangeDelete', 'aqua', g:gruvbox_sign_column, 'inverse')
 endif
+
+" }}}
+" gitcommit highlighting "{{{
+
+call s:HL('gitcommitSelectedFile', 'green')
+call s:HL('gitcommitDiscardedFile', 'red')
 
 " }}}
 " Signify: {{{
@@ -981,6 +1012,39 @@ call s:HL('scalaTypeTypePostDeclaration', 'yellow')
 
 call s:HL('scalaInstanceDeclaration', 'light1')
 call s:HL('scalaInterpolation', 'aqua')
+
+" }}}
+" Markdown: {{{
+
+call s:HL('markdownItalic', 'light3', 'none', 'italic')
+
+call s:HL('markdownH1', 'green', 'none', 'bold')
+call s:HL('markdownH2', 'green', 'none', 'bold')
+call s:HL('markdownH3', 'yellow', 'none', 'bold')
+call s:HL('markdownH4', 'yellow', 'none', 'bold')
+call s:HL('markdownH5', 'yellow')
+call s:HL('markdownH6', 'yellow')
+
+call s:HL('markdownCode', 'aqua')
+call s:HL('markdownCodeBlock', 'aqua')
+call s:HL('markdownCodeDelimiter', 'aqua')
+
+call s:HL('markdownBlockquote', 'medium')
+call s:HL('markdownListMarker', 'medium')
+call s:HL('markdownOrderedListMarker', 'medium')
+call s:HL('markdownRule', 'medium')
+call s:HL('markdownHeadingRule', 'medium')
+
+call s:HL('markdownUrlDelimiter', 'light3')
+call s:HL('markdownLinkDelimiter', 'light3')
+call s:HL('markdownLinkTextDelimiter', 'light3')
+
+call s:HL('markdownHeadingDelimiter', 'orange')
+call s:HL('markdownUrl', 'purple')
+call s:HL('markdownUrlTitleDelimiter', 'green')
+
+call s:HL('markdownLinkText', 'medium', 'none', 'underline')
+call s:HL('markdownIdDeclaration', 'medium', 'none', 'underline')
 
 " }}}
 

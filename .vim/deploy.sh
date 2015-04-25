@@ -2,10 +2,10 @@
 if [ $(whoami) != root ];then
     cd $(dirname $0)
     d=$PWD
-    if [ ! -h $HOME/.vim ];then 
+    if [ ! -h $HOME/.vim ];then
         mv $HOME/.vim "$HOME/.vim.old.$(date "+%F")"
     fi
-    if [ ! -h $HOME/.vimrc ];then 
+    if [ ! -h $HOME/.vimrc ];then
         mv $HOME/.vimrc "$HOME/.vimrc.old.$(date "+%F")"
     fi
     ln -sf "$d" "$HOME/.vim"
@@ -26,4 +26,8 @@ ignore = $IGN
 EOF
 fi
 cd $(dirname $0)
-python bootstrap.py && bin/buildout -c deploy.cfg
+if [ ! -f bin/activate ];then
+    virtualenv --no-site-packages .
+fi
+. bin/activate
+pip install --upgrade -r requirements.txt
