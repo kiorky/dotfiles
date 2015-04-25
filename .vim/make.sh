@@ -18,7 +18,8 @@ fi
 REPOS[gruvbox]="https://github.com/morhetz/gruvbox.git"
 REPOS[base16]="https://github.com/chriskempson/base16-vim.git"
 REPOS[jinja]="https://github.com/lepture/vim-jinja.git"
-REPOS[vim-css-color]="https://github.com/skammer/vim-css-color.git"
+# HARMFULL !!!
+#REPOS[vim-css-color]="https://github.com/skammer/vim-css-color.git"
 REPOS[vim-css3]="https://github.com/hail2u/vim-css3-syntax.git"
 REPOS[vim-less]="https://github.com/groenewege/vim-less.git"
 REPOS[vim-golang]="https://github.com/jnwhiteh/vim-golang.git"
