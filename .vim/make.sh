@@ -6,15 +6,15 @@ nodeploy=""
 for i in $@;do
     if [ "x${i}" != "xnodeploy" ];then
         nodeploy="1"
-    fi     
+    fi
     if [ "x${i}" != "xnosync" ];then
         nodl="1"
-    fi     
+    fi
 done
 declare -A REPOS
 if [ "x${nodeploy}" = "x" ];then
     ./deploy.sh
-fi     
+fi
 REPOS[gruvbox]="https://github.com/morhetz/gruvbox.git"
 REPOS[base16]="https://github.com/chriskempson/base16-vim.git"
 REPOS[jinja]="https://github.com/lepture/vim-jinja.git"
