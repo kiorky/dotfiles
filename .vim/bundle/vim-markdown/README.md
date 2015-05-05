@@ -4,6 +4,13 @@
 
 Syntax highlighting, matching rules and mappings for [the original Markdown](http://daringfireball.net/projects/markdown/) and extensions.
 
+1. [Installation](#installation)
+1. [Options](#options)
+1. [Mappings](#mappings)
+1. [Commands](#commands)
+1. [Credits](#credits)
+1. [License](#license)
+
 ## Installation
 
 If you use [Vundle](https://github.com/gmarik/vundle), add the following line to your `~/.vimrc`:
@@ -97,7 +104,7 @@ let g:vim_markdown_frontmatter=1
 
 The following work on normal and visual modes:
 
--   `gx`: open the link under the cursor in the same browser as the standard `gx` command.
+-   `gx`: open the link under the cursor in the same browser as the standard `gx` command. `<Plug>Markdown_OpenUrlUnderCursor`
 
     The standard `gx` is extended by allowing you to put your cursor anywhere inside a link.
 
@@ -124,6 +131,14 @@ The following work on normal and visual modes:
 -   `]c`: go to Current header. `<Plug>Markdown_MoveToCurHeader`
 
 -   `]u`: go to parent header (Up). `<Plug>Markdown_MoveToParentHeader`
+
+This plugin follows the recommended Vim plugin mapping interface, so to change the map `]u` to `asdf`, add to your `.vimrc`:
+
+    map asdf <Plug>Markdown_MoveToParentHeader
+
+To disable a map use:
+
+    map <Plug> <Plug>Markdown_MoveToParentHeader
 
 ## Commands
 

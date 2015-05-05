@@ -67,11 +67,11 @@ if [ "x${nodl}" = "x" ];then
     for i in "${!REPOS[@]}";do
         repo="${d}/dl/${i}"
         crepo="$(dirname "${repo}")"
-        clone_uri="${REPOS[$i]}"
+        clone_url="${REPOS[$i]}"
         if [ ! -d "${crepo}" ];then
             mkdir -p "${crepo}"
         fi
-        echo "${repo} <- ${clone_url}t "
+        echo "${repo} <- ${clone_url} "
         if [ ! -d "${repo}" ];then
             cd ${crepo}
             git clone ${clone_url} $(basename ${repo}) 1>/dev/null
