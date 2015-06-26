@@ -110,8 +110,8 @@ set wildmode=list:longest,full
 "}}}
 " getting help in a fullscreen tab {{{
 map  <silent> ,<F1> :tabnew<CR>:h<CR>:on<CR>
-map  <silent> <F4> :TlistToggle<CR>
-imap <silent> <F4> :TlistToggle<CR>
+map  <silent> <F4> :TagbarToggle<CR>
+imap <silent> <F4> :TagbarToggle<CR>
 "}}}
 " Paste Mode On/Off {{{
 map  <F11> :call Paste_on_off()<CR>
@@ -262,6 +262,12 @@ function! CustomCloseHiddenBuffers()
     endfor
 endfun
 " }}}
+" GOLANG
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 " colorscheme torte
 " colorscheme jellybeans
 " colorscheme blackboard

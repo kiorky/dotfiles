@@ -18,6 +18,7 @@ You will also need to specify the following settings in your ``~/.vimrc``:
 
 .. code-block:: vim
 
+    syntax on
     set nocompatible
     filetype plugin indent on
 
@@ -31,6 +32,7 @@ If you get this, specify the following settings in your ``~/.vimrc`` instead:
 
 .. code-block:: vim
 
+    syntax on
     set nocompatible
     set tabstop=2
     set shiftwidth=2
@@ -40,16 +42,21 @@ Alternately, files can be copied into any other directory where Vim looks for
 its runtime files, like ``/etc/vim/``. The command ``:set runtimepath`` will
 show all such paths. Read ``:help runtimepath`` for more info.
 
+Too slow?
+==========
+Note that the default yaml highlighting that ships with vim is very slow with
+long lines (e.g., ssh keys, or certificates). You might want to switch to a 
+faster yaml highlighter, like `vim-yaml <https://github.com/stephpy/vim-yaml>`_.
+
 Configuration
 =============
 
-By default, if Pathogen is installed, the syntax file will search for the
-existence of a Jinja syntax file (as described in the `Jinja docs`_ or via a
-`Vim bundle`_) in the ``runtimepath``, and load that if found. If it is not
-found or Pathogen is not installed, the Django template syntax file (which is
-slightly different, but bundled with Vim) will be used. You can force using
-either syntax file using the global variable ``g:sls_use_jinja_syntax``. If it
-is set, autodetection will be turned off.
+By default, the syntax file will search for the existence of a Jinja syntax
+file (as described in the `Jinja docs`_ or via a `Vim bundle`_) in the
+``runtimepath``, and load that if found. If it is not found, the Django
+template syntax file (which is slightly different, but bundled with Vim) will
+be used. You can force using either syntax file using the global variable
+``g:sls_use_jinja_syntax``. If it is set, autodetection will be turned off.
 
 .. _Jinja docs: http://jinja.pocoo.org/docs/integration/#vim
 .. _Vim bundle: https://github.com/Glench/Vim-Jinja2-Syntax

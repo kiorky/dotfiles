@@ -15,6 +15,7 @@ declare -A REPOS
 if [ "x${nodeploy}" = "x" ];then
     ./deploy.sh
 fi
+REPOS[blockhl]="https://github.com/vim-scripts/BlockHL.git"
 REPOS[gruvbox]="https://github.com/morhetz/gruvbox.git"
 REPOS[base16]="https://github.com/chriskempson/base16-vim.git"
 REPOS[jinja]="https://github.com/lepture/vim-jinja.git"
@@ -22,7 +23,8 @@ REPOS[jinja]="https://github.com/lepture/vim-jinja.git"
 #REPOS[vim-css-color]="https://github.com/skammer/vim-css-color.git"
 REPOS[vim-css3]="https://github.com/hail2u/vim-css3-syntax.git"
 REPOS[vim-less]="https://github.com/groenewege/vim-less.git"
-REPOS[vim-golang]="https://github.com/jnwhiteh/vim-golang.git"
+REPOS[vim-golang]="https://github.com/fatih/vim-go.git"
+REPOS[vim-yaml]="https://github.com/stephpy/vim-yaml.git"
 REPOS[solarized]="git://github.com/altercation/vim-colors-solarized.git"
 REPOS[saltvim]="https://github.com/saltstack/salt-vim.git"
 REPOS[Pathogen]="https://github.com/tpope/vim-pathogen.git"
@@ -49,20 +51,21 @@ REPOS[matchit]="https://github.com/vim-scripts/matchit.zip.git"
 REPOS[ragrat]="https://github.com/vim-scripts/ragtag.vim.git"
 REPOS[visincr]="https://github.com/vim-scripts/VisIncr.git"
 REPOS[term]="https://github.com/vim-scripts/term.vim.git"
-REPOS[taglist]="https://github.com/vim-scripts/taglist.vim.git"
 REPOS[scriptease]="https://github.com/tpope/vim-scriptease.git"
 REPOS[surround]="git://github.com/tpope/vim-surround.git"
-REPOS[po]="https://github.com/vim-scripts/po.vim.git"
 REPOS[vimball]="https://github.com/vim-scripts/Vimball.git"
-REPOS[blockhl]="https://github.com/vim-scripts/BlockHL.git"
-REPOS[decho]="https://github.com/vim-scripts/Decho.git"
 REPOS[GetLatestVimScripts]="https://github.com/vim-scripts/GetLatestVimScripts.git"
 REPOS[gnupg]="https://github.com/vim-scripts/gnupg.vim.git"
 REPOS[javascript]="https://github.com/pangloss/vim-javascript.git"
 REPOS[netrw]="https://github.com/vim-scripts/netrw.vim.git"
-REPOS[Astronaut]="https://github.com/vim-scripts/Astronaut.git"
 REPOS[syntastic]="https://github.com/scrooloose/syntastic.git"
 REPOS[vim-markdown]="https://github.com/plasticboy/vim-markdown.git"
+REPOS[tagbar]="https://github.com/majutsushi/tagbar.git"
+REPOS[Astronaut]="https://github.com/vim-scripts/Astronaut.git"
+REPOS[decho]="https://github.com/vim-scripts/Decho.git"
+REPOS[po]="https://github.com/vim-scripts/po.vim.git"
+# replaced
+#REPOS[taglist]="https://github.com/vim-scripts/taglist.vim.git"
 if [ "x${nodl}" = "x" ];then
     for i in "${!REPOS[@]}";do
         repo="${d}/dl/${i}"
@@ -82,5 +85,6 @@ if [ "x${nodl}" = "x" ];then
     done
 fi
 rsync -azv "${d}/dl/" "${d}/bundle/" --exclude=.git --delete
+cd "${d}"
 git commit -am up
 git push

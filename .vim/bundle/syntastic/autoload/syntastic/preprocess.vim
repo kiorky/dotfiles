@@ -68,10 +68,15 @@ function! syntastic#preprocess#flow(errors) abort " {{{2
     let false = 0
     let null = ''
 
+    let idx = 0
+    while idx < len(a:errors) && a:errors[idx][0] != '{'
+        let idx += 1
+    endwhile
+
     " A hat tip to Marc Weber for this trick
     " http://stackoverflow.com/questions/17751186/iterating-over-a-string-in-vimscript-or-parse-a-json-file/19105763#19105763
     try
-        let errs = eval(join(a:errors, ''))
+        let errs = eval(join(a:errors[idx :], ''))
     catch
         let errs = {}
     endtry
@@ -122,6 +127,13 @@ endfunction " }}}2
 " @vimlint(EVL102, 0, l:true)
 " @vimlint(EVL102, 0, l:false)
 " @vimlint(EVL102, 0, l:null)
+
+function! syntastic#preprocess#iconv(errors) abort " {{{2
+    return
+        \ (has('iconv') || has('iconv/dyn')) && &encoding !=# '' && &encoding !=# 'utf-8' ?
+        \       map(a:errors, 'iconv(v:val, "utf-8", &encoding)') :
+        \       a:errors
+endfunction " }}}2
 
 function! syntastic#preprocess#killEmpty(errors) abort " {{{2
     return filter(copy(a:errors), 'v:val !=# ""')
