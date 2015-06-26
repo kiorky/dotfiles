@@ -191,6 +191,7 @@ autocmd FileType sql        set ts=4 sts=4 sw=4 et ai sta tw=0
 autocmd FileType vim        set ts=4 sts=4 sw=4 et ai sta tw=0
 autocmd FileType xml        set ts=2 sts=2 sw=2 et ai sta tw=0
 autocmd FileType django     set ts=2 sts=2 sw=2 et ai sta tw=0
+autocmd FileType go         set ts=4 sts=4 sw=4 noet ai sta tw=0
 autocmd FileType zpt        set ts=2 sts=2 sw=2 et ai sta tw=220 syntax=zpt
 autocmd FileType html       set ts=2 sts=2 sw=2 et ai sta tw=220
 autocmd FileType mako       set ts=2 sts=2 sw=2 et ai sta tw=220
