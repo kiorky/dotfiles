@@ -12,7 +12,7 @@ pdbstrs=[pdbstr4, pdbstr1]
 pdbstr3="import pdb;pdb.set_trace()"
 pdbstrs=[pdbstr3]
 
-epdbstr4="import epdb;pdb.serve();"
+epdbstr4="import epdb;epdb.serve();"
 epdbstrs=[epdbstr4]
 
 ipshell_str="from IPython.Shell import IPShellEmbed; ipshell = IPShellEmbed();ipshell()"
