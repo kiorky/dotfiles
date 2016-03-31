@@ -69,8 +69,8 @@ def SetIPShell():
 def RemoveIPShell():
     return RemoveAnyBreakpoints(strings=[ipshell_str])
 
-vim.command( 'map n :py SetEBreakpoint()<cr>')
-vim.command( 'map N :py RemoveAnyEBreakpoints()<cr>')
+vim.command( 'map ; :py SetEBreakpoint()<cr>')
+vim.command( 'map . :py RemoveAnyEBreakpoints()<cr>')
 vim.command( 'map b :py SetBreakpoint()<cr>')
 vim.command( 'map <s-b> :py RemoveAnyBreakpoints()<cr>')
 vim.command( 'map <f7> :py SetIPShell()<cr>')
