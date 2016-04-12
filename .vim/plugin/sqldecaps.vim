@@ -6,6 +6,7 @@ endif
 exe b:py.' << EOF' 
 import sys
 import vim
+py = vim.eval('b:py')
 def SqlDecaps(mode):
     cb = vim.current.buffer
     header_match_exact=[
@@ -96,7 +97,7 @@ def SqlDecaps(mode):
             vim.command(range+"s/\(^\("+i+"\)\|\s"+i+"\)\(;\)/ "+i.lower()+";/Iegc")
     except:
         pass
-vim.command( 'autocmd FileType sql map ,,u  :py SqlDecaps("normal")<cr>')
-vim.command( 'autocmd FileType sql vmap ,,u :py SqlDecaps("visual")<cr>')
+vim.command('autocmd FileType sql map ,,u  :'+py+' SqlDecaps("normal")<cr>')
+vim.command('autocmd FileType sql vmap ,,u :'+py+' SqlDecaps("visual")<cr>')
 EOF
 " vim:set et sts=4 sw=4:

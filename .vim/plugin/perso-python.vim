@@ -5,6 +5,7 @@ else
     let b:py="python"
 endif
 exe b:py.' << EOF'
+py = vim.eval('b:py')
 import vim
 pdbstr1="if not sys.stdin.isatty():realstdin=sys.stdin;sys.stdin=open(\"/dev/tty\");"
 pdbstr4="import pdb;pdb.set_trace();"
@@ -69,11 +70,11 @@ def SetIPShell():
 def RemoveIPShell():
     return RemoveAnyBreakpoints(strings=[ipshell_str])
 
-vim.command( 'map ; :py SetEBreakpoint()<cr>')
-vim.command( 'map . :py RemoveAnyEBreakpoints()<cr>')
-vim.command( 'map b :py SetBreakpoint()<cr>')
-vim.command( 'map <s-b> :py RemoveAnyBreakpoints()<cr>')
-vim.command( 'map <f7> :py SetIPShell()<cr>')
-vim.command( 'map <f8> :py RemoveIPShell()<cr>')
+vim.command( 'map ; :'+py+' SetEBreakpoint()<cr>')
+vim.command( 'map . :'+py+' RemoveAnyEBreakpoints()<cr>')
+vim.command( 'map b :'+py+' SetBreakpoint()<cr>')
+vim.command( 'map <s-b> :'+py+' RemoveAnyBreakpoints()<cr>')
+vim.command( 'map <f7>  :'+py+' SetIPShell()<cr>')
+vim.command( 'map <f8>  :'+py+' RemoveIPShell()<cr>')
 EOF
 " vim:set et sts=4 sw=4:
