@@ -14,8 +14,10 @@ if &compatible || v:version < 603
     finish
 endif
 if has("python3")
+    command! -nargs=1 Py py3 <args>
     let b:py="python3"
 else
+    command! -nargs=1 Py py <args>
     let b:py="python"
 endif
 exe b:py.' << EOF'
@@ -124,9 +126,9 @@ com! -nargs=0 NewPythonFile py getEnvAndMakeTemplate()
 augroup NewCrypteliumFile
     au!
     autocmd BufNewFile *.py,*.vpy,*.cpy
-                \ py getEnvAndMakeTemplate(ft='python')
+                \ Py getEnvAndMakeTemplate(ft='python')
     autocmd BufNewFile *.php
-                \ py getEnvAndMakeTemplate(ft='php')
+                \ Py getEnvAndMakeTemplate(ft='php')
     autocmd BufNewFile *.sh,*.bash
-                \ py getEnvAndMakeTemplate(ft='sh')
+                \ Py getEnvAndMakeTemplate(ft='sh')
 augroup END
