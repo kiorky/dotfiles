@@ -157,8 +157,11 @@ autocmd! bufnewfile,bufread *.php,*.phtml      set ft=php
 autocmd! BufNewFile,BufRead *.sql              set ft=sql
 autocmd! BufNewFile,BufRead *.cfg,*.cfg.dist   set ft=cfg
 autocmd! BufRead,BufNewFile *.java             set ft=java
-autocmd! BufRead,BufNewFile *.yaml       set ft=yaml sts=2 ts=2 ai et tw=0 sw=2
-autocmd! BufRead,BufNewFile *.sls       set  sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.yml     set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.yaml    set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.sls     set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.crontab set ft=crontab sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
+autocmd! BufRead,BufNewFile *.cron    set ft=crontab sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
 autocmd! BufRead,BufNewFile *.sh               set ft=sh
 autocmd! BufNewFile,BufRead *.siv,*.sieve      set ft=sieve
 autocmd! BufNewFile,BufRead *.rst,*.txt,*.rest set ft=rst tw=80
