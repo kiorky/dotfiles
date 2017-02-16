@@ -46,16 +46,13 @@ function! SyntaxCheckers_r_svtools_IsAvailable() dict
 endfunction
 
 function! SyntaxCheckers_r_svtools_GetLocList() dict
-    if !exists('g:syntastic_enable_r_svtools_checker') || !g:syntastic_enable_r_svtools_checker
-        call syntastic#log#error('checker r/svtools: checks disabled for security reasons; set g:syntastic_enable_r_svtools_checker to 1 to override')
-        return []
-    endif
+    let buf = bufnr('')
 
     let setwd = syntastic#util#isRunningWindows() ? 'setwd("' . escape(getcwd(), '"\') . '"); ' : ''
     let makeprg = self.getExecEscaped() . ' --slave --restore --no-save' .
         \ ' -e ' . syntastic#util#shescape(setwd . 'library(svTools); ' .
         \       'try(lint(commandArgs(TRUE), filename = commandArgs(TRUE), type = "flat", sep = ":"))') .
-        \ ' --args ' . syntastic#util#shexpand('%')
+        \ ' --args ' . syntastic#util#shescape(bufname(buf))
 
     let errorformat =
         \ '%trror:%f:%\s%#%l:%\s%#%v:%m,' .
@@ -70,7 +67,8 @@ endfunction
 call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'r',
     \ 'name': 'svtools',
-    \ 'exec': 'R' })
+    \ 'exec': 'R',
+    \ 'enable': 'enable_r_svtools_checker'})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

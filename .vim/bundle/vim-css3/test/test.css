@@ -1,6 +1,6 @@
-.align {
+.align-3 {
   justify-self: safe;
-  justify-content: true;
+  justify-content: unsafe;
   justify-items: self-start;
   align-self: self-end;
   align-content: flex-start;
@@ -8,6 +8,7 @@
   display: space-around;
   display: space-between;
   display: space-evenly;
+  display: legacy;
 }
 
 .animations {
@@ -40,6 +41,21 @@
   box-shadow: auto;
 }
 
+.backgrounds-4 {
+  background-position-x: x-start;
+  background-position-y: x-end;
+  background-position-inline: y-start;
+  background-position-block: y-end;
+  corner-shape: bevel;
+  corners: scoop;
+  border-limit: notch;
+  border-clip: auto;
+  border-clip-top: auto;
+  border-clip-right: auto;
+  border-clip-bottom: auto;
+  border-clip-left: auto;
+}
+
 .box {
   overflow-style: scrollbar;
   overflow-x: panner;
@@ -54,22 +70,43 @@
   display: no-content;
 }
 
-.break {
-  break-after: any;
+.break-3 {
+  break-after: auto;
   break-before: auto;
   break-inside: auto;
   box-decoration-break: auto;
 }
 
-.cascade {
+.cascade-3 {
   all: initial;
   display: unset;
 }
 
-.colors {
+@import "test.css" supports(display: auto);
+.cascade-4 {
+  display: revert;
+}
+
+.color {
   opacity: rgba(0, 0, 0, 1);
   display: hsla(0, 0, 0, 1);
-  display: currentColor;
+  display: currentcolor;
+}
+
+@color-profile swopc {
+  src: url('http://example.org/swop-coated.icc');
+}
+
+.color-4 {
+  color-adjust: #FFEEDDFF;
+  display: rebeccapurple;
+  display: hwb(120deg, 44%, 50%);
+  display: lab(1 2 3);
+  display: lch(4 5 6);
+  display: gray(50%);
+  display: color(swopc, 0 206 190 77);
+  display: device-cmyk(0, 81%, 81%, 30%);
+  display: color-mod(#112233 tint(50%));
 }
 
 @supports (display: auto) or
@@ -80,7 +117,7 @@
   }
 }
 
-.compositing {
+.compositing-1 {
   mix-blend-mode: multiply;
   isolation: screen;
   background-blend-mode: overlay;
@@ -98,14 +135,17 @@
   display: luminosity;
 }
 
-.content {
-  move-to: inhibit;
-  page-policy: here;
-  display: first;
-  display: last;
+.content-3 {
+  string-set: open;
+  bookmark-level: closed;
+  bookmark-label: leader('.');
+  bookmark-state: string(heading, first);
+  display: target-counter(attr(href url), page);
+  display: target-counters(lack-of-example);
+  display: target-text(attr(href url));
 }
 
-@counter-style counter-style {
+@counter-style counter-styles-3 {
   system: cyclic;
   negative: symbolic;
   prefix: additive;
@@ -118,7 +158,7 @@
   speak-as: auto;
 }
 
-.counter-style {
+.counter-styles-3 {
   display: arabic-indic;
   display: upper-armenian;
   display: lower-armenian;
@@ -156,12 +196,20 @@
   display: ethiopic-numeric;
 }
 
-.display {
-  display-inside: block-level;
-  display-outside: inline-level;
-  display-list: contents;
-  display-suppress: inline-list-item;
-  display: show;
+.cssom-1 {
+  display: auto;
+}
+
+.cssom-view-1 {
+  scroll-behavior: smooth;
+}
+
+.display-3 {
+  display: flow;
+  display: flow-root;
+  display: contents;
+  display: inline-list-item;
+  display: discard;
 }
 
 .exclusions {
@@ -169,7 +217,24 @@
   wrap-through: maximum;
 }
 
-.flexbox {
+.filter-effects-1 {
+  flood-color: sRGB;
+  flood-opacity: linearRGB;
+  color-interpolation-filters: auto;
+  lighting-color: auto;
+  display: blur(5px);
+  display: brightness(0.4);
+  display: contrast(200%);
+  display: drop-shadow(16px 16px 20px blue);
+  display: grayscale(50%);
+  display: hue-rotate(90deg);
+  display: invert(75%);
+  display: opacity(25%);
+  display: saturate(30%);
+  display: sepia(60%);
+}
+
+.flexbox-1 {
   flex-direction: flex;
   flex-wrap: inline-flex;
   flex-flow: row;
@@ -177,10 +242,13 @@
   flex: column-reverse;
   flex-grow: wrap;
   flex-shrink: wrap-reverse;
-  flex-basis: main-size;
 }
 
-.fonts {
+.font-loading-3 {
+  display: auto;
+}
+
+.fonts-3 {
   font-feature-settings: common-ligatures;
   font-kerning: no-common-ligatures;
   font-language-override: discretionary-ligatures;
@@ -218,38 +286,44 @@
   display: proportional-width;
 }
 
-.gcpm::footnote-call,
-.gcpm::footnote-marker {
-  string-set: string(heading, first);
-  running: running(heading);
-  footnote-display: element(header);
-  footnote-policy: footnote;
-  bookmark-label: line;
-  bookmark-level: leader('.');
-  bookmark-state: target-counter(attr(href url), page);
-  display: target-counters(lack-of-example);
-  display: target-text(attr(href url));
-  display: open;
-  display: closed;
+.fonts-4 {
+  font-optical-sizing: emoji;
+  font-variation-settings: math;
+  display: fangsong;
+  display: system-ui;
 }
 
-.grid {
+.gcpm-3::footnote-call,
+.gcpm-3::footnote-marker {
+  running: footnote;
+  footnote-display: line; 
+  footnote-policy: element(header);
+  display: running(heading);
+}
+
+.geometry-1 {
+  display: auto;
+}
+
+.grid-1 {
   grid-template-columns: grid;
   grid-template-rows: inline-grid;
   grid-template-areas: minmax(0, 1);
-  grid-template: repeat(4);
+  grid-template: fit-content(10%);
+  grid-auto-rows: repeat(4);
   grid-auto-columns: 0.2fr;
-  grid-auto-rows: subgrid;
   grid-auto-flow: dense;
-  grid-auto-position: span;
-  grid: auto;
-  grid-row-start: auto;
-  grid-column-start: auto;
+  grid: auto-flow;
+  grid-row-start: subgrid;
+  grid-column-start: span;
   grid-row-end: auto;
   grid-column-end: auto;
   grid-column: auto;
   grid-row: auto;
   grid-area: auto;
+  grid-column-gap: auto;
+  grid-row-gap: auto;
+  grid-gap: auto;
 }
 
 .images {
@@ -265,12 +339,16 @@
   display: repeating-radial-gradient(farthest-corner at 50% 50%, yellow, green);
 }
 
-.inline {
-  initial-letter: ideographic;
+.inline-3 {
+  dominant-baseline: mathematical;
+  alignment-baseline: ideographic;
+  baseline-shift: auto;
+  initial-letter: auto;
   initial-letter-align: auto;
+  initial-letter-wrap: auto;
 }
 
-.line-grid {
+.line-grid-1 {
   line-grid: create;
   line-snap: block-start;
   box-snap: block-end;
@@ -278,35 +356,11 @@
   display: last-baseline;
 }
 
-.linebox {
-  alignment-adjust: central;
-  alignment-baseline: mathematical;
-  baseline-shift: before-edge;
-  dominate-baseline: after-edge;
-  drop-initial-after-adjust: text-before-edge;
-  drop-initial-after-align: text-after-edge;
-  drop-initial-before-adjust: use-script;
-  drop-initial-before-align: caps-height;
-  drop-initial-size: exclude-ruby;
-  drop-initial-value: include-ruby;
-  inline-box-align: consider-shift;
-  line-stacking: disregard-shift;
-  line-stacking-ruby: inline-line-height;
-  line-stacking-shift: block-line-height;
-  line-stacking-strategy: max-height;
-  text-height: grid-height;
-  display: font-size;
-  display: text-size;
-  display: max-size;
+.lists-3::marker {
+  display: auto;
 }
 
-.lists::marker {
-  marker-side: marker;
-  counter-set: list-container;
-  display: counters(list-item, '.');
-}
-
-.masking {
+.masking-1 {
   clip-path: fill-box;
   clip-rule: stroke-box;
   mask-image: view-box;
@@ -328,6 +382,13 @@
   mask-type: auto;
 }
 
+.motion-1 {
+  motion-path: path(M 100 100 L 300 100 L 200 300 z);
+  motion-offset: auto;
+  motion-rotation: auto;
+  motion: auto;
+}
+
 .multicol {
   columns: column;
   column-count: balance;
@@ -341,12 +402,8 @@
   column-width: auto;
 }
 
-.overflow {
-  max-lines: paged-x;
-  display: paged-y;
-  display: paged-x-controls;
-  display: paged-y-controls;
-  display: fragments;
+.overflow-3 {
+  max-lines: auto;
 }
 
 .page {
@@ -356,21 +413,39 @@
   display: verso;
 }
 
-.positioning {
+.page-floats-3 {
+  float-reference: inline-start;
+  float-defer: inline-end;
+  float-offset: snap-block;
+  display: snap-inline;
+  display: snap-block(2em, near);
+  display: snap-inline(2em, near);
+}
+
+.paint-api-1 {
+  display: paint(my_logo);
+}
+
+.pointerevents {
+  touch-action: pan-x;
+  display: pan-y;
+  display: manipulation;
+}
+
+.position-3 {
   offset-before: sticky;
   offset-end: auto;
   offset-after: auto;
   offset-start: auto;
 }
 
-.pseudo::selection,
-.pseudo::spelling-error,
-.pseudo::grammer-error,
-.pseuod::placeholder {
-  display: block;
+.pseudo-4::inactive-selection,
+.pseudo-4::spelling-error,
+.pseudo-4::grammer-error {
+  display: auto;
 }
 
-.regions:region {
+.regions-1:region {
   flow-into: element;
   flow-from: content;
   region-fragment: break;
@@ -378,45 +453,82 @@
   display: avoid-region;
 }
 
-.ruby {
+@media (device-radius: 50%) {
+  .round-display-1 {
+    shape-inside: outside-shape;
+    border-boundary: shape-box;
+    polar-angle: parent;
+    polar-distance: polar;
+  }
+}
+
+.ruby-1 {
   ruby-position: ruby-base-container;
   ruby-merge: ruby-text-container;
   ruby-align: inter-character;
 }
 
-@scope .scoping {
+@scope .scoping-1 {
   div {
     display: auto;
   }
 }
 
-.scoping:scope-context div,
-.scoping:host,
-.scping:host(.foo),
-.scoping:host-context,
-.scoping::shadow,
-.scoping::content,
-.scoping /deep/ span {
+.scoping-1:scope-context div,
+.scoping-1:host,
+.scoping-1:host(.foo),
+.scoping-1:host-context,
+.scoping-1::shadow,
+.scoping-1::content,
+.scoping-1 /deep/ span {
   display: auto;
 }
 
-.selectors3:target,
-.selectors3:enabled,
-.selectors3:disabled,
-.selectors3:checked,
-.selectors3:indeterminate,
-.selectors3:root,
-.selectors3:empty,
-.selectors3:last-child,
-.selectors3:last-of-type,
-.selectors3:first-of-type,
-.selectors3:only-child,
-.selectors3:only-of-type,
-.selectors3:nth-child(2n+1),
-.selectors3:nth-last-child(-n+2),
-.selectors3:nth-of-type(2n+1),
-.selectors3:nth-last-of-type(n+2),
-.selectors3:not([DISABLED]) {
+.scroll-snap-1 {
+  scroll-snap-type: x;
+  scroll-padding: y;
+  scroll-snap-margin: mandatory;
+  scroll-snap-align: proximity;
+  scroll-snap-stop: auto;
+  scroll-padding-top: auto;
+  scroll-padding-right: auto;
+  scroll-padding-bottom: auto;
+  scroll-padding-left: auto;
+  scroll-padding-inline-start: auto;
+  scroll-padding-block-start: auto;
+  scroll-padding-inline-end: auto;
+  scroll-padding-block-end: auto;
+  scroll-padding-block: auto;
+  scroll-padding-inline: auto;
+  scroll-snap-margin-top: auto;
+  scroll-snap-margin-right: auto;
+  scroll-snap-margin-bottom: auto;
+  scroll-snap-margin-left: auto;
+  scroll-snap-margin-inline-start: auto;
+  scroll-snap-margin-block-start: auto;
+  scroll-snap-margin-inline-end: auto;
+  scroll-snap-margin-block-end: auto;
+  scroll-snap-margin-block: auto;
+  scroll-snap-margin-inline: auto;
+}
+
+.selectors:target,
+.selectors:enabled,
+.selectors:disabled,
+.selectors:checked,
+.selectors:indeterminate,
+.selectors:root,
+.selectors:empty,
+.selectors:last-child,
+.selectors:last-of-type,
+.selectors:first-of-type,
+.selectors:only-child,
+.selectors:only-of-type,
+.selectors:nth-child(2n+1),
+.selectors:nth-last-child(-n+2),
+.selectors:nth-of-type(2n+1),
+.selectors:nth-last-of-type(n+2),
+.selectors:not([DISABLED]) {
   display: auto;
 }
 
@@ -442,7 +554,7 @@
 .selectors4:active-drop-target,
 .selectors4:valid-drop-target,
 .selectors4:invalid-drop-target,
-.selectors3:matches(:hover, :focus),
+.selectors4:matches(:hover, :focus),
 .selectors4:dir(ltr),
 .selectors4:local-link(0),
 .selectors4:current(p, li, dt, dd),
@@ -454,7 +566,11 @@
   display: auto;
 }
 
-.shapes {
+.selectors-nonelement-1::attr(title) {
+  display: auto;
+}
+
+.shapes-1 {
   shape-outside: margin-box;
   shape-image-threshold: inset(50% 50% 50% 50%);
   shape-margin: circle(100px 50px 100px);
@@ -462,20 +578,10 @@
   display: polygon(0 0, 100% 100%, 0 100%);
 }
 
-.sizing {
+.sizing-3 {
   display: max-content;
+  display: min-content;
   display: fit-content;
-  display: fill-available;
-  display: repudiate-floats;
-  display: contain-floats;
-}
-
-.snappoints {
-  scroll-snap-type: mandatory;
-  scroll-snap-points-x: proximity;
-  scroll-snap-points-y: auto;
-  scroll-snap-destination: auto;
-  scroll-snap-coordinate: auto;
 }
 
 .speech {
@@ -495,7 +601,15 @@
   display: reduced;
 }
 
-.text {
+.syntax-3 {
+  display: auto;
+}
+
+.tables-3 {
+  display: auto;
+}
+
+.text-3 {
   hyphens: manual;
   line-break: loose;
   overflow-wrap: strict;
@@ -503,6 +617,31 @@
   display: hanging;
   display: each-line;
   display: full-width;
+}
+
+.text-4 {
+  text-space-collapse: preserve-auto;
+  text-space-trim: preserve-trim;
+  text-wrap: preserve-breaks;
+  wrap-before: preserve-spaces;
+  wrap-after: trim-inner;
+  wrap-inside: discard-before;
+  hyphenate-character: discard-after;
+  hyphenate-limit-zone: avoid-line;
+  hyphenate-limit-chars: avoid-flex;
+  hyphenate-limit-lines: pre-wrap-auto;
+  hyphenate-limit-last: no-limit;
+  text-spacing: spread;
+  display: trim-start;
+  display: space-start;
+  display: trim-end;
+  display: space-end;
+  display: trim-adjacent;
+  display: space-adjacent;
+  display: no-compress;
+  display: ideograph-alpha;
+  display: ideograph-numeric;
+  display: punctuation;
 }
 
 .text-decor-3 {
@@ -521,7 +660,7 @@
   display: over;
 }
 
-.transforms {
+.transforms-1 {
   backface-visibility: flat;
   perspective: preserve-3d;
   perspective-origin: matrix(1);
@@ -559,12 +698,18 @@
   display: cubic-bezier(0.25, 0.1, 0.25, 1.0);
 }
 
-.ui {
+.ui-3 {
   caret-color: grab;
   display: grabbing;
 }
 
-.values {
+.ui-4 {
+  caret: fade;
+  caret-shape: fade(1em);
+  caret-animation: underscore;
+}
+
+.values-3 {
   display: 1ch;
   display: 1vw;
   display: 1vh;
@@ -572,65 +717,149 @@
   display: 1q;
   display: 1turn;
   display: calc(100%/3 - 2*1em - 2*1px);
-  display: toggle(italic, normal);
 }
 
-.variables {
+.variables-1 {
   var-foo: var(foo);
 }
 
-.will-change {
+@viewport {
+  min-zoom: auto;
+  max-zoom: auto;
+  user-zoom: auto;
+}
+
+.web-animations-1 {
+  display: auto;
+}
+
+.will-change-1 {
   will-change: scroll-position;
 }
 
-.writing-modes {
-  text-orientation: before;
-  text-combine-horizontal: after;
-  writing-mode: isolate;
-  display: isolate;
+.writing-modes-3 {
+  writing-mode: before;
+  text-orientation: after;
+  text-combine-upright: mixed;
+  glyph-orientation-vertical: upright;
   display: plaintext;
-  display: mixed;
-  display: upright;
   display: sideways;
-  display: sideways-right;
-  display: sideways-left;
-  display: use-glyph-orientation;
+  display: sideways-rl;
+  display: sideways-lr;
+  display: isolate;
+  display: isolate-override;
   display: horizontal-tb;
   display: vertical-rl;
   display: vertical-lr;
 }
 
-.html5-elements,
-article,
-section,
-nav,
-aside,
-header,
-footer,
-figure,
-figcaption,
-main,
-data,
-time,
-mark,
-ruby,
+.html5,
+picture,
 rb,
-rt,
 rtc,
-rp,
-bdi,
-wbr,
-embed,
-video,
-audio,
-source,
-track,
-datalist,
-keygen,
-output,
-progress,
-meter,
-template,
-canvas {
+template {
   display: auto;
+}
+
+.svg2,
+animate,
+animateMotion,
+animateTransform,
+circle,
+clipPath,
+cursor,
+defs,
+desc,
+discard,
+ellipse,
+feBlend,
+feColorMatrix,
+feComponentTransfer,
+feComposite,
+feConvolveMatrix,
+feDiffuseLighting,
+feDisplacementMap,
+feDistantLight,
+feDropShadow,
+feFlood,
+feFuncA,
+feFuncB,
+feFuncG,
+feFuncR,
+feGaussianBlur,
+feImage,
+feMerge,
+feMergeNode,
+feMorphology,
+feOffset,
+fePointLight,
+feSpecularLighting,
+feSpotLight,
+feTile,
+feTurbulence,
+filter,
+foreignObject,
+g,
+hatch,
+hatchpath,
+image,
+line,
+linearGradient,
+marker,
+mesh,
+meshgradient,
+meshpatch,
+meshrow,
+metadata,
+mpath,
+path,
+pattern,
+polygon,
+polyline,
+radialGradient,
+rect,
+set,
+solidcolor,
+stop,
+switch,
+symbol,
+text,
+textPath,
+tspan,
+unknown,
+use,
+view {
+  color-interpolation: arcs;
+  color-rendering: butt;
+  cx: crispEdges;
+  cy: geometricPrecision;
+  d: optimizeQuality;
+  fill-opacity: painted;
+  fill-rule: stroke;
+  fill: viewport;
+  image-rendering: visibleFill;
+  marker-end: visiblePainted;
+  marker-mid: visibleStroke;
+  marker-start: bounding-box;
+  pointer-events: context-fill;
+  r: context-stroke;
+  rx: fixed-position;
+  ry: miter;
+  shape-rendering: miter-clip;
+  solid-color: non-scaling-stroke;
+  solid-opacity: non-scaling-size;
+  stop-color: non-rotation;
+  stop-opacity: child(1);
+  stroke-dasharray: icc-color(foo);
+  stroke-dashoffset: auto;
+  stroke-linecap: auto;
+  stroke-linejoin: auto;
+  stroke-miterlimit: auto;
+  stroke-opacity: auto;
+  stroke-width: auto;
+  stroke: auto;
+  text-anchor: auto;
+  vector-effect: auto;
+  x: auto;
+  y: auto;
 }
