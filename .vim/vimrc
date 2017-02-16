@@ -148,58 +148,59 @@ map ,wp ma:%s/\s\s*$//g<CR>'a
 "}}}
 " FileExt / FileTypes Associations {{{
 " default python settings
-autocmd! BufRead,BufNewFile *.vpy,*.cpy,*.py,*.py_tmpl   set ft=python
-autocmd! bufnewfile,bufread *.pt,*.cpt,*.kupu  set ft=zpt
-autocmd! bufnewfile,bufread *.css,*.css.dtml   set ft=css
-autocmd! bufnewfile,bufread *.js,*.js.dtml     set ft=javascript
-autocmd! BufNewFile,BufRead *.zcml,*.xml       set ft=xml
-autocmd! bufnewfile,bufread *.php,*.phtml      set ft=php
-autocmd! BufNewFile,BufRead *.sql              set ft=sql
-autocmd! BufNewFile,BufRead *.cfg,*.cfg.dist   set ft=cfg
-autocmd! BufRead,BufNewFile *.java             set ft=java
-autocmd! BufRead,BufNewFile *.yml     set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
-autocmd! BufRead,BufNewFile *.yaml    set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
-autocmd! BufRead,BufNewFile *.sls     set ft=sls sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
-autocmd! BufRead,BufNewFile *.crontab set ft=crontab sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
-autocmd! BufRead,BufNewFile *.cron    set ft=crontab sts=2 ts=2 ai et tw=0 sw=2 nofoldenable
-autocmd! BufRead,BufNewFile *.sh               set ft=sh
-autocmd! BufNewFile,BufRead *.siv,*.sieve      set ft=sieve
-autocmd! BufNewFile,BufRead *.rst,*.txt,*.rest set ft=rst tw=80
-autocmd! BufNewFile,BufRead *.django set ft=django
-autocmd! BufNewFile,BufRead *.jinja set ft=sls
-autocmd! BufNewFile,BufRead Dockerfile* set ft=Dockerfile
+autocmd! BufRead,BufNewFile *.vpy,*.cpy,*.py,*.py_tmpl             set ft=python
+autocmd! bufnewfile,bufread *.pt,*.cpt,*.kupu                      set ft=zpt
+autocmd! bufnewfile,bufread *.css,*.css.dtml                       set ft=css
+autocmd! bufnewfile,bufread *.js,*.js.dtml                         set ft=javascript
+autocmd! BufNewFile,BufRead *.zcml,*.xml                           set ft=xml
+autocmd! bufnewfile,bufread *.php,*.phtml                          set ft=php
+autocmd! BufNewFile,BufRead *.sql                                  set ft=sql
+autocmd! BufNewFile,BufRead *.cfg,*.cfg.dist                       set ft=cfg
+autocmd! BufRead,BufNewFile *.java                                 set ft=java
+autocmd! BufRead,BufNewFile *.yml,*.yaml,*.sls                     set ft=sls
+autocmd! BufRead,BufNewFile *.crontab,*.cron                       set ft=crontab
+autocmd! BufRead,BufNewFile *.sh                                   set ft=sh
+autocmd! BufNewFile,BufRead *.siv,*.sieve                          set ft=sieve
+autocmd! BufNewFile,BufRead *.rst,*.rest                           set ft=rst
+autocmd! BufNewFile,BufRead *.django                               set ft=django
+autocmd! BufNewFile,BufRead *.jinja                                set ft=sls
+autocmd! BufNewFile,BufRead *.md,*.mkd,*.txt,*.TXT,*.MD,*.markdown set ft=mkd
+autocmd! BufNewFile,BufRead Dockerfile*                            set ft=Dockerfile
 " }}}
 " Omnicompletion {{{
 "autocmd FileType python     set omnifunc=:q!
 "autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType zpt        set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType mako       set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
-autocmd FileType c          set omnifunc=ccomplete#Complete
+autocmd! FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd! FileType html       set omnifunc=htmlcomplete#CompleteTags
+autocmd! FileType zpt        set omnifunc=htmlcomplete#CompleteTags
+autocmd! FileType mako       set omnifunc=htmlcomplete#CompleteTags
+autocmd! FileType css        set omnifunc=csscomplete#CompleteCSS
+autocmd! FileType xml        set omnifunc=xmlcomplete#CompleteTags
+autocmd! FileType php        set omnifunc=phpcomplete#CompletePHP
+autocmd! FileType c          set omnifunc=ccomplete#Complete
 " }}}
 " Indentation {{{
-autocmd FileType cfg        set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType css        set ts=2 sts=2 sw=2 et ai sta tw=0
-autocmd FileType javascript set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType java       set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType php        set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType python     set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType rst        set ts=4 sts=4 sw=4 et ai sta tw=0  syntax=rest
-autocmd FileType sh         set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType sieve      set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType sql        set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType vim        set ts=4 sts=4 sw=4 et ai sta tw=0
-autocmd FileType xml        set ts=2 sts=2 sw=2 et ai sta tw=0
-autocmd FileType django     set ts=2 sts=2 sw=2 et ai sta tw=0
-autocmd FileType go         set ts=4 sts=4 sw=4 noet ai sta tw=0
-autocmd FileType zpt        set ts=2 sts=2 sw=2 et ai sta tw=220 syntax=zpt
-autocmd FileType html       set ts=2 sts=2 sw=2 et ai sta tw=220
-autocmd FileType mako       set ts=2 sts=2 sw=2 et ai sta tw=220
-autocmd FileType htmldjango set ts=2 sts=2 sw=2 et ai sta tw=220
+autocmd! FileType go         set ts=4 sts=4 sw=4 noet ai sta tw=0
+autocmd! FileType cfg        set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType crontab    set ts=2 sts=2 sw=2 et   ai sta tw=0   nofoldenable
+autocmd! FileType css        set ts=2 sts=2 sw=2 et   ai sta tw=0
+autocmd! FileType django     set ts=2 sts=2 sw=2 et   ai sta tw=0
+autocmd! FileType htmldjango set ts=2 sts=2 sw=2 et   ai sta tw=220
+autocmd! FileType html       set ts=2 sts=2 sw=2 et   ai sta tw=220
+autocmd! FileType javascript set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType java       set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType mako       set ts=2 sts=2 sw=2 et   ai sta tw=220
+autocmd! FileType php        set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType python     set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType rst        set ts=4 sts=4 sw=4 et   ai sta tw=0   syntax=rest nofoldenable
+autocmd! FileType sh         set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType mkd        set ts=4 sts=4 sw=4 et   ai sta tw=0   nofoldenable
+autocmd! FileType sieve      set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType sls        set ts=2 sts=2 sw=2 ai   et sta tw=0   nofoldenable
+autocmd! FileType sql        set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType vim        set ts=4 sts=4 sw=4 et   ai sta tw=0
+autocmd! FileType xml        set ts=2 sts=2 sw=2 et   ai sta tw=0
+autocmd! FileType zpt        set ts=2 sts=2 sw=2 et   ai sta tw=220 syntax=zpt
 " }}}
 " Abbreviations {{{
 autocmd FileType php  abbreviate dbg    require_once 'Zend/Debug.php';Zend_Debug :: dump
@@ -306,4 +307,4 @@ nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
 nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 let g:gruvbox_termcolors=16
 colorscheme gruvbox
-" vim:set et sts=4 sw=4 foldmethod=marker:
+" vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
