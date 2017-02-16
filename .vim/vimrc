@@ -164,7 +164,7 @@ autocmd! BufNewFile,BufRead *.siv,*.sieve                          set ft=sieve
 autocmd! BufNewFile,BufRead *.rst,*.rest                           set ft=rst
 autocmd! BufNewFile,BufRead *.django                               set ft=django
 autocmd! BufNewFile,BufRead *.jinja                                set ft=sls
-autocmd! BufNewFile,BufRead *.md,*.mkd,*.txt,*.TXT,*.MD,*.markdown set ft=mkd
+autocmd! BufNewFile,BufRead *.md,*.mkd,*.txt,*.TXT,*.MD,*.markdown set ft=markdown
 autocmd! BufNewFile,BufRead Dockerfile*                            set ft=Dockerfile
 " }}}
 " Omnicompletion {{{
@@ -194,7 +194,7 @@ autocmd! FileType php        set ts=4 sts=4 sw=4 et   ai sta tw=0
 autocmd! FileType python     set ts=4 sts=4 sw=4 et   ai sta tw=0
 autocmd! FileType rst        set ts=4 sts=4 sw=4 et   ai sta tw=0   syntax=rest nofoldenable
 autocmd! FileType sh         set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType mkd        set ts=4 sts=4 sw=4 et   ai sta tw=0   nofoldenable
+autocmd! FileType markdown   set ts=4 sts=4 sw=4 et   ai sta tw=0   nofoldenable
 autocmd! FileType sieve      set ts=4 sts=4 sw=4 et   ai sta tw=0
 autocmd! FileType sls        set ts=2 sts=2 sw=2 ai   et sta tw=0   nofoldenable
 autocmd! FileType sql        set ts=4 sts=4 sw=4 et   ai sta tw=0
