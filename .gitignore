@@ -23,3 +23,4 @@ t
 CVIMSYN/
 toto.pt
 backups
+/.vim/venv

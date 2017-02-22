@@ -6,7 +6,7 @@ endfun
 let g:home=eval("$HOME")."/.vim"
 " register embedded pyflakes & rope {{{
 let $PYTHONPATH = $PYTHONPATH.":".g:home."/bin"
-let $PATH = $PATH.":".g:home."/bin"
+let $PATH = g:home."/bin:".g:home."/venv/bin:".$PATH
 " }}}
 " backups dirs
 let g:bck_dirs=g:home."/backups,.,$TEMP"

@@ -26,8 +26,8 @@ ignore = $IGN
 EOF
 fi
 cd $(dirname $0)
-if [ ! -f bin/activate ];then
-    virtualenv --no-site-packages .
+if [ ! -f venv/bin/activate ];then
+    virtualenv --no-site-packages venv
 fi
-. bin/activate
+. venv/bin/activate
 pip install --upgrade -r requirements.txt
