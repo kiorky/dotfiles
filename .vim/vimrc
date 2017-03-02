@@ -182,7 +182,7 @@ autocmd! FileType c          set omnifunc=ccomplete#Complete
 " Indentation {{{
 autocmd! FileType go         set ts=4 sts=4 sw=4 noet ai sta tw=0
 autocmd! FileType cfg        set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType crontab    set ts=2 sts=2 sw=2 et   ai sta tw=0   nofoldenable
+autocmd! FileType crontab    set ts=2 sts=2 sw=2 et   ai sta tw=0 nofoldenable
 autocmd! FileType css        set ts=2 sts=2 sw=2 et   ai sta tw=0
 autocmd! FileType django     set ts=2 sts=2 sw=2 et   ai sta tw=0
 autocmd! FileType htmldjango set ts=2 sts=2 sw=2 et   ai sta tw=220
