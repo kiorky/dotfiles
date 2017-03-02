@@ -307,4 +307,6 @@ nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
 nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 let g:gruvbox_termcolors=16
 colorscheme gruvbox
+set modeline
+set modelines=1
 " vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
