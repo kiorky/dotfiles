@@ -65,7 +65,8 @@ REPOS[Astronaut]="https://github.com/vim-scripts/Astronaut.git"
 REPOS[decho]="https://github.com/vim-scripts/Decho.git"
 REPOS[po]="https://github.com/vim-scripts/po.vim.git"
 REPOS[toml]="https://github.com/cespare/vim-toml.git"
-REPOS[vim-hugo]="https://github.com/robertbasic/vim-hugo-helper.git"
+#REPOS[vim-hugo]="https://github.com/robertbasic/vim-hugo-helper.git"
+
 # replaced
 #REPOS[taglist]="https://github.com/vim-scripts/taglist.vim.git"
 if [ "x${nodl}" = "x" ];then
