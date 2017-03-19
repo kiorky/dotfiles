@@ -59,6 +59,32 @@ else
   let s:cterm0F = "14"
 endif
 
+" Neovim terminal colours
+if has("nvim")
+  let g:terminal_color_0 =  "#f4f3ec"
+  let g:terminal_color_1 =  "#ba6236"
+  let g:terminal_color_2 =  "#7d9726"
+  let g:terminal_color_3 =  "#a5980d"
+  let g:terminal_color_4 =  "#36a166"
+  let g:terminal_color_5 =  "#5f9182"
+  let g:terminal_color_6 =  "#5b9d48"
+  let g:terminal_color_7 =  "#5f5e4e"
+  let g:terminal_color_8 =  "#878573"
+  let g:terminal_color_9 =  "#ae7313"
+  let g:terminal_color_10 = "#e7e6df"
+  let g:terminal_color_11 = "#929181"
+  let g:terminal_color_12 = "#6c6b5a"
+  let g:terminal_color_13 = "#302f27"
+  let g:terminal_color_14 = "#9d6c7c"
+  let g:terminal_color_15 = "#22221b"
+  let g:terminal_color_background = g:terminal_color_0
+  let g:terminal_color_foreground = g:terminal_color_7
+  if &background == "light"
+    let g:terminal_color_background = g:terminal_color_7
+    let g:terminal_color_foreground = g:terminal_color_2
+  endif
+endif
+
 " Theme setup
 hi clear
 syntax reset
@@ -98,7 +124,7 @@ call <sid>hi("Folded",        s:gui03, s:gui01, s:cterm03, s:cterm01, "", "")
 call <sid>hi("IncSearch",     s:gui01, s:gui09, s:cterm01, s:cterm09, "none", "")
 call <sid>hi("Italic",        "", "", "", "", "none", "")
 call <sid>hi("Macro",         s:gui08, "", s:cterm08, "", "", "")
-call <sid>hi("MatchParen",    s:gui00, s:gui03, "", s:cterm03,  "", "")
+call <sid>hi("MatchParen",    "", s:gui03, "", s:cterm03,  "", "")
 call <sid>hi("ModeMsg",       s:gui0B, "", s:cterm0B, "", "", "")
 call <sid>hi("MoreMsg",       s:gui0B, "", s:cterm0B, "", "", "")
 call <sid>hi("Question",      s:gui0D, "", s:cterm0D, "", "", "")
