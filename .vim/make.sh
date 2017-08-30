@@ -17,6 +17,7 @@ if [ "x${nodeploy}" = "x" ];then
 fi
 REPOS[blockhl]="https://github.com/vim-scripts/BlockHL.git"
 REPOS[gruvbox]="https://github.com/morhetz/gruvbox.git"
+REPOS[inkpot]="https://github.com/ciaranm/inkpot.git"
 REPOS[base16]="https://github.com/chriskempson/base16-vim.git"
 REPOS[jinja]="https://github.com/lepture/vim-jinja.git"
 # HARMFULL !!!
