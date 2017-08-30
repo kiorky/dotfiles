@@ -43,6 +43,14 @@ function! go#util#IsWin() abort
   return 0
 endfunction
 
+ " Checks if using:
+ " 1) Windows system,
+ " 2) And has cygpath executable,
+ " 3) And uses *sh* as 'shell'
+function! go#util#IsUsingCygwinShell()
+  return go#util#IsWin() && executable('cygpath') && &shell =~ '.*sh.*'
+endfunction
+
 function! go#util#has_job() abort
   " job was introduced in 7.4.xxx however there are multiple bug fixes and one
   " of the latest is 8.0.0087 which is required for a stable async API.
@@ -74,27 +82,35 @@ function! go#util#env(key) abort
   return l:var
 endfunction
 
+" goarch returns 'go env GOARCH'. This is an internal function and shouldn't
+" be used. Instead use 'go#util#env("goarch")'
 function! go#util#goarch() abort
   return substitute(go#util#System('go env GOARCH'), '\n', '', 'g')
 endfunction
 
+" goos returns 'go env GOOS'. This is an internal function and shouldn't
+" be used. Instead use 'go#util#env("goos")'
 function! go#util#goos() abort
   return substitute(go#util#System('go env GOOS'), '\n', '', 'g')
 endfunction
 
+" goroot returns 'go env GOROOT'. This is an internal function and shouldn't
+" be used. Instead use 'go#util#env("goroot")'
 function! go#util#goroot() abort
   return substitute(go#util#System('go env GOROOT'), '\n', '', 'g')
 endfunction
 
+" gopath returns 'go env GOPATH'. This is an internal function and shouldn't
+" be used. Instead use 'go#util#env("gopath")'
 function! go#util#gopath() abort
   return substitute(go#util#System('go env GOPATH'), '\n', '', 'g')
 endfunction
 
 function! go#util#osarch() abort
-  return go#util#goos() . '_' . go#util#goarch()
+  return go#util#env("goos") . '_' . go#util#env("goarch")
 endfunction
 
-" System runs a shell command. If possible, it will temporary set 
+" System runs a shell command. If possible, it will temporary set
 " the shell to /bin/sh for Unix-like systems providing a Bourne
 " POSIX like environment.
 function! go#util#System(str, ...) abort

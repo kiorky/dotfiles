@@ -147,7 +147,7 @@ endfunction
 function! scriptease#pp_command(bang, lnum, value) abort
   if v:errmsg !=# ''
     return
-  elseif a:lnum == 999998
+  elseif a:lnum == -1
     echo scriptease#dump(a:value, {'width': a:bang ? 0 : &columns-1})
   else
     exe a:lnum
@@ -268,7 +268,7 @@ endfunction
 
 function! scriptease#scriptname(file) abort
   if a:file =~# '^\d\+$'
-    return get(s:names(), a:file-1, {'filename': a:file}).filename
+    return get(scriptease#scriptnames_qflist(), a:file-1, {'filename': a:file}).filename
   else
     return a:file
   endif
@@ -276,7 +276,7 @@ endfunction
 
 function! scriptease#scriptid(filename) abort
   let filename = fnamemodify(expand(a:filename), ':p')
-  for script in s:names()
+  for script in scriptease#scriptnames_qflist()
     if script.filename ==# filename
       return +script.text
     endif
@@ -374,7 +374,7 @@ function! s:unlet_for(files) abort
       let lines = readfile(file, '', 500)
       if len(lines)
         for i in range(len(lines)-1)
-          let unlet = matchstr(lines[i], '^if .*\<exists *( *[''"]\%(\g:\)\=\zs[0-9A-Za-z_#]\+\ze[''"]')
+          let unlet = matchstr(lines[i], '^if .*\<exists *( *[''"]\%(\g:\)\=\zs[A-Za-z][0-9A-Za-z_#]*\ze[''"]')
           if unlet !=# '' && index(guards, unlet) == -1
             for j in range(0, 4)
               if get(lines, i+j, '') =~# '^\s*finish\>'
