@@ -1,6 +1,6 @@
 "============================================================================
 "File:        ruby.vim
-"Description: Syntax checking plugin for syntastic.vim
+"Description: Syntax checking plugin for syntastic
 "Maintainer:  Martin Grenfell <martin.grenfell at gmail dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
@@ -50,7 +50,9 @@ function! SyntaxCheckers_eruby_ruby_GetLocList() dict
         \     ').gsub(''<%='',''<%''), nil, ''-'').src') .
         \ ' | ' . self.getExecEscaped() . ' -w -c'
 
-    let errorformat = '%-G%\m%.%#warning: %\%%(possibly %\)%\?useless use of a literal in void context,'
+    let errorformat =
+        \ '%-G%\m%.%#warning: %\%%(possibly %\)%\?useless use of a literal in void context,' .
+        \ '%-G%\m%.%#warning: possibly useless use of a variable in void context,'
 
     " filter out lines starting with ...
     " long lines are truncated and wrapped in ... %p then returns the wrong

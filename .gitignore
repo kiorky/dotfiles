@@ -24,3 +24,4 @@ CVIMSYN/
 toto.pt
 backups
 /.vim/venv
+*retry

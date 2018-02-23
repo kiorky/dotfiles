@@ -181,26 +181,26 @@ autocmd! FileType c          set omnifunc=ccomplete#Complete
 " }}}
 " Indentation {{{
 autocmd! FileType go         set ts=4 sts=4 sw=4 noet ai sta tw=0
-autocmd! FileType cfg        set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType crontab    set ts=2 sts=2 sw=2 et   ai sta tw=0 nofoldenable
-autocmd! FileType css        set ts=2 sts=2 sw=2 et   ai sta tw=0
-autocmd! FileType django     set ts=2 sts=2 sw=2 et   ai sta tw=0
-autocmd! FileType htmldjango set ts=2 sts=2 sw=2 et   ai sta tw=220
-autocmd! FileType html       set ts=2 sts=2 sw=2 et   ai sta tw=220
+autocmd! FileType cfg        set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType crontab    set ts=2 sts=2 sw=2 et   ai     tw=0 nofoldenable
+autocmd! FileType css        set ts=2 sts=2 sw=2 et   ai     tw=0
+autocmd! FileType django     set ts=2 sts=2 sw=2 et   ai     tw=0
+autocmd! FileType htmldjango set ts=2 sts=2 sw=2 et   ai     tw=220
+autocmd! FileType html       set ts=2 sts=2 sw=2 et   ai     tw=220
 autocmd! FileType javascript set ts=4 sts=4 sw=4 et   ai sta tw=0
 autocmd! FileType java       set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType mako       set ts=2 sts=2 sw=2 et   ai sta tw=220
+autocmd! FileType mako       set ts=2 sts=2 sw=2 et   ai     tw=220
 autocmd! FileType php        set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType python     set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType rst        set ts=4 sts=4 sw=4 et   ai sta tw=0   syntax=rest nofoldenable
-autocmd! FileType sh         set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType markdown   set ts=4 sts=4 sw=4 et   ai sta tw=0   nofoldenable
-autocmd! FileType sieve      set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType sls        set ts=2 sts=2 sw=2 ai   et sta tw=0   nofoldenable
-autocmd! FileType sql        set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType vim        set ts=4 sts=4 sw=4 et   ai sta tw=0
-autocmd! FileType xml        set ts=2 sts=2 sw=2 et   ai sta tw=0
-autocmd! FileType zpt        set ts=2 sts=2 sw=2 et   ai sta tw=220 syntax=zpt
+autocmd! FileType python     set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType rst        set ts=4 sts=4 sw=4 et   ai     tw=0   syntax=rest nofoldenable
+autocmd! FileType sh         set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType markdown   set ts=4 sts=4 sw=4 et   ai     tw=0   nofoldenable
+autocmd! FileType sieve      set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType sls        set ts=2 sts=2 sw=2 ai   et     tw=0   nofoldenable
+autocmd! FileType sql        set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType vim        set ts=4 sts=4 sw=4 et   ai     tw=0
+autocmd! FileType xml        set ts=2 sts=2 sw=2 et   ai     tw=0
+autocmd! FileType zpt        set ts=2 sts=2 sw=2 et   ai     tw=220 syntax=zpt
 " }}}
 " Abbreviations {{{
 autocmd FileType php  abbreviate dbg    require_once 'Zend/Debug.php';Zend_Debug :: dump
