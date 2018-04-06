@@ -25,3 +25,4 @@ toto.pt
 backups
 /.vim/venv
 *retry
+.directory
