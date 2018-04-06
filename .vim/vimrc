@@ -37,7 +37,7 @@ set t_Co=256
 " utilisation de la souris
 set mouse=
 " do not use swap files
-" set noswapfile
+set noswapfile nobackup nowritebackup
 " }}}
 " Plugins configuration {{{
 " autotag genrator {{{
