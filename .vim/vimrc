@@ -36,7 +36,8 @@ set virtualedit=all
 set t_Co=256
 " utilisation de la souris
 set mouse=
-
+" do not use swap files
+" set noswapfile
 " }}}
 " Plugins configuration {{{
 " autotag genrator {{{
@@ -196,7 +197,7 @@ autocmd! FileType rst        set ts=4 sts=4 sw=4 et   ai     tw=0   syntax=rest 
 autocmd! FileType sh         set ts=4 sts=4 sw=4 et   ai     tw=0
 autocmd! FileType markdown   set ts=4 sts=4 sw=4 et   ai     tw=0   nofoldenable
 autocmd! FileType sieve      set ts=4 sts=4 sw=4 et   ai     tw=0
-autocmd! FileType sls        set ts=2 sts=2 sw=2 ai   et     tw=0   nofoldenable
+autocmd! FileType sls        set ts=2 sts=2 sw=2 et   ai     tw=0   nofoldenable
 autocmd! FileType sql        set ts=4 sts=4 sw=4 et   ai     tw=0
 autocmd! FileType vim        set ts=4 sts=4 sw=4 et   ai     tw=0
 autocmd! FileType xml        set ts=2 sts=2 sw=2 et   ai     tw=0
