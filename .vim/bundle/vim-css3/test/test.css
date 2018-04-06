@@ -286,13 +286,9 @@
   display: auto;
 }
 
-.fonts-4 {
-}
-
 .fonts-3 {
   font-feature-settings: common-ligatures;
   font-kerning: no-common-ligatures;
-  font-language-override: discretionary-ligatures;
   font-synthesis: no-discretionary-ligatures;
   font-variant-alternates: historical-ligatures;
   font-variant-caps: no-historical-ligatures;
@@ -325,6 +321,7 @@
   display: simplified;
   display: traditional;
   display: proportional-width;
+  display: discretionary-ligatures;
 }
 
 .fonts-4 {
@@ -335,7 +332,7 @@
   font-variation-settings: infinity;
   font-palette: swap;
   font-presentation: fallback;
-  display: optional;
+  font-language-override: optional;
   display: light;
   display: dark;
 }
@@ -360,7 +357,7 @@
   grid-template-columns: grid;
   grid-template-rows: inline-grid;
   grid-template-areas: minmax(0, 1);
-  grid-template: fit-content(10%);
+  grid-template: auto;
   grid-auto-rows: repeat(4);
   grid-auto-columns: 0.2fr;
   grid-auto-flow: dense;
@@ -712,7 +709,7 @@
 .sizing-3 {
   display: max-content;
   display: min-content;
-  display: fit-content;
+  display: fit-content(10%);
 }
 
 .speech {
@@ -783,17 +780,25 @@
 .text-decor-3 {
   text-decoration-color: filled;
   text-decoration-line: dot;
-  text-decoration-skip: triangle;
   text-decoration-style: sesame;
-  text-emphasis: objects;
+  text-emphasis: alphabetic;
   text-emphasis-color: ink;
-  text-emphasis-position: edges;
+  text-emphasis-position: under;
   text-emphasis-style: wavy;
-  display: alphabetic;
-  display: spaces;
-  display: box-decoration;
   display: under;
   display: over;
+  display: triangle;
+}
+
+.text-decor-4 {
+  text-decoration-width: objects;
+  text-underline-offset: spaces;
+  text-decoration-skip: leading-spaces;
+  text-decoration-skip-ink: trailing-spaces;
+  text-emphasis-skip: edges;
+  display: box-decoration;
+  display: symbols;
+  display: narrow;
 }
 
 .timing-1 {
@@ -860,7 +865,7 @@
 }
 
 .variables-1 {
-  var-foo: var(foo);
+  --var-foo: var(foo);
 }
 
 @viewport {
