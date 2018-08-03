@@ -1,0 +1,19 @@
+commit bd69064af660523ec0ed9a59aedf4dd66284f5ab
+Author: Mathieu Le Marec - Pasquet <kiorky@cryptelium.net>
+Date:   Fri Aug 3 12:29:32 2018 +0200
+
+    add y/n as booleans
+
+diff --git a/.vim/bundle/vim-yaml/after/syntax/yaml.vim b/.vim/bundle/vim-yaml/after/syntax/yaml.vim
+index 40000ae..252ad1e 100644
+--- a/.vim/bundle/vim-yaml/after/syntax/yaml.vim
++++ b/.vim/bundle/vim-yaml/after/syntax/yaml.vim
+@@ -33,7 +33,7 @@ syn match  yamlEscape	"\\x\x\+" contained
+ syn match  yamlType	"!\S\+"
+ 
+ syn keyword yamlConstant NULL Null null NONE None none NIL Nil nil
+-syn keyword yamlConstant TRUE True true YES Yes yes ON On on
++syn keyword yamlConstant TRUE True true YES Yes yes ON On on y n
+ syn keyword yamlConstant FALSE False false NO No no OFF Off off
+ 
+ syn match  yamlKey	"^\s*\zs[^ \t\"]\+\ze\s*:"
