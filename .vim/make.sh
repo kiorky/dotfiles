@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 d=${PWD}
 cd $(dirname ${0})
-nodl=""
+nodl="${nodl-}"
 nodeploy=""
 for i in $@;do
     if [ "x${i}" != "xnodeploy" ];then
@@ -89,6 +89,9 @@ if [ "x${nodl}" = "x" ];then
     done
 fi
 rsync -azv "${d}/dl/" "${d}/bundle/" --exclude=.git --delete
+set -ex
 cd "${d}"
+while read i;do if git apply --check < "$i";then git apply --apply < "$i";fi;done \
+    < <( find patches|sort -V)
 git commit -am up
 git push

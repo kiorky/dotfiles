@@ -33,7 +33,7 @@ syn match  yamlEscape	"\\x\x\+" contained
 syn match  yamlType	"!\S\+"
 
 syn keyword yamlConstant NULL Null null NONE None none NIL Nil nil
-syn keyword yamlConstant TRUE True true YES Yes yes ON On on
+syn keyword yamlConstant TRUE True true YES Yes yes ON On on y n
 syn keyword yamlConstant FALSE False false NO No no OFF Off off
 
 syn match  yamlKey	"^\s*\zs[^ \t\"]\+\ze\s*:"
