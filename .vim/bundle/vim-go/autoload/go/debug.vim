@@ -259,6 +259,11 @@ function! go#debug#Stop() abort
 
   set noballooneval
   set balloonexpr=
+
+  augroup vim-go-debug
+    autocmd!
+  augroup END
+  augroup! vim-go-debug
 endfunction
 
 function! s:goto_file() abort
@@ -448,16 +453,20 @@ function! s:start_cb(ch, json) abort
   nnoremap <silent> <Plug>(go-debug-stop)       :<C-u>call go#debug#Stop()<CR>
   nnoremap <silent> <Plug>(go-debug-print)      :<C-u>call go#debug#Print(expand('<cword>'))<CR>
 
-  nmap <F5>   <Plug>(go-debug-continue)
-  nmap <F6>   <Plug>(go-debug-print)
-  nmap <F9>   <Plug>(go-debug-breakpoint)
-  nmap <F10>  <Plug>(go-debug-next)
-  nmap <F11>  <Plug>(go-debug-step)
-
   set balloonexpr=go#debug#BalloonExpr()
   set ballooneval
 
   exe bufwinnr(oldbuf) 'wincmd w'
+
+  augroup vim-go-debug
+    autocmd!
+    autocmd FileType go nmap <buffer> <F5>   <Plug>(go-debug-continue)
+    autocmd FileType go nmap <buffer> <F6>   <Plug>(go-debug-print)
+    autocmd FileType go nmap <buffer> <F9>   <Plug>(go-debug-breakpoint)
+    autocmd FileType go nmap <buffer> <F10>  <Plug>(go-debug-next)
+    autocmd FileType go nmap <buffer> <F11>  <Plug>(go-debug-step)
+  augroup END
+  doautocmd vim-go-debug FileType go
 endfunction
 
 function! s:err_cb(ch, msg) abort
@@ -509,7 +518,7 @@ function! go#debug#Start(is_test, ...) abort
   let s:start_args = a:000
 
   if go#util#HasDebug('debugger-state')
-    call go#config#DebugDiag(s:state)
+    call go#config#SetDebugDiag(s:state)
   endif
 
   " cd in to test directory; this is also what running "go test" does.
@@ -543,10 +552,11 @@ function! go#debug#Start(is_test, ...) abort
     let l:cmd = [
           \ dlv,
           \ (a:is_test ? 'test' : 'debug'),
+          \ l:pkgname,
           \ '--output', tempname(),
           \ '--headless',
           \ '--api-version', '2',
-          \ '--log',
+          \ '--log', 'debugger',
           \ '--listen', go#config#DebugAddress(),
           \ '--accept-multiclient',
     \]
@@ -882,15 +892,5 @@ endfunction
 
 sign define godebugbreakpoint text=> texthl=GoDebugBreakpoint
 sign define godebugcurline text== linehl=GoDebugCurrent texthl=GoDebugCurrent
-
-fun! s:hi()
-  hi GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
-  hi GoDebugCurrent    term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
-endfun
-augroup vim-go-breakpoint
-  autocmd!
-  autocmd ColorScheme * call s:hi()
-augroup end
-call s:hi()
 
 " vim: sw=2 ts=2 et
