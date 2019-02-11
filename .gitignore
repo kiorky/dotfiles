@@ -1,4 +1,5 @@
 *.pyc
+ansible_test_cases
 .vim/local
 .vim/bin
 .vim/include
@@ -26,3 +27,6 @@ backups
 /.vim/venv
 *retry
 .directory
+#
+
+*.egg-info
