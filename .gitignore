@@ -30,3 +30,4 @@ backups
 #
 
 *.egg-info
+venv3
