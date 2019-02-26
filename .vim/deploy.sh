@@ -26,8 +26,21 @@ ignore = $IGN
 EOF
 fi
 cd $(dirname $0)
+if [ ! -f venv3/bin/activate ];then
+    virtualenv --no-site-packages --python python3 venv3
+fi
 if [ ! -f venv/bin/activate ];then
     virtualenv --no-site-packages venv
 fi
-. venv/bin/activate
-pip install --upgrade -r requirements.txt
+if [ -f venv/bin/activate ];then
+    echo "installing py stuff"
+    . venv/bin/activate
+    pip install --upgrade -r requirements.txt
+    deactivate
+fi
+if [ -f venv3/bin/activate ];then
+    echo "installing py3 stuff"
+    . venv3/bin/activate
+    pip install --upgrade -r requirements.txt
+    deactivate
+fi
