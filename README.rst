@@ -9,9 +9,3 @@ For my conf
 * .hgrc
 
 Enjoy
-
-
-    
-Support development
----------------------
-- `paypal <https://paypal.me/kiorky>`_
