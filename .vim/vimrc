@@ -188,6 +188,8 @@ autocmd! BufNewFile,BufRead *.django                               set ft=django
 autocmd! BufNewFile,BufRead *.jinja                                set ft=sls
 autocmd! BufNewFile,BufRead *.md,*.mkd,*.txt,*.TXT,*.MD,*.markdown set ft=markdown
 autocmd! BufNewFile,BufRead Dockerfile*                            set ft=Dockerfile
+autocmd BufWritePre *.py execute ':Black'
+
 " }}}
 " Omnicompletion {{{
 "autocmd FileType python     set omnifunc=:q!
@@ -308,4 +310,5 @@ nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 let g:gruvbox_termcolors=16
 colorscheme gruvbox
 set modeline modelines=1
+let g:black_virtualenv = "~/.vim/venv3"
 " vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
