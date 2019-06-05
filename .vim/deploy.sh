@@ -41,6 +41,6 @@ fi
 if [ -f venv3/bin/activate ];then
     echo "installing py3 stuff"
     . venv3/bin/activate
-    pip install --upgrade -r requirements.txt
+    pip install --upgrade -r requirements3.txt -r requirements.txt
     deactivate
 fi
