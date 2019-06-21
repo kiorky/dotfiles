@@ -311,4 +311,5 @@ let g:gruvbox_termcolors=16
 colorscheme gruvbox
 set modeline modelines=1
 let g:black_virtualenv = "~/.vim/venv3"
+let g:go_version_warning = 0
 " vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
