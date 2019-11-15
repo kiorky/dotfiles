@@ -2,23 +2,24 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-func! Test_Gometa() abort
-  call s:gometa('gometaliner')
-endfunc
-
 func! Test_GometaGolangciLint() abort
   call s:gometa('golangci-lint')
 endfunc
 
 func! s:gometa(metalinter) abort
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
+  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnamemodify(getcwd(), ':p') . 'test-fixtures/lint')
   silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
 
   try
-    let g:go_metalinter_comand = a:metalinter
+    let g:go_metalinter_command = a:metalinter
     let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%')+1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingFooDoc should have comment or be unexported (golint)'}
         \ ]
+    if a:metalinter == 'golangci-lint'
+      let expected = [
+            \ {'lnum': 5, 'bufnr': bufnr('%')+2, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingFooDoc` should have comment or be unexported (golint)'}
+          \ ]
+    endif
 
     " clear the quickfix lists
     call setqflist([], 'r')
@@ -41,49 +42,6 @@ func! s:gometa(metalinter) abort
   endtry
 endfunc
 
-func! Test_GometaWithDisabled() abort
-  call s:gometawithdisabled('gometalinter')
-endfunc
-
-func! Test_GometaWithDisabledGolangciLint() abort
-  call s:gometawithdisabled('golangci-lint')
-endfunc
-
-func! s:gometawithdisabled(metalinter) abort
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
-
-  try
-    let g:go_metalinter_comand = a:metalinter
-    let expected = [
-          \ {'lnum': 5, 'bufnr': bufnr('%')+1, 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingFooDoc should have comment or be unexported (golint)'}
-        \ ]
-
-    " clear the quickfix lists
-    call setqflist([], 'r')
-
-    let g:go_metalinter_disabled = ['vet']
-
-    call go#lint#Gometa(0, 0, $GOPATH . '/src/foo')
-
-    let actual = getqflist()
-    let start = reltime()
-    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
-      sleep 100m
-      let actual = getqflist()
-    endwhile
-
-    call gotest#assert_quickfix(actual, expected)
-  finally
-    call call(RestoreGOPATH, [])
-    unlet g:go_metalinter_disabled
-  endtry
-endfunc
-
-func! Test_GometaAutoSave() abort
-  call s:gometaautosave('gometalinter')
-endfunc
-
 func! Test_GometaAutoSaveGolangciLint() abort
   call s:gometaautosave('golangci-lint')
 endfunc
@@ -93,10 +51,15 @@ func! s:gometaautosave(metalinter) abort
   silent exe 'e ' . $GOPATH . '/src/lint/lint.go'
 
   try
-    let g:go_metalinter_comand = a:metalinter
+    let g:go_metalinter_command = a:metalinter
     let expected = [
           \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': 'w', 'pattern': '', 'text': 'exported function MissingDoc should have comment or be unexported (golint)'}
         \ ]
+    if a:metalinter == 'golangci-lint'
+      let expected = [
+            \ {'lnum': 5, 'bufnr': bufnr('%'), 'col': 1, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exported function `MissingDoc` should have comment or be unexported (golint)'}
+          \ ]
+    endif
 
     let winnr = winnr()
 
@@ -122,31 +85,62 @@ func! s:gometaautosave(metalinter) abort
 endfunc
 
 func! Test_Vet() abort
-  let RestoreGOPATH = go#util#SetEnv('GOPATH', fnameescape(fnamemodify(getcwd(), ':p')) . 'test-fixtures/lint')
-  silent exe 'e ' . $GOPATH . '/src/vet/vet.go'
-  compiler go
+  let l:tmp = gotest#load_fixture('lint/src/vet/vet.go')
 
-  let expected = [
-        \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
-        \ 'text': 'Printf format %d has arg str of wrong type string'}
-      \ ]
+  try
 
-  let winnr = winnr()
+    let expected = [
+          \ {'lnum': 7, 'bufnr': bufnr('%'), 'col': 2, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '',
+          \ 'text': 'Printf format %d has arg str of wrong type string'}
+        \ ]
 
-  " clear the location lists
-  call setqflist([], 'r')
+    let winnr = winnr()
 
-  call go#lint#Vet(1)
+    " clear the location lists
+    call setqflist([], 'r')
 
-  let actual = getqflist()
-  let start = reltime()
-  while len(actual) == 0 && reltimefloat(reltime(start)) < 10
-    sleep 100m
+    call go#lint#Vet(1)
+
     let actual = getqflist()
-  endwhile
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
 
-  call gotest#assert_quickfix(actual, expected)
-  call call(RestoreGOPATH, [])
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
+endfunc
+
+func! Test_Vet_compilererror() abort
+  let l:tmp = gotest#load_fixture('lint/src/vet/compilererror/compilererror.go')
+
+  try
+
+    let expected = [
+          \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': "missing ',' before newline in argument list (and 1 more errors)"}
+        \ ]
+
+    let winnr = winnr()
+
+    " clear the location lists
+    call setqflist([], 'r')
+
+    call go#lint#Vet(1)
+
+    let actual = getqflist()
+    let start = reltime()
+    while len(actual) == 0 && reltimefloat(reltime(start)) < 10
+      sleep 100m
+      let actual = getqflist()
+    endwhile
+
+    call gotest#assert_quickfix(actual, expected)
+  finally
+    call delete(l:tmp, 'rf')
+  endtry
 endfunc
 
 func! Test_Lint_GOPATH() abort

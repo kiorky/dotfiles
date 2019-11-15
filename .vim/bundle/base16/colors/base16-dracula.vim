@@ -8,7 +8,7 @@
 " :colorscheme works in terminals supported by base16-shell scripts
 " User must set this variable in .vimrc
 "   let g:base16_shell_path=base16-builder/output/shell/
-if !has('gui_running')
+if !has("gui_running")
   if exists("g:base16_shell_path")
     execute "silent !/bin/sh ".g:base16_shell_path."/base16-dracula.sh"
   endif
@@ -19,10 +19,10 @@ let s:gui00        = "282936"
 let g:base16_gui00 = "282936"
 let s:gui01        = "3a3c4e"
 let g:base16_gui01 = "3a3c4e"
-let s:gui02        = "626483"
-let g:base16_gui02 = "626483"
-let s:gui03        = "4d4f68"
-let g:base16_gui03 = "4d4f68"
+let s:gui02        = "4d4f68"
+let g:base16_gui02 = "4d4f68"
+let s:gui03        = "626483"
+let g:base16_gui03 = "626483"
 let s:gui04        = "62d6e8"
 let g:base16_gui04 = "62d6e8"
 let s:gui05        = "e9e9f4"
@@ -35,10 +35,10 @@ let s:gui08        = "ea51b2"
 let g:base16_gui08 = "ea51b2"
 let s:gui09        = "b45bcf"
 let g:base16_gui09 = "b45bcf"
-let s:gui0A        = "ebff87"
-let g:base16_gui0A = "ebff87"
-let s:gui0B        = "00f769"
-let g:base16_gui0B = "00f769"
+let s:gui0A        = "00f769"
+let g:base16_gui0A = "00f769"
+let s:gui0B        = "ebff87"
+let g:base16_gui0B = "ebff87"
 let s:gui0C        = "a1efe4"
 let g:base16_gui0C = "a1efe4"
 let s:gui0D        = "62d6e8"
@@ -69,7 +69,7 @@ let s:cterm0D        = "04"
 let g:base16_cterm0D = "04"
 let s:cterm0E        = "05"
 let g:base16_cterm0E = "05"
-if exists('base16colorspace') && base16colorspace == "256"
+if exists("base16colorspace") && base16colorspace == "256"
   let s:cterm01        = "18"
   let g:base16_cterm01 = "18"
   let s:cterm02        = "19"
@@ -101,16 +101,16 @@ endif
 if has("nvim")
   let g:terminal_color_0 =  "#282936"
   let g:terminal_color_1 =  "#ea51b2"
-  let g:terminal_color_2 =  "#00f769"
-  let g:terminal_color_3 =  "#ebff87"
+  let g:terminal_color_2 =  "#ebff87"
+  let g:terminal_color_3 =  "#00f769"
   let g:terminal_color_4 =  "#62d6e8"
   let g:terminal_color_5 =  "#b45bcf"
   let g:terminal_color_6 =  "#a1efe4"
   let g:terminal_color_7 =  "#e9e9f4"
-  let g:terminal_color_8 =  "#4d4f68"
+  let g:terminal_color_8 =  "#626483"
   let g:terminal_color_9 =  "#ea51b2"
-  let g:terminal_color_10 = "#00f769"
-  let g:terminal_color_11 = "#ebff87"
+  let g:terminal_color_10 = "#ebff87"
+  let g:terminal_color_11 = "#00f769"
   let g:terminal_color_12 = "#62d6e8"
   let g:terminal_color_13 = "#b45bcf"
   let g:terminal_color_14 = "#a1efe4"
@@ -121,20 +121,20 @@ if has("nvim")
     let g:terminal_color_background = g:terminal_color_7
     let g:terminal_color_foreground = g:terminal_color_2
   endif
-elseif has('terminal')
+elseif has("terminal")
   let g:terminal_ansi_colors = [
         \ "#282936",
         \ "#ea51b2",
-        \ "#00f769",
         \ "#ebff87",
+        \ "#00f769",
         \ "#62d6e8",
         \ "#b45bcf",
         \ "#a1efe4",
         \ "#e9e9f4",
-        \ "#4d4f68",
+        \ "#626483",
         \ "#ea51b2",
-        \ "#00f769",
         \ "#ebff87",
+        \ "#00f769",
         \ "#62d6e8",
         \ "#b45bcf",
         \ "#a1efe4",
@@ -150,8 +150,8 @@ let g:colors_name = "base16-dracula"
 " Highlighting function
 " Optional variables are attributes and guisp
 function! g:Base16hi(group, guifg, guibg, ctermfg, ctermbg, ...)
-	let a:attr = get(a:, 1, "")
-	let a:guisp = get(a:, 2, "")
+  let l:attr = get(a:, 1, "")
+  let l:guisp = get(a:, 2, "")
 
   if a:guifg != ""
     exec "hi " . a:group . " guifg=#" . a:guifg
@@ -165,11 +165,11 @@ function! g:Base16hi(group, guifg, guibg, ctermfg, ctermbg, ...)
   if a:ctermbg != ""
     exec "hi " . a:group . " ctermbg=" . a:ctermbg
   endif
-  if a:attr != ""
-    exec "hi " . a:group . " gui=" . a:attr . " cterm=" . a:attr
+  if l:attr != ""
+    exec "hi " . a:group . " gui=" . l:attr . " cterm=" . l:attr
   endif
-  if a:guisp != ""
-    exec "hi " . a:group . " guisp=#" . a:guisp
+  if l:guisp != ""
+    exec "hi " . a:group . " guisp=#" . l:guisp
   endif
 endfunction
 

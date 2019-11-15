@@ -35,7 +35,7 @@ syn region dockerfileString1 start=/'/ skip=/\\'|\\\\/ end=/'/
 syn region dockerfileEmail start=/</ end=/>/ contains=@ oneline
 
 " Urls
-syn match dockerfileUrl /\(http\|https\|ssh\|hg\|git\)\:\/\/[a-zA-Z0-9\/\-\.]\+/
+syn match dockerfileUrl /\(http\|https\|ssh\|hg\|git\)\:\/\/[a-zA-Z0-9\/\-\._]\+/
 
 " Task tags
 syn keyword dockerfileTodo contained TODO FIXME XXX
@@ -57,8 +57,3 @@ hi link dockerfileTodo      Todo
 hi link bashStatement       Function
 
 let b:current_syntax = "dockerfile"
-
-set commentstring=#\ %s
-
-" Enable automatic comment insertion
-setlocal fo+=cro
