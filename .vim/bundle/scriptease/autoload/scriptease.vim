@@ -141,8 +141,8 @@ function! scriptease#dump(object, ...) abort
     endif
   endfor
   if type(a:object) ==# type('')
-    if a:object =~# "[\001-\037']"
-      let dump = '"'.s:gsub(a:object, "[\001-\037\"\\\\]", '\=get(s:escapes, submatch(0), printf("\\%03o", char2nr(submatch(0))))').'"'
+    if a:object =~# "[\001-\037\177']"
+      let dump = '"'.s:gsub(a:object, "[\001-\037\177\"\\\\]", '\=get(s:escapes, submatch(0), printf("\\%03o", char2nr(submatch(0))))').'"'
     else
       let dump = string(a:object)
     endif
@@ -373,6 +373,7 @@ function! scriptease#messages_command(bang) abort
               \ || pattern !~# '\*')
           let qf[-1].filename = filename
           let qf[-1].lnum = j + body[j][1] + lnum + 1
+          let qf[-1].valid = 1
           let found = 1
           break
         endif
@@ -665,7 +666,7 @@ function! scriptease#open_command(count,cmd,file,lcd) abort
       exe a:cmd
     endif
     call setloclist(window, map(found,
-          \ '{"filename": v:val, "text": v:val[0 : -len(a:file)-2]}'))
+          \ '{"filename": v:val, "text": v:val[0 : -len(a:file)-2], "valid": 1}'))
     return precmd . 'll'.matchstr(a:cmd, '!$').' '.a:count . postcmd
   endif
 endfunction

@@ -108,9 +108,13 @@ def on_and_off_broken():
     # fmt: on
     # fmt: off
     this=should.not_be.formatted()
-    but=it  is  formatted
+    and_=indeed . it  is  not  formatted
     because . the . handling . inside . generate_ignored_nodes()
-    doesnt . consider . ordering . within . one . prefix
+    now . considers . multiple . fmt . directives . within . one . prefix
+    # fmt: on
+    # fmt: off
+        # ...but comments still get reformatted even though they should not be
+    # fmt: on
 def long_lines():
     if True:
         typedargslist.extend(
@@ -150,7 +154,7 @@ def single_literal_yapf_disable():
     BAZ = {
         (1, 2, 3, 4),
         (5, 6, 7, 8),
-        (9, 10, 11, 12),
+        (9, 10, 11, 12)
     }  # yapf: disable
 cfg.rule(
     "Default", "address",
@@ -318,10 +322,14 @@ def on_and_off_broken():
     """Another known limitation."""
     # fmt: on
     # fmt: off
-    this = should.not_be.formatted()
-    but = it is formatted
-    because.the.handling.inside.generate_ignored_nodes()
-    doesnt.consider.ordering.within.one.prefix
+    this=should.not_be.formatted()
+    and_=indeed . it  is  not  formatted
+    because . the . handling . inside . generate_ignored_nodes()
+    now . considers . multiple . fmt . directives . within . one . prefix
+    # fmt: on
+    # fmt: off
+    # ...but comments still get reformatted even though they should not be
+    # fmt: on
 
 
 def long_lines():

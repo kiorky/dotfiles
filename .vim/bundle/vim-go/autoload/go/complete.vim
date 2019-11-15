@@ -221,7 +221,6 @@ function! s:info_complete(echo, result) abort
 endfunction
 
 function! s:trim_bracket(val) abort
-  echom a:val
   let a:val.word = substitute(a:val.word, '[(){}\[\]]\+$', '', '')
   return a:val
 endfunction
@@ -263,7 +262,9 @@ function! go#complete#Complete(findstart, base) abort
 
   "findstart = 1 when we need to get the start of the match
   if a:findstart == 1
-    let l:completion = go#lsp#Completion(expand('%:p'), line('.'), col('.'), funcref('s:handler', [l:state]))
+    let [l:line, l:col] = getpos('.')[1:2]
+    let [l:line, l:col] = go#lsp#lsp#Position(l:line, l:col)
+    let l:completion = go#lsp#Completion(expand('%:p'), l:line, l:col, funcref('s:handler', [l:state]))
     if l:completion
       return -3
     endif
@@ -280,7 +281,7 @@ function! go#complete#Complete(findstart, base) abort
 
     let s:completions = l:state.matches
 
-    return l:state.start
+    return go#lsp#lsp#PositionOf(getline(l:line+1), l:state.start-1)
 
   else "findstart = 0 when we need to return the list of completions
     return s:completions
@@ -291,11 +292,11 @@ function! go#complete#ToggleAutoTypeInfo() abort
   if go#config#AutoTypeInfo()
     call go#config#SetAutoTypeInfo(0)
     call go#util#EchoProgress("auto type info disabled")
-    return
-  end
-
-  call go#config#SetAutoTypeInfo(1)
-  call go#util#EchoProgress("auto type info enabled")
+  else
+    call go#config#SetAutoTypeInfo(1)
+    call go#util#EchoProgress("auto type info enabled")
+  endif
+  call go#auto#update_autocmd()
 endfunction
 
 " restore Vi compatibility settings
