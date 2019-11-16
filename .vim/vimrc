@@ -15,7 +15,10 @@ let &directory=g:bck_dirs
 " }}}
 " vim default settings {{{
 ""  pathogen {{{
-execute pathogen#infect()
+execute pathogen#infect('bundle/always/{}')
+if v:version >= 700 || has('python3')
+execute pathogen#infect('bundle/custom/black')
+end
 " }}}
 " highlight / colorscheme
 set bg=dark modeline hlsearch

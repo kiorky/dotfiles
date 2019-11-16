@@ -12,6 +12,7 @@ for i in $@;do
     fi
 done
 declare -A REPOS
+declare -A CUSTOMREPOS
 if [ "x${nodeploy}" = "x" ];then
     ./deploy.sh
 fi
@@ -66,14 +67,30 @@ REPOS[Astronaut]="https://github.com/vim-scripts/Astronaut.git"
 REPOS[decho]="https://github.com/vim-scripts/Decho.git"
 REPOS[po]="https://github.com/vim-scripts/po.vim.git"
 REPOS[toml]="https://github.com/cespare/vim-toml.git"
-REPOS[black]="https://github.com/python/black"
+CUSTOMREPOS[black]="https://github.com/python/black"
 #REPOS[vim-hugo]="https://github.com/robertbasic/vim-hugo-helper.git"
 
 # replaced
 #REPOS[taglist]="https://github.com/vim-scripts/taglist.vim.git"
 if [ "x${nodl}" = "x" ];then
+    for i in "${!CUSTOMREPOS[@]}";do
+        repo="${d}/dl/custom/${i}"
+        crepo="$(dirname "${repo}")"
+        clone_url="${CUSTOMREPOS[$i]}"
+        if [ ! -d "${crepo}" ];then
+            mkdir -p "${crepo}"
+        fi
+        echo "${repo} <- ${clone_url} "
+        if [ ! -d "${repo}" ];then
+            cd ${crepo}
+            git clone ${clone_url} $(basename ${repo}) 1>/dev/null
+        fi
+        cd "${repo}"
+        git fetch --all 1>/dev/null
+        git reset --hard $(git ls-remote ${clone_url}|grep HEAD|awk '{print $1}')
+    done
     for i in "${!REPOS[@]}";do
-        repo="${d}/dl/${i}"
+        repo="${d}/dl/always/${i}"
         crepo="$(dirname "${repo}")"
         clone_url="${REPOS[$i]}"
         if [ ! -d "${crepo}" ];then
