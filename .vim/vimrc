@@ -3,7 +3,7 @@
 fun! g:GetHome()
     return g:home
 endfun
-if exists(g:home) != 0
+if exists("g:home") == 0
     let g:home=eval("$HOME")."/.vim"
 end
 let g:py3_virtualenv = g:home . "/venv3"
