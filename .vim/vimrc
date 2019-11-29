@@ -4,8 +4,6 @@ fun! g:GetHome()
     return g:home
 endfun
 let g:home=eval("$HOME")."/.vim"
-let g:black_linelength = 80
-let g:black_linelength = 120
 let g:py3_virtualenv = g:home . "/venv3"
 let g:py2_virtualenv = g:home . "/venv"
 let g:black_virtualenv = g:py3_virtualenv
@@ -20,11 +18,24 @@ let &directory=g:bck_dirs
 " }}}
 " vim default settings {{{
 ""  pathogen {{{
-execute pathogen#infect('bundle/always/{}')
 if filereadable(g:py3_virtualenv."/bin/black") && (v:version >= 700 || has('python3'))
-execute pathogen#infect('bundle/custom/black')
-end
+    execute pathogen#infect(g:home.'/bundle/custom/black')
+endif
+for folder in split(globpath(g:home.'/bundle/always', '*'), '\n')
+    execute pathogen#infect(folder)
+endfor
 " }}}
+" syntax settings {{{
+syntax on
+filetype plugin indent on
+syntax enable
+filetype on
+filetype plugin on
+filetype indent on
+filetype plugin indent on
+" }}}
+let g:black_linelength = 80
+let g:black_linelength = 120
 " highlight / colorscheme
 set bg=dark modeline hlsearch
 hi Function term=underline cterm=bold ctermfg=LightGray
@@ -55,8 +66,6 @@ let g:AGTuseLocalTags = 1
    let g:tail#Height	   = 100
    let g:tail#Center_Win   = 0
    let g:mapleader	   = "<F12>"
-   filetype plugin indent on
-   syntax enable
 " }}}
 " Syntastix {{{
 highlight SyntasticErrorSign guifg=white guibg=red
@@ -81,13 +90,6 @@ let astronaut_underline=1
 " }}}
 " enhcommntify {{{
 " }}}
-" }}}
-" syntax settings {{{
-syntax on
-filetype on
-filetype plugin on
-filetype indent on
-filetype plugin indent on
 " }}}
 " diff related options {{{
 " Show tabs and trailing whitespace visually / see gentoo Ebuilds errors
