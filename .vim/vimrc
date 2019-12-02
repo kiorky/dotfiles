@@ -24,7 +24,11 @@ if filereadable(g:py3_virtualenv."/bin/black") && (v:version >= 700 || has('pyth
     execute pathogen#infect(g:home.'/bundle/custom/black')
 endif
 for folder in split(globpath(g:home.'/bundle/always', '*'), '\n')
-    execute pathogen#infect(folder)
+    if match(folder, "tagbar") <= 0
+        execute pathogen#infect(folder)
+    " else
+    "     echo("-------> Excluded from loading:".folder)
+    endif
 endfor
 " }}}
 " syntax settings {{{
