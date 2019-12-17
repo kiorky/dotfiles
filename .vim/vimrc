@@ -4,9 +4,14 @@ fun! g:GetHome()
     return g:home
 endfun
 let g:home=eval("$HOME")."/.vim"
+let g:black_linelength = 80
+let g:black_linelength = 120
+let g:py3_virtualenv = g:home . "/venv3"
+let g:py2_virtualenv = g:home . "/venv"
+let g:black_virtualenv = g:py3_virtualenv
 " register embedded pyflakes & rope {{{
 let $PYTHONPATH = $PYTHONPATH.":".g:home."/bin"
-let $PATH = g:home."/bin::".g:home."/venv3/bin:".g:home."/venv/bin:".$PATH
+let $PATH = g:home."/bin".":".g:py3_virtualenv.":".g:py2_virtualenv.":".$PATH
 " }}}
 " backups dirs
 let g:bck_dirs=g:home."/backups,.,$TEMP"
@@ -16,7 +21,7 @@ let &directory=g:bck_dirs
 " vim default settings {{{
 ""  pathogen {{{
 execute pathogen#infect('bundle/always/{}')
-if v:version >= 700 || has('python3')
+if filereadable(g:py3_virtualenv."/bin/black") && (v:version >= 700 || has('python3'))
 execute pathogen#infect('bundle/custom/black')
 end
 " }}}
@@ -313,8 +318,5 @@ nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 let g:gruvbox_termcolors=16
 colorscheme gruvbox
 set modeline modelines=1
-let g:black_virtualenv = "~/.vim/venv3"
 let g:go_version_warning = 0
-let g:black_linelength = 80
-let g:black_linelength = 120
 " vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
