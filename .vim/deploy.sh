@@ -26,11 +26,15 @@ ignore = $IGN
 EOF
 fi
 cd $(dirname $0)
+nsp=""
+if ( virtualenv --help |grep -q -- --no-site-packages );then
+    nsp="--no-site-packages"
+fi
 if [ ! -f venv3/bin/activate ];then
-    virtualenv --no-site-packages --python python3 venv3
+    virtualenv $nsp --python python3 venv3
 fi
 if [ ! -f venv/bin/activate ];then
-    virtualenv --no-site-packages venv
+    virtualenv $nsp venv
 fi
 if [ -f venv/bin/activate ];then
     echo "installing py stuff"
