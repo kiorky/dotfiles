@@ -48,6 +48,7 @@
         pt = log --pretty=format:'%C(yellow)%h%Cred%d%Creset - %C(cyan)%an %Creset: %s %Cgreen(%cr)'
         bt = log --pretty=format:'%C(yellow)%h : %Creset%s'
         changes=diff --name-status -r
+        rco= !"f() { git reset -- \"$@\" && git checkout -- \"$@\" ; }; f \"$@\""
         bdiff= !"f() { git pt $(git symbolic-ref -q --short HEAD) ^${1:-master} ; }; f"
         ibdiff= !"f() { git pt ${1:-master} ^$(git symbolic-ref -q --short HEAD) ; }; f"
         stree =log --graph --oneline --decorate --all

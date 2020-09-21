@@ -1,4 +1,5 @@
 *.pyc
+.~lock*
 ansible_test_cases
 .vim/local
 .vim/bin
