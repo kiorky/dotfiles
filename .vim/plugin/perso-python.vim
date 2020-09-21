@@ -19,6 +19,9 @@ epdbstrs=[epdbstr4]
 pdbclonestr="from pdb_clone import pdb as pdbc;pdbc.set_trace_remote()"
 pdbclonestrs=[pdbclonestr]
 
+remotepdbstr="import os as ros;ros.environ['REMOTE_PDB_PORT']=4444;from remote_pdb import set_trace;set_trace()"
+remotepdbstrs=[remotepdbstr]
+
 ipshell_str="from IPython.Shell import IPShellEmbed; ipshell = IPShellEmbed();ipshell()"
 ipshell_str="import IPython; IPython.embed()"
 ipshell_str="from IPython.frontend.terminal.embed import InteractiveShellEmbed;InteractiveShellEmbed().mainloop()"
@@ -61,6 +64,12 @@ def RemoveAnyBreakpoints(strings=None):
     for nLine in nLines:
         del vim.current.buffer[nLine]
 
+def SetRPDBCLONEreakpoint(strings=None):
+    return SetBreakpoint(strings=remotepdbstrs)
+
+def RemoveAnyRPDBCLONEreakpoints(strings=None):
+   return RemoveAnyBreakpoints(strings=remotepdbstrs)
+
 def SetPCBreakpoint(strings=None):
     return SetBreakpoint(strings=pdbclonestrs)
 
@@ -79,13 +88,15 @@ def SetIPShell():
 def RemoveIPShell():
     return RemoveAnyBreakpoints(strings=[ipshell_str])
 
-vim.command( 'map bbb :'+py+' SetEBreakpoint()<cr>')
 vim.command( 'map bb :'+py+' SetPCBreakpoint()<cr>')
+vim.command( 'map bbb :'+py+' SetRPDBCLONEreakpoint()<cr>')
+vim.command( 'map bbbb :'+py+' SetEBreakpoint()<cr>')
 vim.command( 'map b :'+py+' SetBreakpoint()<cr>')
 vim.command('map <s-b> :'
     +py+' RemoveAnyBreakpoints()<cr>:'
     +py+' RemoveAnyEBreakpoints()<cr>:'
-    +py+' RemoveAnyPCBreakpoints()<cr>')
+    +py+' RemoveAnyPCBreakpoints()<cr>:'
+    +py+' RemoveAnyRPDBCLONEreakpoints()<cr>')
 vim.command( 'map <f7>  :'+py+' SetIPShell()<cr>')
 vim.command( 'map <f8>  :'+py+' RemoveIPShell()<cr>')
 EOF
