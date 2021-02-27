@@ -8,7 +8,7 @@ CSS3 syntax (and syntax defined in some foreign specifications) support for
 INSTALLATION
 ------------
 
-I **strongly** recommend to install this plugin on *Vim 8.1 or higher with
+I **strongly** recommend to install this plugin on *Vim 8.2 or higher with
 default runtime files*.
 
 
@@ -89,7 +89,7 @@ Kyo Nagashima <hail2u@gmail.com> (https://kyonagashima.com/)
 LICENSE
 -------
 
-MIT License
+MIT
 
 
 [1]: http://www.vim.org/

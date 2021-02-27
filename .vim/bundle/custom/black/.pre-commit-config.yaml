@@ -1,6 +1,6 @@
 # Note: don't use this config for your own repositories. Instead, see
 # "Version control integration" in README.md.
-exclude: ^(blib2to3/|profiling/|tests/data/)
+exclude: ^(src/blib2to3/|profiling/|tests/data/)
 repos:
   - repo: local
     hooks:
@@ -8,23 +8,24 @@ repos:
         name: black
         language: system
         entry: black
+        minimum_pre_commit_version: 2.9.2
         require_serial: true
-        types: [python]
+        types_or: [python, pyi]
 
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9
+    rev: 3.8.1
     hooks:
       - id: flake8
         additional_dependencies: [flake8-bugbear]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.740
+    rev: v0.780
     hooks:
       - id: mypy
         exclude: ^docs/conf.py
 
-  - repo: https://github.com/prettier/prettier
-    rev: 1.19.1
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.1
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]

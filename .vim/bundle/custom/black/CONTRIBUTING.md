@@ -19,12 +19,12 @@ unlikely to get accepted. You can still try but prepare to be disappointed.
 
 ## Technicalities
 
-Development on the latest version of Python is preferred. As of this writing it's 3.8.
+Development on the latest version of Python is preferred. As of this writing it's 3.9.
 You can use any operating system. I am using macOS myself and CentOS at work.
 
 Install all development dependencies using:
 
-```
+```console
 $ pipenv install --dev
 $ pipenv shell
 $ pre-commit install
@@ -34,11 +34,51 @@ If you haven't used `pipenv` before but are comfortable with virtualenvs, just r
 `pip install pipenv` in the virtualenv you're already using and invoke the command above
 from the cloned _Black_ repo. It will do the correct thing.
 
-Before submitting pull requests, run tests with:
+Non pipenv install works too:
 
+```console
+$ pip install -r test_requirements
+$ pip install -e .[d]
 ```
-$ python setup.py test
+
+Before submitting pull requests, run lints and tests with the following commands from
+the root of the black repo:
+
+```console
+# Linting
+$ pre-commit run -a
+
+# Unit tests
+$ tox -e py
+
+# Optional Fuzz testing
+$ tox -e fuzz
+
+# Optional CI run to test your changes on many popular python projects
+$ black-primer [-k -w /tmp/black_test_repos]
 ```
+
+### Docs Testing
+
+If you make changes to docs, you can test they still build locally too.
+
+```console
+$ pip install -r docs/requirements.txt
+$ pip install [-e] .[d]
+$ sphinx-build -a -b html -W docs/ docs/_build/
+```
+
+## black-primer
+
+`black-primer` is used by CI to pull down well-known _Black_ formatted projects and see
+if we get source code changes. It will error on formatting changes or errors. Please run
+before pushing your PR to see if you get the actions you would expect from _Black_ with
+your PR. You may need to change
+[primer.json](https://github.com/psf/black/blob/master/src/black_primer/primer.json)
+configuration for it to pass.
+
+For more `black-primer` information visit the
+[documentation](https://github.com/psf/black/blob/master/docs/black_primer.md).
 
 ## Hygiene
 

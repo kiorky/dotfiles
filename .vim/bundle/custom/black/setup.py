@@ -1,4 +1,4 @@
-# Copyright (C) 2018 Łukasz Langa
+# Copyright (C) 2020 Łukasz Langa
 from setuptools import setup
 import sys
 import os
@@ -11,9 +11,11 @@ sys.path.insert(0, str(CURRENT_DIR))  # for setuptools.build_meta
 
 
 def get_long_description() -> str:
-    readme_md = CURRENT_DIR / "README.md"
-    with open(readme_md, encoding="utf8") as ld_file:
-        return ld_file.read()
+    return (
+        (CURRENT_DIR / "README.md").read_text(encoding="utf8")
+        + "\n\n"
+        + (CURRENT_DIR / "CHANGES.md").read_text(encoding="utf8")
+    )
 
 
 USE_MYPYC = False
@@ -26,14 +28,14 @@ if os.getenv("BLACK_USE_MYPYC", None) == "1":
 
 if USE_MYPYC:
     mypyc_targets = [
-        "black.py",
-        "blib2to3/pytree.py",
-        "blib2to3/pygram.py",
-        "blib2to3/pgen2/parse.py",
-        "blib2to3/pgen2/grammar.py",
-        "blib2to3/pgen2/token.py",
-        "blib2to3/pgen2/driver.py",
-        "blib2to3/pgen2/pgen.py",
+        "src/black/__init__.py",
+        "src/blib2to3/pytree.py",
+        "src/blib2to3/pygram.py",
+        "src/blib2to3/pgen2/parse.py",
+        "src/blib2to3/pgen2/grammar.py",
+        "src/blib2to3/pgen2/token.py",
+        "src/blib2to3/pgen2/driver.py",
+        "src/blib2to3/pgen2/pgen.py",
     ]
 
     from mypyc.build import mypycify
@@ -46,7 +48,7 @@ else:
 setup(
     name="black",
     use_scm_version={
-        "write_to": "_black_version.py",
+        "write_to": "src/_black_version.py",
         "write_to_template": 'version = "{version}"\n',
     },
     description="The uncompromising code formatter.",
@@ -56,26 +58,30 @@ setup(
     author="Łukasz Langa",
     author_email="lukasz@langa.pl",
     url="https://github.com/psf/black",
+    project_urls={"Changelog": "https://github.com/psf/black/blob/master/CHANGES.md"},
     license="MIT",
-    py_modules=["black", "blackd", "_black_version"],
+    py_modules=["_black_version"],
     ext_modules=ext_modules,
-    packages=["blib2to3", "blib2to3.pgen2"],
-    package_data={"blib2to3": ["*.txt"]},
+    packages=["blackd", "black", "blib2to3", "blib2to3.pgen2", "black_primer"],
+    package_dir={"": "src"},
+    package_data={"blib2to3": ["*.txt"], "black": ["py.typed"]},
     python_requires=">=3.6",
     zip_safe=False,
     install_requires=[
-        "click>=6.5",
-        "attrs>=18.1.0",
+        "click>=7.1.2",
         "appdirs",
-        "toml>=0.9.4",
-        "typed-ast>=1.4.0",
-        "regex",
+        "toml>=0.10.1",
+        "typed-ast>=1.4.2",
+        "regex>=2020.1.8",
         "pathspec>=0.6, <1",
         "dataclasses>=0.6; python_version < '3.7'",
-        "typing_extensions>=3.7.4",
+        "typing_extensions>=3.7.4; python_version < '3.8'",
         "mypy_extensions>=0.4.3",
     ],
-    extras_require={"d": ["aiohttp>=3.3.2", "aiohttp-cors"]},
+    extras_require={
+        "d": ["aiohttp>=3.3.2", "aiohttp-cors"],
+        "colorama": ["colorama>=0.4.3"],
+    },
     test_suite="tests.test_black",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -87,6 +93,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Quality Assurance",
@@ -95,6 +102,7 @@ setup(
         "console_scripts": [
             "black=black:patched_main",
             "blackd=blackd:patched_main [d]",
+            "black-primer=black_primer.cli:main",
         ]
     },
 )
