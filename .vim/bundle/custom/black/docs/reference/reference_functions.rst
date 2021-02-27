@@ -61,7 +61,7 @@ File operations
 
 .. autofunction:: black.find_project_root
 
-.. autofunction:: black.gen_python_files_in_dir
+.. autofunction:: black.gen_python_files
 
 .. autofunction:: black.read_pyproject_toml
 
@@ -89,7 +89,7 @@ Split functions
 
 .. autofunction:: black.standalone_comment_split
 
-.. autofunction:: black.split_line
+.. autofunction:: black.transform_line
 
 Caching
 -------
@@ -135,6 +135,12 @@ Utilities
 
 .. autofunction:: black.generate_ignored_nodes
 
+.. autofunction:: black.is_fmt_on
+
+.. autofunction:: black.contains_fmt_on_at_column
+
+.. autofunction:: black.first_leaf_column
+
 .. autofunction:: black.generate_trailers_to_omit
 
 .. autofunction:: black.get_future_imports
@@ -165,7 +171,7 @@ Utilities
 
 .. autofunction:: black.re_compile_maybe_verbose
 
-.. autofunction:: black.should_explode
+.. autofunction:: black.should_split_line
 
 .. autofunction:: black.shutdown
 

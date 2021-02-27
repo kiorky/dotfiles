@@ -66,6 +66,14 @@ function! go#def#Jump(mode, type) abort
       let [l:out, l:err] = go#util#ExecInDir(l:cmd)
     endif
   elseif bin_name == 'gopls'
+    if !go#config#GoplsEnabled()
+      call go#util#EchoError("go_def_mode is 'gopls', but gopls is disabled")
+      return
+    endif
+
+    " reset l:fname when using gopls so that the filename will be converted to
+    " a URI correctly on windows.
+    let l:fname = expand('%')
     let [l:line, l:col] = go#lsp#lsp#Position()
     " delegate to gopls, with an empty job object and an exit status of 0
     " (they're irrelevant for gopls).
@@ -164,7 +172,7 @@ function! go#def#jump_to_declaration(out, mode, bin_name) abort
     " and 3. there is buffer window number we switch to
     if go#config#DefReuseBuffer() && bufwinnr(filename) != -1
       " jump to existing buffer if it exists
-      call win_gotoid(bufwinnr(filename))
+      call win_gotoid(bufwinid(filename))
     else
       if &modified
         let cmd = 'hide edit'

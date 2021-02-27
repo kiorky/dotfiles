@@ -215,6 +215,7 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ 'union'  : 'u'
     \ }
     let types.c = type_c
+    let types.lpc = type_c
     " C++ {{{1
     let type_cpp = tagbar#prototypes#typeinfo#new()
     let type_cpp.ctagstype = 'c++'
@@ -250,6 +251,7 @@ function! tagbar#types#uctags#init(supported_types) abort
     \ }
     let types.cpp = type_cpp
     let types.cuda = type_cpp
+    let types.arduino = type_cpp
     " C# {{{1
     let type_cs = tagbar#prototypes#typeinfo#new()
     let type_cs.ctagstype = 'c#'
@@ -298,6 +300,25 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ 'namespace'  : 'n'
     \ }
     let types.clojure = type_clojure
+    " CMake {{{1
+    let type_cmake = tagbar#prototypes#typeinfo#new()
+    let type_cmake.ctagstype = 'cmake'
+    let type_cmake.kinds     = [
+        \ {'short': 'p', 'long': 'projects' , 'fold': 0, 'stl': 1},
+        \ {'short': 'm', 'long': 'macros'   , 'fold': 0, 'stl': 1},
+        \ {'short': 'f', 'long': 'functions', 'fold': 0, 'stl': 1},
+        \ {'short': 'D', 'long': 'options'  , 'fold': 0, 'stl': 1},
+        \ {'short': 'v', 'long': 'variables', 'fold': 0, 'stl': 1},
+        \ {'short': 't', 'long': 'targets'  , 'fold': 0, 'stl': 1},
+    \ ]
+    let type_cmake.sro = '.'
+    let type_cmake.kind2scope = {
+        \ 'f' : 'function',
+    \ }
+    let type_cmake.scope2kind = {
+        \ 'function'  : 'f',
+    \ }
+    let types.cmake = type_cmake
     " Ctags config {{{1
     let type_ctags = tagbar#prototypes#typeinfo#new()
     let type_ctags.ctagstype = 'ctags'
@@ -583,6 +604,31 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ 'function' : 'f',
     \ }
     let types.javascript = type_javascript
+
+    " Kotlin {{{1
+    let type_kotlin = tagbar#prototypes#typeinfo#new()
+    let type_kotlin.ctagstype = 'kotlin'
+    let type_kotlin.kinds = [
+        \ {'short': 'p', 'long': 'packages',    'fold':0, 'stl':0},
+        \ {'short': 'c', 'long': 'classes',     'fold':0, 'stl':1},
+        \ {'short': 'o', 'long': 'objects',     'fold':0, 'stl':0},
+        \ {'short': 'i', 'long': 'interfaces',  'fold':0, 'stl':0},
+        \ {'short': 'T', 'long': 'typealiases', 'fold':0, 'stl':0},
+        \ {'short': 'm', 'long': 'methods',     'fold':0, 'stl':1},
+        \ {'short': 'C', 'long': 'constants',   'fold':0, 'stl':0},
+        \ {'short': 'v', 'long': 'variables',   'fold':0, 'stl':0},
+    \ ]
+    let type_kotlin.sro         = '.'
+    " Note: the current universal ctags version does not have proper
+    " definition for the scope of the tags. So for now we can't add the
+    " kind2scope / scope2kind for anything until ctags supports the correct
+    " scope info
+    let type_kotlin.kind2scope  = {
+    \ }
+    let type_kotlin.scope2kind  = {
+    \ }
+    let types.kotlin = type_kotlin
+
     " Lisp {{{1
     let type_lisp = tagbar#prototypes#typeinfo#new()
     let type_lisp.ctagstype = 'lisp'
@@ -717,9 +763,11 @@ function! tagbar#types#uctags#init(supported_types) abort
     let type_perl.kinds     = [
         \ {'short' : 'p', 'long' : 'packages',    'fold' : 1, 'stl' : 0},
         \ {'short' : 'c', 'long' : 'constants',   'fold' : 0, 'stl' : 0},
+        \ {'short' : 'a', 'long' : 'attributes',  'fold' : 0, 'stl' : 0},
         \ {'short' : 'f', 'long' : 'formats',     'fold' : 0, 'stl' : 0},
         \ {'short' : 'l', 'long' : 'labels',      'fold' : 0, 'stl' : 1},
-        \ {'short' : 's', 'long' : 'subroutines', 'fold' : 0, 'stl' : 1}
+        \ {'short' : 's', 'long' : 'subroutines', 'fold' : 0, 'stl' : 1},
+        \ {'short' : 'm', 'long' : 'methods',     'fold' : 0, 'stl' : 1}
     \ ]
     let types.perl = type_perl
     " Perl 6 {{{1
@@ -957,6 +1005,35 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ {'short' : 'p', 'long' : 'procedures', 'fold' : 0, 'stl' : 1}
     \ ]
     let types.tcl = type_tcl
+    " TypeScript {{{1
+    let type_ts = tagbar#prototypes#typeinfo#new()
+    let type_ts.ctagstype = 'typescript'
+    let type_ts.kinds = [
+        \ {'short' : 'n', 'long' : 'namespaces',    'fold' : 0, 'stl' : 1},
+        \ {'short' : 'i', 'long' : 'interfaces',    'fold' : 0, 'stl' : 1},
+        \ {'short' : 'g', 'long' : 'enums',         'fold' : 0, 'stl' : 1},
+        \ {'short' : 'e', 'long' : 'enumerations',  'fold' : 0, 'stl' : 1},
+        \ {'short' : 'c', 'long' : 'classes',       'fold' : 0, 'stl' : 1},
+        \ {'short' : 'C', 'long' : 'constants',     'fold' : 0, 'stl' : 1},
+        \ {'short' : 'f', 'long' : 'functions',     'fold' : 0, 'stl' : 1},
+        \ {'short' : 'p', 'long' : 'properties',    'fold' : 0, 'stl' : 1},
+        \ {'short' : 'v', 'long' : 'variables',     'fold' : 0, 'stl' : 1},
+        \ {'short' : 'm', 'long' : 'methods',       'fold' : 0, 'stl' : 1},
+    \ ]
+    let type_ts.sro        = '.'
+    let type_ts.kind2scope = {
+        \ 'c' : 'class',
+        \ 'i' : 'interface',
+        \ 'g' : 'enum',
+        \ 'n' : 'namespace',
+    \ }
+    let type_ts.scope2kind = {
+        \ 'class'       : 'c',
+        \ 'interface'   : 'i',
+        \ 'enum'        : 'g',
+        \ 'namespace'   : 'n'
+    \ }
+    let types.typescript = type_ts
     " LaTeX {{{1
     let type_tex = tagbar#prototypes#typeinfo#new()
     let type_tex.ctagstype = 'tex'
@@ -969,7 +1046,8 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ {'short' : 'b', 'long' : 'subsubsections', 'fold' : 0, 'stl' : 1},
         \ {'short' : 'P', 'long' : 'paragraphs',     'fold' : 0, 'stl' : 0},
         \ {'short' : 'G', 'long' : 'subparagraphs',  'fold' : 0, 'stl' : 0},
-        \ {'short' : 'l', 'long' : 'labels',         'fold' : 0, 'stl' : 0}
+        \ {'short' : 'l', 'long' : 'labels',         'fold' : 0, 'stl' : 0},
+        \ {'short' : 'f', 'long' : 'frames',         'fold' : 0, 'stl' : 1}
     \ ]
     let type_tex.sro        = '""'
     let type_tex.kind2scope = {
