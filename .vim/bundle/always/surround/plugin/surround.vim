@@ -1,6 +1,6 @@
 " surround.vim - Surroundings
 " Author:       Tim Pope <http://tpo.pe/>
-" Version:      2.1
+" Version:      2.2
 " GetLatestVimScripts: 1697 1 :AutoInstall: surround.vim
 
 if exists("g:loaded_surround") || &cp || v:version < 700
@@ -360,8 +360,8 @@ function! s:insert(...) " {{{1
   return "\<Del>"
 endfunction " }}}1
 
-function! s:reindent() " {{{1
-  if exists("b:surround_indent") ? b:surround_indent : (!exists("g:surround_indent") || g:surround_indent)
+function! s:reindent() abort " {{{1
+  if get(b:, 'surround_indent', get(g:, 'surround_indent', 1)) && (!empty(&equalprg) || !empty(&indentexpr) || &cindent || &smartindent || &lisp)
     silent norm! '[=']
   endif
 endfunction " }}}1

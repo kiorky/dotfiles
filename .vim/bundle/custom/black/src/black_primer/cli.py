@@ -1,19 +1,26 @@
-#!/usr/bin/env python3
-
 # coding=utf8
 
 import asyncio
+import json
 import logging
 import sys
 from datetime import datetime
 from pathlib import Path
 from shutil import rmtree, which
 from tempfile import gettempdir
-from typing import Any, Union
+from typing import Any, List, Optional, Union
 
 import click
 
 from black_primer import lib
+
+# If our environment has uvloop installed lets use it
+try:
+    import uvloop
+
+    uvloop.install()
+except ImportError:
+    pass
 
 
 DEFAULT_CONFIG = Path(__file__).parent / "primer.json"
@@ -23,8 +30,8 @@ LOG = logging.getLogger(__name__)
 
 
 def _handle_debug(
-    ctx: click.core.Context,
-    param: Union[click.core.Option, click.core.Parameter],
+    ctx: Optional[click.core.Context],
+    param: Optional[Union[click.core.Option, click.core.Parameter]],
     debug: Union[bool, int, str],
 ) -> Union[bool, int, str]:
     """Turn on debugging if asked otherwise INFO default"""
@@ -36,11 +43,42 @@ def _handle_debug(
     return debug
 
 
+def load_projects(config_path: Path) -> List[str]:
+    with open(config_path) as config:
+        return sorted(json.load(config)["projects"].keys())
+
+
+# Unfortunately does import time file IO - but appears to be the only
+# way to get `black-primer --help` to show projects list
+DEFAULT_PROJECTS = load_projects(DEFAULT_CONFIG)
+
+
+def _projects_callback(
+    ctx: click.core.Context,
+    param: Optional[Union[click.core.Option, click.core.Parameter]],
+    projects: str,
+) -> List[str]:
+    requested_projects = set(projects.split(","))
+    available_projects = set(
+        DEFAULT_PROJECTS
+        if str(DEFAULT_CONFIG) == ctx.params["config"]
+        else load_projects(ctx.params["config"])
+    )
+
+    unavailable = requested_projects - available_projects
+    if unavailable:
+        LOG.error(f"Projects not found: {unavailable}. Available: {available_projects}")
+
+    return sorted(requested_projects & available_projects)
+
+
 async def async_main(
     config: str,
     debug: bool,
     keep: bool,
     long_checkouts: bool,
+    no_diff: bool,
+    projects: List[str],
     rebase: bool,
     workdir: str,
     workers: int,
@@ -56,15 +94,21 @@ async def async_main(
 
     try:
         ret_val = await lib.process_queue(
-            config, work_path, workers, keep, long_checkouts, rebase
+            config,
+            work_path,
+            workers,
+            projects,
+            keep,
+            long_checkouts,
+            rebase,
+            no_diff,
         )
         return int(ret_val)
+
     finally:
         if not keep and work_path.exists():
             LOG.debug(f"Removing {work_path}")
             rmtree(work_path, onerror=lib.handle_PermissionError)
-
-    return -2
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
@@ -75,6 +119,8 @@ async def async_main(
     type=click.Path(exists=True),
     show_default=True,
     help="JSON config file path",
+    # Eager - because config path is used by other callback options
+    is_eager=True,
 )
 @click.option(
     "--debug",
@@ -96,6 +142,19 @@ async def async_main(
     is_flag=True,
     show_default=True,
     help="Pull big projects to test",
+)
+@click.option(
+    "--no-diff",
+    is_flag=True,
+    show_default=True,
+    help="Disable showing source file changes in black output",
+)
+@click.option(
+    "--projects",
+    default=",".join(DEFAULT_PROJECTS),
+    callback=_projects_callback,
+    show_default=True,
+    help="Comma separated list of projects to run",
 )
 @click.option(
     "-R",

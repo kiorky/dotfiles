@@ -65,18 +65,16 @@
 	display: auto;
 }
 
+@import "cascade-4.css" supports(display: auto);
+
 .cascade-4 {
 	display: revert;
 }
 
+@import "cascade-5.css" layer(framework component);
+
 .cascade-5 {
-	display: auto;
-}
-
-@import "conditional-3.css" supports(display: auto);
-
-@supports (selector(.conditional-4)) {
-	display: auto;
+	display: revert-layer;
 }
 
 .color-3 {
@@ -101,12 +99,12 @@
 .color-5 {
 	display: color-mix(red yellow 65%);
 	display: color-contrast(wheat tan, sienna, var(--myAccent), #d2691e);
-	display: color-adjust(peru lightness(-20%));
 }
 
 .color-adjust-1 {
 	color-scheme: auto;
 	forced-color-adjust: auto;
+	print-color-adjust: auto;
 	color-adjust: auto;
 	display: light;
 	display: economy;
@@ -135,10 +133,26 @@
 }
 
 @supports (display: auto) or
-	(display: auto) not
-	(display: auto) {
+(display: auto) not
+(display: auto) {
 	.conditional-3 {
-	  display: auto;
+		display: auto;
+	}
+}
+
+@supports (selector(.conditional-4)) {
+	.conditional-4 {
+		display: auto;
+	}
+}
+
+@when media(screen) {
+	.conditional-5 {
+		display: auto;
+	}
+} @else {
+	.conditional-5 {
+		display: auto;
 	}
 }
 
@@ -151,6 +165,10 @@
 
 .contain-2 {
 	content-visibility: auto;
+}
+
+.contain-3 {
+	display: auto;
 }
 
 .content-3 {
@@ -243,11 +261,10 @@
 
 .display-3 {
 	display: contents;
+	display: run-in;
 	display: ruby;
 	display: ruby-base;
 	display: ruby-text;
-	display: ruby-base-group;
-	display: ruby-text-group;
 }
 
 .easing-1 {
@@ -628,6 +645,7 @@ mask {
 	overflow-clip-margin: auto;
 	overflow-block: auto;
 	overflow-inline: auto;
+	scrollbar-gutter: auto;
 	block-ellipsis: auto;
 	line-clamp: auto;
 	max-lines: auto;
@@ -635,7 +653,6 @@ mask {
 }
 
 .overflow-4::nth-fragment(1) {
-	scrollbar-gutter: auto;
 	display: stable;
 	display: force;
 	display: overflow;
@@ -733,14 +750,14 @@ mask {
 
 @media (device-radius: 50%) {
 	.round-display-1 {
-	  shape-inside: auto;
-	  border-boundary: auto;
-	  polar-angle: auto;
-	  polar-distance: auto;
-	  display: outside-shape;
-	  display: shape-box;
-	  display: parent;
-	  display: polar;
+		shape-inside: auto;
+		border-boundary: auto;
+		polar-angle: auto;
+		polar-distance: auto;
+		display: outside-shape;
+		display: shape-box;
+		display: parent;
+		display: polar;
 	}
 }
 
@@ -751,6 +768,7 @@ mask {
 	ruby-overhang: auto;
 	display: ruby-base-container;
 	display: ruby-text-container;
+	display: merge;
 	display: inter-character;
 }
 
@@ -766,7 +784,7 @@ mask {
 
 @scope .scoping-1 {
 	div {
-	  display: auto;
+		display: auto;
 	}
 }
 
@@ -855,10 +873,6 @@ mask {
 	display: auto;
 }
 
-.selectors-nonelement-1::attr(title) {
-	display: auto;
-}
-
 .shadow-parts::part(textspan) {
 	display: auto;
 }
@@ -882,7 +896,10 @@ mask {
 
 .sizing-4 {
 	contain-intrinsic-size: auto;
+	min-intrinsic-sizing: auto;
 	display: fit-content;
+	display: zero-if-scroll;
+	display: zero-if-extrinsic;
 }
 
 .speech-1 {
@@ -1170,10 +1187,32 @@ view {
 .values-4 {
 	display: 1vi;
 	display: 1vb;
-	display: 1ic;
+	display: 1rex;
 	display: 1cap;
+	display: 1rcap;
+	display: 1rch;
+	display: 1ic;
+	display: 1ric;
 	display: 1lh;
 	display: 1rlh;
+	display: 1svh;
+	display: 1svw;
+	display: 1svi;
+	display: 1svb;
+	display: 1svmin;
+	display: 1svmax;
+	display: 1lvh;
+	display: 1lvw;
+	display: 1lvi;
+	display: 1lvb;
+	display: 1lvmin;
+	display: 1lvmax;
+	display: 1dvh;
+	display: 1dvw;
+	display: 1dvi;
+	display: 1dvb;
+	display: 1dvmin;
+	display: 1dvmax;
 	display: min(0, 1);
 	display: max(0, 1);
 	display: clamp(0, 100, 2);
@@ -1195,6 +1234,7 @@ view {
 	display: exp(1);
 	display: abs(-1);
 	display: sign(-4);
+	display: mix(33%; 1px; 2px);
 }
 
 .variables-1 {
