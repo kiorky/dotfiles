@@ -14,7 +14,6 @@ There's also a pattern matching implementation here.
 
 from typing import (
     Any,
-    Callable,
     Dict,
     Iterator,
     List,
@@ -25,7 +24,6 @@ from typing import (
     Union,
     Set,
     Iterable,
-    Sequence,
 )
 from blib2to3.pgen2.grammar import Grammar
 
@@ -34,7 +32,7 @@ __author__ = "Guido van Rossum <guido@python.org>"
 import sys
 from io import StringIO
 
-HUGE: int = 0x7fffffff  # maximum repeat count, default max
+HUGE: int = 0x7FFFFFFF  # maximum repeat count, default max
 
 _type_reprs: Dict[int, Union[Text, int]] = {}
 
@@ -53,7 +51,7 @@ def type_repr(type_num: int) -> Union[Text, int]:
     return _type_reprs.setdefault(type_num, type_num)
 
 
-_P = TypeVar("_P")
+_P = TypeVar("_P", bound="Base")
 
 NL = Union["Node", "Leaf"]
 Context = Tuple[Text, Tuple[int, int]]
@@ -93,8 +91,6 @@ class Base(object):
             return NotImplemented
         return self._eq(other)
 
-    __hash__ = None  # type: Any  # For Py3 compatibility.
-
     @property
     def prefix(self) -> Text:
         raise NotImplementedError
@@ -109,6 +105,9 @@ class Base(object):
         ignoring the prefix string and other context information.
         """
         raise NotImplementedError
+
+    def __deepcopy__(self: _P, memo: Any) -> _P:
+        return self.clone()
 
     def clone(self: _P) -> _P:
         """
@@ -387,7 +386,8 @@ class Leaf(Base):
     value: Text
     fixers_applied: List[Any]
     bracket_depth: int
-    opening_bracket: "Leaf"
+    # Changed later in brackets.py
+    opening_bracket: Optional["Leaf"] = None
     used_names: Optional[Set[Text]]
     _prefix = ""  # Whitespace and comments preceding this token in the input
     lineno: int = 0  # Line where this token starts in the input
@@ -400,6 +400,7 @@ class Leaf(Base):
         context: Optional[Context] = None,
         prefix: Optional[Text] = None,
         fixers_applied: List[Any] = [],
+        opening_bracket: Optional["Leaf"] = None,
     ) -> None:
         """
         Initializer.
@@ -417,6 +418,7 @@ class Leaf(Base):
             self._prefix = prefix
         self.fixers_applied: Optional[List[Any]] = fixers_applied[:]
         self.children = []
+        self.opening_bracket = opening_bracket
 
     def __repr__(self) -> str:
         """Return a canonical string representation."""
@@ -435,7 +437,7 @@ class Leaf(Base):
 
         This reproduces the input source exactly.
         """
-        return self.prefix + str(self.value)
+        return self._prefix + str(self.value)
 
     def _eq(self, other) -> bool:
         """Compare two nodes for equality."""
@@ -449,6 +451,7 @@ class Leaf(Base):
             self.value,
             (self.prefix, (self.lineno, self.column)),
             fixers_applied=self.fixers_applied,
+            opening_bracket=self.opening_bracket,
         )
 
     def leaves(self) -> Iterator["Leaf"]:
@@ -670,8 +673,11 @@ class NodePattern(BasePattern):
             newcontent = list(content)
             for i, item in enumerate(newcontent):
                 assert isinstance(item, BasePattern), (i, item)
-                if isinstance(item, WildcardPattern):
-                    self.wildcards = True
+                # I don't even think this code is used anywhere, but it does cause
+                # unreachable errors from mypy. This function's signature does look
+                # odd though *shrug*.
+                if isinstance(item, WildcardPattern):  # type: ignore[unreachable]
+                    self.wildcards = True  # type: ignore[unreachable]
         self.type = type
         self.content = newcontent
         self.name = name
@@ -976,6 +982,3 @@ def generate_matches(
                     r.update(r0)
                     r.update(r1)
                     yield c0 + c1, r
-
-
-_Convert = Callable[[Grammar, RawNode], Any]

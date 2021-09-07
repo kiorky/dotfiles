@@ -12,6 +12,10 @@ function! go#auto#template_autocreate()
 endfunction
 
 function! go#auto#complete_done()
+  if &omnifunc isnot 'go#complete#Complete'
+    return
+  endif
+
   call s:echo_go_info()
   call s:ExpandSnippet()
 endfunction
@@ -133,7 +137,7 @@ function! s:handler(timer_id)
 endfunction
 
 function! go#auto#fmt_autosave()
-  if !(isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
+  if !(isdirectory(expand('%:p:h')) && resolve(expand('<afile>:p')) == expand('%:p'))
     return
   endif
 
@@ -175,7 +179,7 @@ function! go#auto#metalinter_autosave()
 endfunction
 
 function! go#auto#modfmt_autosave()
-  if !(go#config#ModFmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
+  if !(go#config#ModFmtAutosave() && isdirectory(expand('%:p:h')) && resolve(expand('<afile>:p')) == expand('%:p'))
     return
   endif
 
@@ -184,7 +188,7 @@ function! go#auto#modfmt_autosave()
 endfunction
 
 function! go#auto#asmfmt_autosave()
-  if !(go#config#AsmfmtAutosave() && isdirectory(expand('%:p:h')) && expand('<afile>:p') == expand('%:p'))
+  if !(go#config#AsmfmtAutosave() && isdirectory(expand('%:p:h')) && resolve(expand('<afile>:p')) == expand('%:p'))
     return
   endif
 

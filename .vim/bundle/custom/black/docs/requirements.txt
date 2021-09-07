@@ -1,3 +1,7 @@
-recommonmark==0.6.0
-Sphinx==3.2.1
-Pygments==2.6.1
+# Used by ReadTheDocs; pinned requirements for stability.
+
+myst-parser==0.16.1
+Sphinx==4.4.0
+sphinxcontrib-programoutput==0.17
+sphinx_copybutton==0.5.0
+furo==2022.2.14.1

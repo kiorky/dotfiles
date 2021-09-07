@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import sys
 from concurrent.futures import Executor, ProcessPoolExecutor
 from datetime import datetime
 from functools import partial
@@ -9,17 +8,16 @@ from typing import Set, Tuple
 
 try:
     from aiohttp import web
-    import aiohttp_cors
+    from .middlewares import cors
 except ImportError as ie:
-    print(
+    raise ImportError(
         f"aiohttp dependency is not installed: {ie}. "
         + "Please re-install black with the '[d]' extra install "
-        + "to obtain aiohttp_cors: `pip install black[d]`",
-        file=sys.stderr,
-    )
-    sys.exit(-1)
+        + "to obtain aiohttp_cors: `pip install black[d]`"
+    ) from None
 
 import black
+from black.concurrency import maybe_install_uvloop
 import click
 
 from _black_version import version as __version__
@@ -69,20 +67,11 @@ def main(bind_host: str, bind_port: int) -> None:
 
 
 def make_app() -> web.Application:
-    app = web.Application()
-    executor = ProcessPoolExecutor()
-
-    cors = aiohttp_cors.setup(app)
-    resource = cors.add(app.router.add_resource("/"))
-    cors.add(
-        resource.add_route("POST", partial(handle, executor=executor)),
-        {
-            "*": aiohttp_cors.ResourceOptions(
-                allow_headers=(*BLACK_HEADERS, "Content-Type"), expose_headers="*"
-            )
-        },
+    app = web.Application(
+        middlewares=[cors(allow_headers=(*BLACK_HEADERS, "Content-Type"))]
     )
-
+    executor = ProcessPoolExecutor()
+    app.add_routes([web.post("/", partial(handle, executor=executor))])
     return app
 
 
@@ -185,10 +174,8 @@ def parse_python_variant_header(value: str) -> Tuple[bool, Set[black.TargetVersi
                     raise InvalidVariantHeader("major version must be 2 or 3")
                 if len(rest) > 0:
                     minor = int(rest[0])
-                    if major == 2 and minor != 7:
-                        raise InvalidVariantHeader(
-                            "minor version must be 7 for Python 2"
-                        )
+                    if major == 2:
+                        raise InvalidVariantHeader("Python 2 is not supported")
                 else:
                     # Default to lowest supported minor version.
                     minor = 7 if major == 2 else 3
@@ -197,11 +184,12 @@ def parse_python_variant_header(value: str) -> Tuple[bool, Set[black.TargetVersi
                     raise InvalidVariantHeader(f"3.{minor} is not supported")
                 versions.add(black.TargetVersion[version_str])
             except (KeyError, ValueError):
-                raise InvalidVariantHeader("expected e.g. '3.7', 'py3.5'")
+                raise InvalidVariantHeader("expected e.g. '3.7', 'py3.5'") from None
         return False, versions
 
 
 def patched_main() -> None:
+    maybe_install_uvloop()
     freeze_support()
     black.patch_click()
     main()

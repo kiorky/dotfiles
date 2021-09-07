@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import asyncio
 import errno
 import json
@@ -13,12 +11,24 @@ from platform import system
 from shutil import rmtree, which
 from subprocess import CalledProcessError
 from sys import version_info
-from typing import Any, Callable, Dict, NamedTuple, Optional, Sequence, Tuple
+from tempfile import TemporaryDirectory
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 from urllib.parse import urlparse
 
 import click
 
 
+TEN_MINUTES_SECONDS = 600
 WINDOWS = system() == "Windows"
 BLACK_BINARY = "black.exe" if WINDOWS else "black"
 GIT_BINARY = "git.exe" if WINDOWS else "git"
@@ -40,19 +50,21 @@ class Results(NamedTuple):
 
 async def _gen_check_output(
     cmd: Sequence[str],
-    timeout: float = 300,
+    timeout: float = TEN_MINUTES_SECONDS,
     env: Optional[Dict[str, str]] = None,
     cwd: Optional[Path] = None,
+    stdin: Optional[bytes] = None,
 ) -> Tuple[bytes, bytes]:
     process = await asyncio.create_subprocess_exec(
         *cmd,
+        stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.STDOUT,
         env=env,
         cwd=cwd,
     )
     try:
-        (stdout, stderr) = await asyncio.wait_for(process.communicate(), timeout)
+        (stdout, stderr) = await asyncio.wait_for(process.communicate(stdin), timeout)
     except asyncio.TimeoutError:
         process.kill()
         await process.wait()
@@ -76,6 +88,18 @@ def analyze_results(project_count: int, results: Results) -> int:
     failed_pct = round(((results.stats["failed"] / project_count) * 100), 2)
     success_pct = round(((results.stats["success"] / project_count) * 100), 2)
 
+    if results.failed_projects:
+        click.secho("\nFailed projects:\n", bold=True)
+
+    for project_name, project_cpe in results.failed_projects.items():
+        print(f"## {project_name}:")
+        print(f" - Returned {project_cpe.returncode}")
+        if project_cpe.stderr:
+            print(f" - stderr:\n{project_cpe.stderr.decode('utf8')}")
+        if project_cpe.stdout:
+            print(f" - stdout:\n{project_cpe.stdout.decode('utf8')}")
+        print("")
+
     click.secho("-- primer results 📊 --\n", bold=True)
     click.secho(
         f"{results.stats['success']} / {project_count} succeeded ({success_pct}%) ✅",
@@ -98,51 +122,99 @@ def analyze_results(project_count: int, results: Results) -> int:
     )
 
     if results.failed_projects:
-        click.secho("\nFailed projects:\n", bold=True)
-
-    for project_name, project_cpe in results.failed_projects.items():
-        print(f"## {project_name}:")
-        print(f" - Returned {project_cpe.returncode}")
-        if project_cpe.stderr:
-            print(f" - stderr:\n{project_cpe.stderr.decode('utf8')}")
-        if project_cpe.stdout:
-            print(f" - stdout:\n{project_cpe.stdout.decode('utf8')}")
-        print("")
+        failed = ", ".join(results.failed_projects.keys())
+        click.secho(f"\nFailed projects: {failed}\n", bold=True)
 
     return results.stats["failed"]
 
 
+def _flatten_cli_args(cli_args: List[Union[Sequence[str], str]]) -> List[str]:
+    """Allow a user to put long arguments into a list of strs
+    to make the JSON human readable"""
+    flat_args = []
+    for arg in cli_args:
+        if isinstance(arg, str):
+            flat_args.append(arg)
+            continue
+
+        args_as_str = "".join(arg)
+        flat_args.append(args_as_str)
+
+    return flat_args
+
+
 async def black_run(
-    repo_path: Path, project_config: Dict[str, Any], results: Results
+    project_name: str,
+    repo_path: Optional[Path],
+    project_config: Dict[str, Any],
+    results: Results,
+    no_diff: bool = False,
 ) -> None:
     """Run Black and record failures"""
+    if not repo_path:
+        results.stats["failed"] += 1
+        results.failed_projects[project_name] = CalledProcessError(
+            69, [], f"{project_name} has no repo_path: {repo_path}".encode(), b""
+        )
+        return
+
+    stdin_test = project_name.upper() == "STDIN"
     cmd = [str(which(BLACK_BINARY))]
     if "cli_arguments" in project_config and project_config["cli_arguments"]:
-        cmd.extend(*project_config["cli_arguments"])
-    cmd.extend(["--check", "--diff", "."])
+        cmd.extend(_flatten_cli_args(project_config["cli_arguments"]))
+    cmd.append("--check")
+    if not no_diff:
+        cmd.append("--diff")
 
-    try:
-        _stdout, _stderr = await _gen_check_output(cmd, cwd=repo_path)
-    except asyncio.TimeoutError:
-        results.stats["failed"] += 1
-        LOG.error(f"Running black for {repo_path} timed out ({cmd})")
-    except CalledProcessError as cpe:
-        # TODO: Tune for smarter for higher signal
-        # If any other return value than 1 we raise - can disable project in config
-        if cpe.returncode == 1:
-            if not project_config["expect_formatting_changes"]:
+    # Workout if we should read in a python file or search from cwd
+    stdin = None
+    if stdin_test:
+        cmd.append("-")
+        stdin = repo_path.read_bytes()
+    elif "base_path" in project_config:
+        cmd.append(project_config["base_path"])
+    else:
+        cmd.append(".")
+
+    timeout = (
+        project_config["timeout_seconds"]
+        if "timeout_seconds" in project_config
+        else TEN_MINUTES_SECONDS
+    )
+    with TemporaryDirectory() as tmp_path:
+        # Prevent reading top-level user configs by manipulating environment variables
+        env = {
+            **os.environ,
+            "XDG_CONFIG_HOME": tmp_path,  # Unix-like
+            "USERPROFILE": tmp_path,  # Windows (changes `Path.home()` output)
+        }
+
+        cwd_path = repo_path.parent if stdin_test else repo_path
+        try:
+            LOG.debug(f"Running black for {project_name}: {' '.join(cmd)}")
+            _stdout, _stderr = await _gen_check_output(
+                cmd, cwd=cwd_path, env=env, stdin=stdin, timeout=timeout
+            )
+        except asyncio.TimeoutError:
+            results.stats["failed"] += 1
+            LOG.error(f"Running black for {repo_path} timed out ({cmd})")
+        except CalledProcessError as cpe:
+            # TODO: Tune for smarter for higher signal
+            # If any other return value than 1 we raise - can disable project in config
+            if cpe.returncode == 1:
+                if not project_config["expect_formatting_changes"]:
+                    results.stats["failed"] += 1
+                    results.failed_projects[repo_path.name] = cpe
+                else:
+                    results.stats["success"] += 1
+                return
+            elif cpe.returncode > 1:
                 results.stats["failed"] += 1
                 results.failed_projects[repo_path.name] = cpe
-            else:
-                results.stats["success"] += 1
-            return
-        elif cpe.returncode > 1:
-            results.stats["failed"] += 1
-            results.failed_projects[repo_path.name] = cpe
-            return
+                return
 
-        LOG.error(f"Unknown error with {repo_path}")
-        raise
+            LOG.error(f"Unknown error with {repo_path}")
+            raise
 
     # If we get here and expect formatting changes something is up
     if project_config["expect_formatting_changes"]:
@@ -190,7 +262,7 @@ async def git_checkout_or_rebase(
 
 
 def handle_PermissionError(
-    func: Callable, path: Path, exc: Tuple[Any, Any, Any]
+    func: Callable[..., None], path: Path, exc: Tuple[Any, Any, Any]
 ) -> None:
     """
     Handle PermissionError during shutil.rmtree.
@@ -215,16 +287,16 @@ def handle_PermissionError(
 
 async def load_projects_queue(
     config_path: Path,
+    projects_to_run: List[str],
 ) -> Tuple[Dict[str, Any], asyncio.Queue]:
     """Load project config and fill queue with all the project names"""
     with config_path.open("r") as cfp:
         config = json.load(cfp)
 
     # TODO: Offer more options here
-    # e.g. Run on X random packages or specific sub list etc.
-    project_names = sorted(config["projects"].keys())
-    queue: asyncio.Queue = asyncio.Queue(maxsize=len(project_names))
-    for project in project_names:
+    # e.g. Run on X random packages etc.
+    queue: asyncio.Queue = asyncio.Queue(maxsize=len(projects_to_run))
+    for project in projects_to_run:
         await queue.put(project)
 
     return config, queue
@@ -239,6 +311,7 @@ async def project_runner(
     long_checkouts: bool = False,
     rebase: bool = False,
     keep: bool = False,
+    no_diff: bool = False,
 ) -> None:
     """Check out project and run Black on it + record result"""
     loop = asyncio.get_event_loop()
@@ -274,12 +347,15 @@ async def project_runner(
             LOG.debug(f"Skipping {project_name} as it's configured as a long checkout")
             continue
 
-        repo_path = await git_checkout_or_rebase(work_path, project_config, rebase)
-        if not repo_path:
-            continue
-        await black_run(repo_path, project_config, results)
+        repo_path: Optional[Path] = Path(__file__)
+        stdin_project = project_name.upper() == "STDIN"
+        if not stdin_project:
+            repo_path = await git_checkout_or_rebase(work_path, project_config, rebase)
+            if not repo_path:
+                continue
+        await black_run(project_name, repo_path, project_config, results, no_diff)
 
-        if not keep:
+        if not keep and not stdin_project:
             LOG.debug(f"Removing {repo_path}")
             rmtree_partial = partial(
                 rmtree, path=repo_path, onerror=handle_PermissionError
@@ -293,9 +369,11 @@ async def process_queue(
     config_file: str,
     work_path: Path,
     workers: int,
+    projects_to_run: List[str],
     keep: bool = False,
     long_checkouts: bool = False,
     rebase: bool = False,
+    no_diff: bool = False,
 ) -> int:
     """
     Process the queue with X workers and evaluate results
@@ -310,7 +388,7 @@ async def process_queue(
     results.stats["success"] = 0
     results.stats["wrong_py_ver"] = 0
 
-    config, queue = await load_projects_queue(Path(config_file))
+    config, queue = await load_projects_queue(Path(config_file), projects_to_run)
     project_count = queue.qsize()
     s = "" if project_count == 1 else "s"
     LOG.info(f"{project_count} project{s} to run Black over")
@@ -323,7 +401,15 @@ async def process_queue(
     await asyncio.gather(
         *[
             project_runner(
-                i, config, queue, work_path, results, long_checkouts, rebase, keep
+                i,
+                config,
+                queue,
+                work_path,
+                results,
+                long_checkouts,
+                rebase,
+                keep,
+                no_diff,
             )
             for i in range(workers)
         ]
