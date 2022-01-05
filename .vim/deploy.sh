@@ -34,7 +34,7 @@ if [ ! -f venv3/bin/activate ];then
     virtualenv $nsp --python python3 venv3
 fi
 if [ ! -f venv/bin/activate ];then
-    virtualenv $nsp venv
+    virtualenv $nsp --python python2 venv
 fi
 if [ -f venv/bin/activate ];then
     echo "installing py stuff"

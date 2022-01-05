@@ -11,7 +11,7 @@ let g:py2_virtualenv = g:home . "/venv"
 let g:black_virtualenv = g:py3_virtualenv
 " register embedded pyflakes & rope {{{
 let $PYTHONPATH = $PYTHONPATH.":".g:home."/bin"
-let $PATH = g:home."/bin".":".g:py3_virtualenv.":".g:py2_virtualenv.":".$PATH
+let $PATH = g:home."/bin".":".g:py3_virtualenv."/bin:".g:py2_virtualenv."/bin:".$PATH
 " }}}
 " backups dirs
 let g:bck_dirs=g:home."/backups,.,$TEMP"
@@ -40,10 +40,10 @@ filetype plugin on
 filetype indent on
 filetype plugin indent on
 " }}}
-let g:black_linelength = 80
 let g:black_linelength = 120
 " highlight / colorscheme
-set bg=dark modeline hlsearch
+set bg=dark hlsearch
+set modeline modelines=1
 hi Function term=underline cterm=bold ctermfg=LightGray
 " default encoding
 set encoding=utf-8
@@ -75,9 +75,13 @@ let g:AGTuseLocalTags = 1
 " }}}
 " Syntastix {{{
 highlight SyntasticErrorSign guifg=white guibg=red
-let g:syntastic_always_populate_loc_list=1
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
 " let g:syntastic_python_checkers=['pylint','flake8','pyflakes','pep257','pylama','pep8','python']
-" let g:syntastic_python_checkers=['flake8','pyflakes','pep257','pylama','pep8']
+" let g:syntastic_python_checkers = ['flake8','pyflakes','pep257','pylama','pep8']
 let g:syntastic_python_checkers=['pylama']
 " }}}
 " SeeTab {{{
@@ -219,7 +223,6 @@ autocmd! FileType xml        set omnifunc=xmlcomplete#CompleteTags
 autocmd! FileType php        set omnifunc=phpcomplete#CompletePHP
 autocmd! FileType c          set omnifunc=ccomplete#Complete
 " }}}
-
 " Abbreviations {{{
 autocmd FileType php  abbreviate dbg    require_once 'Zend/Debug.php';Zend_Debug :: dump
 autocmd FileType php  abbreviate vd    var_dump();exit (-1);
@@ -286,37 +289,23 @@ function! CustomCloseHiddenBuffers()
     endfor
 endfun
 " }}}
-" GOLANG
+" {{{ GOLANG
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+let g:go_version_warning = 0
+" }}}
+" {{{ Colorscheme
 " colorscheme torte
 " colorscheme jellybeans
 " colorscheme blackboard
 " colorscheme bensday
-"
-"let g:solarized_hitrail   = 1
-"" let g:solarized_termtrans = 1
-"let g:solarized_degrade   = 1
-"" let g:solarized_bold      =   1       |   0
-"" let g:solarized_underline =   1       |   0
-"" let g:solarized_italic    =   1       |   0
-"let g:solarized_contrast  =   "high"
-"let g:solarized_visibility=   "high"
-"let g:solarized_menu      = 1
-"let g:solarized_termcolors=256
-"colorscheme solazized
-
-
-"let base16colorspace=16
-"colorscheme base16-solarized
-
+" colorscheme base16-solarized
 nnoremap <silent> [oh :call gruvbox#hls_show()<CR>
 nnoremap <silent> ]oh :call gruvbox#hls_hide()<CR>
 nnoremap <silent> coh :call gruvbox#hls_toggle()<CR>
-
 if !has("gui_running")
    let g:gruvbox_italic=0
 endif
@@ -325,6 +314,5 @@ nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
 nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 let g:gruvbox_termcolors=16
 colorscheme gruvbox
-set modeline modelines=1
-let g:go_version_warning = 0
+" }}}
 " vim:set et sts=4 sw=4 foldmethod=marker nofoldenable:
