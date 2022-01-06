@@ -83,6 +83,7 @@ let g:syntastic_aggregate_errors = 1
 " let g:syntastic_python_checkers=['pylint','flake8','pyflakes','pep257','pylama','pep8','python']
 " let g:syntastic_python_checkers = ['flake8','pyflakes','pep257','pylama','pep8']
 let g:syntastic_python_checkers=['pylama']
+let g:syntastic_python_pylama_post_args = "-o ".g:home."/pystyle.ini"
 " }}}
 " SeeTab {{{
 let g:SeeTabCtermFG="black"

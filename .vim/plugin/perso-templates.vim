@@ -91,6 +91,7 @@ def makeVimTemplate(ft='sh', options=dict()):
     LICENSE = LICENSES.get('none', 'gpl') % options
     SHEBANG = "%(comment)s vim:set et sts=4 ts=4 tw=80:" % options
     if ft == 'python':
+        SHEBANG = "%(comment)s vim:set et sts=4 ts=4 tw=120:" % options
         EXE = ''
         ENC = ''
         MISC = PYTHON_MISC % options
