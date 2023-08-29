@@ -250,7 +250,7 @@ endfunction
 " Section: :Verbose
 
 function! scriptease#verbose_command(level, excmd) abort
-  let temp = tempname()
+  let temp = tempname() . '.scriptease-verbose'
   let verbosefile = &verbosefile
   call writefile([':'.a:level.'Verbose '.a:excmd], temp, 'b')
   return
@@ -260,7 +260,7 @@ function! scriptease#verbose_command(level, excmd) abort
         \ 'finally|' .
         \ 'let &verbosefile = '.string(verbosefile).'|' .
         \ 'endtry|' .
-        \ 'pedit '.temp.'|wincmd P|nnoremap <buffer> q :bd<CR>'
+        \ 'pedit '.temp.'|wincmd P'
 endfunction
 
 " Section: :Scriptnames
@@ -282,7 +282,7 @@ function! scriptease#scriptnames_qflist() abort
   for line in split(names, "\n")
     if line =~# ':'
       let filename = expand(matchstr(line, ': \zs.*'))
-      call add(list, {'text': matchstr(line, '\d\+'), 'filename': get(virtual, filename, filename)})
+      call add(list, {'text': matchstr(line, '\d\+'), 'filename': get(virtual, filename, filename), 'lnum': 1})
     endif
   endfor
   return list
@@ -303,7 +303,17 @@ function! scriptease#scriptid(filename) abort
       return +script.text
     endif
   endfor
-  return ''
+  return 0
+endfunction
+
+function! scriptease#prepare_eval(string, ...) abort
+  if a:string =~? '<sid>'
+    let sid = scriptease#scriptid(@%)
+    if sid
+      return substitute(a:string, '\c<sid>', '<SNR>' . sid . '_', 'g')
+    endif
+  endif
+  return a:string
 endfunction
 
 " Section: :Messages
@@ -451,7 +461,7 @@ function! scriptease#runtime_command(bang, ...) abort
     let files = a:000
   elseif &filetype ==# 'vim' || expand('%:e') ==# 'vim'
     let files = [scriptease#locate(expand('%:p'))[1]]
-    if empty(files[0])
+    if empty(files[0]) || files[0] =~# '^autoload[\/]'
       let files = ['%']
     endif
     if &modified && (&autowrite || &autowriteall)
@@ -477,12 +487,12 @@ function! scriptease#runtime_command(bang, ...) abort
       let request = scriptease#scriptname(request)
       let unlets += request =~# '[[*?{]' ? s:glob(request) : [expand(request)]
       let do += map(copy(unlets), '"source ".escape(v:val, " \t|!")')
+    elseif request =~# '^autoload[\/]'
+      let unlets += split(s:globrtp(request), "\n")[0:0]
+      let do += ['runtime ' . escape(request, " \t|!")]
     else
-      if get(do, 0, [''])[0] !~# '^runtime!'
-        let do += ['runtime!']
-      endif
       let unlets += split(s:globrtp(request), "\n")
-      let do[-1] .= ' '.escape(request, " \t|!")
+      let do += ['runtime! ' . escape(request, " \t|!")]
     endif
   endfor
   if empty(a:bang)
@@ -581,10 +591,10 @@ function! s:break(type, arg) abort
     let lnum = searchpair('^\s*fu\%[nction]\>.*(', '', '^\s*endf\%[unction]\>', 'Wbn')
     if lnum && lnum < line('.')
       let function = matchstr(getline(lnum), '^\s*\w\+!\=\s*\zs[^( ]*')
-      if function =~# '^s:\|^<SID>'
+      if function =~# '^s:\|^<[Ss][Ii][Dd]>'
         let id = scriptease#scriptid('%')
         if id
-          let function = s:sub(function, '^s:|^\<SID\>', '<SNR>'.id.'_')
+          let function = s:sub(function, '^s:|^\<[Ss][Ii][Dd]\>', '<SNR>'.id.'_')
         else
           return 'echoerr "Could not determine script id"'
         endif
@@ -692,8 +702,9 @@ function! scriptease#time_command(cmd, count) abort
       execute a:cmd
     endif
   finally
+    let elapsed = reltime(time)
     redraw
-    echomsg matchstr(reltimestr(reltime(time)), '.*\..\{,3\}') . ' seconds to run :'.a:cmd
+    echomsg matchstr(reltimestr(elapsed), '.*\..\{,3\}') . ' seconds to run :'.a:cmd
   endtry
   return ''
 endfunction
@@ -756,7 +767,7 @@ endfunction
 " Section: Settings
 
 function! s:build_path() abort
-  let old_path = substitute(&g:path, '\v^\.,/%(usr|emx)/include,,,?', '', '')
+  let old_path = substitute(&g:path, '\C\v^\.,/%(usr|emx)/include,,', '.,,', '')
   let new_path = escape(&runtimepath, ' ')
   return !empty(old_path) ? old_path.','.new_path : new_path
 endfunction
@@ -793,7 +804,7 @@ function! scriptease#setup_vim() abort
   cnoremap <expr><buffer> <Plug><cfile> scriptease#cfile()
 
   let runtime = scriptease#locate(expand('%:p'))[1]
-  let b:dispatch = ':Runtime ' . s:fnameescape(len(runtime) ? runtime : expand('%:p'))
+  let b:dispatch = ':Runtime ' . (runtime =~# '^$\|^autoload[\/]' ? '%:p' : s:fnameescape(runtime))
   command! -bar -bang -buffer Console Runtime|PP
   command! -buffer -bar -nargs=? -complete=custom,s:Complete_breakadd Breakadd
         \ :exe s:break('add',<q-args>)

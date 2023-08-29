@@ -25,7 +25,7 @@ if get(g:, 'vim_markdown_folding_style_pythonic', 0)
                 let b:fenced_block = 0
             endif
         " else, if we're caring about front matter
-        elseif g:vim_markdown_frontmatter == 1
+        elseif get(g:, 'vim_markdown_frontmatter', 0) == 1
             " if we're in front matter and not on line 1
             if b:front_matter == 1 && a:lnum > 2
                 let l0 = getline(a:lnum-1)
@@ -62,8 +62,9 @@ if get(g:, 'vim_markdown_folding_style_pythonic', 0)
             " next line is underlined (level 1)
             return '>0'
         " else, if the nex line starts with two or more '-'
+        " but is not comment closer (-->)
         " and is not code
-        elseif l2 =~# '^--\+\s*' && !s:is_mkdCode(a:lnum+1)
+        elseif l2 =~# '^--\+\s*$' && !s:is_mkdCode(a:lnum+1)
             " next line is underlined (level 2)
             return '>1'
         endif
@@ -110,7 +111,7 @@ else " vim_markdown_folding_style_pythonic == 0
             elseif b:fenced_block == 1
                 let b:fenced_block = 0
             endif
-        elseif g:vim_markdown_frontmatter == 1
+        elseif get(g:, 'vim_markdown_frontmatter', 0) == 1
             if b:front_matter == 1
                 if l0 ==# '---'
                     let b:front_matter = 0
@@ -131,7 +132,7 @@ else " vim_markdown_folding_style_pythonic == 0
         if  l2 =~# '^==\+\s*' && !s:is_mkdCode(a:lnum+1)
             " next line is underlined (level 1)
             return '>1'
-        elseif l2 =~# '^--\+\s*' && !s:is_mkdCode(a:lnum+1)
+        elseif l2 =~# '^--\+\s*$' && !s:is_mkdCode(a:lnum+1)
             " next line is underlined (level 2)
             if s:vim_markdown_folding_level >= 2
                 return '>1'

@@ -494,7 +494,9 @@ endfunction
 function! s:SetexToAtx(line1, line2)
     let l:originalNumLines = line('$')
     execute 'silent! ' . a:line1 . ',' . a:line2 . 'substitute/\v(.*\S.*)\n\=+$/# \1/'
-    execute 'silent! ' . a:line1 . ',' . a:line2 . 'substitute/\v(.*\S.*)\n-+$/## \1/'
+
+    let l:changed = l:originalNumLines - line('$')
+    execute 'silent! ' . a:line1 . ',' . (a:line2 - l:changed) . 'substitute/\v(.*\S.*)\n-+$/## \1'
     return l:originalNumLines - line('$')
 endfunction
 
@@ -546,7 +548,7 @@ function! s:TableFormat()
     let l:flags = (&gdefault ? '' : 'g')
     execute 's/\(:\@<!-:\@!\|[^|:-]\)//e' . l:flags
     execute 's/--/-/e' . l:flags
-    Tabularize /|
+    Tabularize /\(\\\)\@<!|
     " Move colons for alignment to left or right side of the cell.
     execute 's/:\( \+\)|/\1:|/e' . l:flags
     execute 's/|\( \+\):/|:\1/e' . l:flags
@@ -654,7 +656,12 @@ endfunction
 function! s:OpenUrlUnderCursor()
     let l:url = s:Markdown_GetUrlForPosition(line('.'), col('.'))
     if l:url !=# ''
-        call s:VersionAwareNetrwBrowseX(l:url)
+      if l:url =~? 'http[s]\?:\/\/[[:alnum:]%\/_#.-]*'
+        "Do nothing
+      else
+        let l:url = expand(expand('%:h').'/'.l:url)
+      endif
+      call s:VersionAwareNetrwBrowseX(l:url)
     else
         echomsg 'The cursor is not on a link.'
     endif
@@ -788,7 +795,7 @@ function! s:MarkdownHighlightSources(force)
     " Look for code blocks in the current file
     let filetypes = {}
     for line in getline(1, '$')
-        let ft = matchstr(line, '```\s*\zs[0-9A-Za-z_+-]*\ze.*')
+        let ft = matchstr(line, '\(`\{3,}\|\~\{3,}\)\s*\zs[0-9A-Za-z_+-]*\ze.*')
         if !empty(ft) && ft !~# '^\d*$' | let filetypes[ft] = 1 | endif
     endfor
     if !exists('b:mkd_known_filetypes')
@@ -819,8 +826,10 @@ function! s:MarkdownHighlightSources(force)
             else
                 let include = '@' . toupper(filetype)
             endif
-            let command = 'syntax region %s matchgroup=%s start="^\s*```\s*%s.*$" matchgroup=%s end="\s*```$" keepend contains=%s%s'
-            execute printf(command, group, startgroup, ft, endgroup, include, has('conceal') && get(g:, 'vim_markdown_conceal', 1) && get(g:, 'vim_markdown_conceal_code_blocks', 1) ? ' concealends' : '')
+            let command_backtick = 'syntax region %s matchgroup=%s start="^\s*`\{3,}\s*%s.*$" matchgroup=%s end="\s*`\{3,}$" keepend contains=%s%s'
+            let command_tilde    = 'syntax region %s matchgroup=%s start="^\s*\~\{3,}\s*%s.*$" matchgroup=%s end="\s*\~\{3,}$" keepend contains=%s%s'
+            execute printf(command_backtick, group, startgroup, ft, endgroup, include, has('conceal') && get(g:, 'vim_markdown_conceal', 1) && get(g:, 'vim_markdown_conceal_code_blocks', 1) ? ' concealends' : '')
+            execute printf(command_tilde,    group, startgroup, ft, endgroup, include, has('conceal') && get(g:, 'vim_markdown_conceal', 1) && get(g:, 'vim_markdown_conceal_code_blocks', 1) ? ' concealends' : '')
             execute printf('syntax cluster mkdNonListItem add=%s', group)
 
             let b:mkd_known_filetypes[ft] = 1
@@ -852,15 +861,23 @@ function! s:SyntaxInclude(filetype)
     return grouplistname
 endfunction
 
+function! s:IsHighlightSourcesEnabledForBuffer()
+    " Enable for markdown buffers, and for liquid buffers with markdown format
+    return &filetype =~# 'markdown' || get(b:, 'liquid_subtype', '') =~# 'markdown'
+endfunction
 
 function! s:MarkdownRefreshSyntax(force)
-    if &filetype =~# 'markdown' && line('$') > 1
+    " Use != to compare &syntax's value to use the same logic run on
+    " $VIMRUNTIME/syntax/synload.vim.
+    "
+    " vint: next-line -ProhibitEqualTildeOperator
+    if s:IsHighlightSourcesEnabledForBuffer() && line('$') > 1 && &syntax != 'OFF'
         call s:MarkdownHighlightSources(a:force)
     endif
 endfunction
 
 function! s:MarkdownClearSyntaxVariables()
-    if &filetype =~# 'markdown'
+    if s:IsHighlightSourcesEnabledForBuffer()
         unlet! b:mkd_included_filetypes
     endif
 endfunction

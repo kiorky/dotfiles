@@ -52,7 +52,7 @@ Formatting
 
 .. autofunction:: black.reformat_one
 
-.. autofunction:: black.schedule_formatting
+.. autofunction:: black.concurrency.schedule_formatting
 
 File operations
 ---------------
@@ -94,17 +94,9 @@ Split functions
 Caching
 -------
 
-.. autofunction:: black.cache.filter_cached
-
 .. autofunction:: black.cache.get_cache_dir
 
 .. autofunction:: black.cache.get_cache_file
-
-.. autofunction:: black.cache.get_cache_info
-
-.. autofunction:: black.cache.read_cache
-
-.. autofunction:: black.cache.write_cache
 
 Utilities
 ---------
@@ -137,9 +129,9 @@ Utilities
 
 .. autofunction:: black.comments.is_fmt_on
 
-.. autofunction:: black.comments.contains_fmt_on_at_column
+.. autofunction:: black.comments.children_contains_fmt_on
 
-.. autofunction:: black.nodes.first_leaf_column
+.. autofunction:: black.nodes.first_leaf_of
 
 .. autofunction:: black.linegen.generate_trailers_to_omit
 
@@ -165,15 +157,13 @@ Utilities
 
 .. autofunction:: black.linegen.normalize_invisible_parens
 
-.. autofunction:: black.patch_click
-
 .. autofunction:: black.nodes.preceding_leaf
 
 .. autofunction:: black.re_compile_maybe_verbose
 
 .. autofunction:: black.linegen.should_split_line
 
-.. autofunction:: black.shutdown
+.. autofunction:: black.concurrency.shutdown
 
 .. autofunction:: black.strings.sub_twice
 

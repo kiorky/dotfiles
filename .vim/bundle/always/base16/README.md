@@ -4,12 +4,12 @@ This theme was built with [Base16 Builder PHP](https://github.com/chriskempson/b
 
 Supports graphical Vim and console Vim.
 
-![Base16 Vim](https://raw.github.com/chriskempson/base16-vim/master/base16-vim.png)
+![Base16 Vim](base16-vim.png)
 
 ## Terminal Themes
 For terminal Vim (non-gui) please ensure you are using a base16 terminal theme.
 
-* [iTerm2](https://github.com/chriskempson/base16-iterm2)
+* [iTerm2](base16-iterm2)
 
 ## Installation
 
@@ -33,7 +33,7 @@ Add the following to your `~/.vimrc` file and run `PlugInstall` in Vim.
 ### Manual
 
     cd ~/.vim/colors
-    git clone git://github.com/chriskempson/base16-vim.git base16
+    git clone https://github.com/chriskempson/base16-vim.git base16
     cp base16/colors/*.vim .
     
 ## 256 colorspace 
@@ -56,12 +56,12 @@ set termguicolors
 ```
 
 ### Green line numbers
-![green line numbers screenshot](https://raw.github.com/chriskempson/base16-vim/master/without-base16colorspace-256-with-256-terminal-theme.png)
+![green line numbers screenshot](without-base16colorspace-256-with-256-terminal-theme.png)
 
 If your Vim looks like the above image you are using a 256 terminal theme without setting `let base16colorspace=256` in your `~/.vimrc`. Either set `let base16colorspace=256` in your `~/.vimrc` or use a non 256 terminal theme.
 
 ### Blue line numbers
-![blue line numbers screenshot](https://raw.github.com/chriskempson/base16-vim/master/with-base16colorspace-256-without-base16-shell.png)
+![blue line numbers screenshot](with-base16colorspace-256-without-base16-shell.png)
 
 If your Vim looks like the above image you are setting `let base16colorspace=256` in your `~/.vimrc` but either not running [Base16 Shell](https://github.com/chriskempson/base16-shell) or [Base16 Shell](https://github.com/chriskempson/base16-shell) is not working for your terminal. Either ensure [Base16 Shell](https://github.com/chriskempson/base16-shell) is working by running the `colortest` available in the [Base16 Shell](https://github.com/chriskempson/base16-shell) repository or not setting `let base16colorspace=256` in your `~/.vimrc`.
 

@@ -1,6 +1,6 @@
 " scriptease.vim - An amalgamation of crap for editing runtime files
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      1.0
+" Version:      1.1
 
 if exists('g:loaded_scriptease') || &cp
   finish
@@ -24,7 +24,7 @@ command! -bang -range=-1 -nargs=? -complete=expression PP
       \       echon "\n" |
       \       let v:errmsg = '' |
       \       try |
-      \         call scriptease#pp_command(<bang>0, -1, eval(s:input)) |
+      \         call scriptease#pp_command(<bang>0, -1, eval(scriptease#prepare_eval(s:input))) |
       \       catch |
       \         echohl ErrorMsg |
       \         echo v:exception |
@@ -37,13 +37,13 @@ command! -bang -range=-1 -nargs=? -complete=expression PP
       \ endtry |
       \ else |
       \   let v:errmsg = '' |
-      \   call scriptease#pp_command(<bang>0, <count>, eval(<q-args>)) |
+      \   call scriptease#pp_command(<bang>0, <count>, eval(scriptease#prepare_eval(<q-args>))) |
       \ endif
 
 exe s:othercmd '-bang -range=0      -nargs=? -complete=expression PPmsg'
       \ 'if !empty(<q-args>) |'
       \ '  let v:errmsg = "" |'
-      \ '  call scriptease#ppmsg_command(<bang>0, <count>, empty(<q-args>) ? expand("<sfile>") : eval(<q-args>)) |'
+      \ '  call scriptease#ppmsg_command(<bang>0, <count>, empty(<q-args>) ? expand("<sfile>") : eval(scriptease#prepare_eval(<q-args>))) |'
       \ 'elseif &verbose >= <count> && !empty(expand("<sfile>")) |'
       \ ' echomsg expand("<sfile>").", line ".expand("<slnum>") |'
       \ 'endif'
@@ -116,14 +116,14 @@ augroup scriptease
   autocmd!
   autocmd FileType help call scriptease#setup_help()
   autocmd FileType vim call scriptease#setup_vim()
-  " Recent versions of vim.vim set iskeyword to include ":", which breaks among
+  " Older versions of vim.vim set iskeyword to include ":", which breaks among
   " other things tags. :(
   autocmd FileType vim
-        \ if get(g:, 'scriptease_iskeyword', 1) |
+        \ if get(g:, 'scriptease_iskeyword', 1) && &iskeyword =~# ':' |
         \   setlocal iskeyword-=: |
         \ endif
   autocmd Syntax vim
-        \ if get(g:, 'scriptease_iskeyword', 1) |
+        \ if get(g:, 'scriptease_iskeyword', 1) && &iskeyword =~# ':' |
         \   setlocal iskeyword-=: |
         \ endif
 augroup END
