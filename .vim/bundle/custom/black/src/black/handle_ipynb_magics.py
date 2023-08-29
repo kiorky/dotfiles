@@ -1,22 +1,21 @@
 """Functions to process IPython magics with."""
 
-from functools import lru_cache
-import dataclasses
 import ast
-from typing import Dict, List, Tuple, Optional
-
+import collections
+import dataclasses
 import secrets
 import sys
-import collections
+from functools import lru_cache
+from importlib.util import find_spec
+from typing import Dict, List, Optional, Tuple
 
 if sys.version_info >= (3, 10):
     from typing import TypeGuard
 else:
     from typing_extensions import TypeGuard
 
-from black.report import NothingChanged
 from black.output import out
-
+from black.report import NothingChanged
 
 TRANSFORMED_MAGICS = frozenset(
     (
@@ -57,21 +56,18 @@ class Replacement:
     src: str
 
 
-@lru_cache()
-def jupyter_dependencies_are_installed(*, verbose: bool, quiet: bool) -> bool:
-    try:
-        import IPython  # noqa:F401
-        import tokenize_rt  # noqa:F401
-    except ModuleNotFoundError:
-        if verbose or not quiet:
-            msg = (
-                "Skipping .ipynb files as Jupyter dependencies are not installed.\n"
-                "You can fix this by running ``pip install black[jupyter]``"
-            )
-            out(msg)
-        return False
-    else:
-        return True
+@lru_cache
+def jupyter_dependencies_are_installed(*, warn: bool) -> bool:
+    installed = (
+        find_spec("tokenize_rt") is not None and find_spec("IPython") is not None
+    )
+    if not installed and warn:
+        msg = (
+            "Skipping .ipynb files as Jupyter dependencies are not installed.\n"
+            'You can fix this by running ``pip install "black[jupyter]"``'
+        )
+        out(msg)
+    return installed
 
 
 def remove_trailing_semicolon(src: str) -> Tuple[str, bool]:
@@ -90,11 +86,7 @@ def remove_trailing_semicolon(src: str) -> Tuple[str, bool]:
     Mirrors the logic in `quiet` from `IPython.core.displayhook`, but uses
     ``tokenize_rt`` so that round-tripping works fine.
     """
-    from tokenize_rt import (
-        src_to_tokens,
-        tokens_to_src,
-        reversed_enumerate,
-    )
+    from tokenize_rt import reversed_enumerate, src_to_tokens, tokens_to_src
 
     tokens = src_to_tokens(src)
     trailing_semicolon = False
@@ -118,7 +110,7 @@ def put_trailing_semicolon_back(src: str, has_trailing_semicolon: bool) -> str:
     """
     if not has_trailing_semicolon:
         return src
-    from tokenize_rt import src_to_tokens, tokens_to_src, reversed_enumerate
+    from tokenize_rt import reversed_enumerate, src_to_tokens, tokens_to_src
 
     tokens = src_to_tokens(src)
     for idx, token in reversed_enumerate(tokens):
@@ -336,7 +328,8 @@ class CellMagicFinder(ast.NodeVisitor):
 
     For example,
 
-        %%time\nfoo()
+        %%time\n
+        foo()
 
     would have been transformed to
 

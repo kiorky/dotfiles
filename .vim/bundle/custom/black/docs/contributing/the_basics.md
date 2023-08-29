@@ -4,15 +4,17 @@ An overview on contributing to the _Black_ project.
 
 ## Technicalities
 
-Development on the latest version of Python is preferred. As of this writing it's 3.9.
-You can use any operating system.
+Development on the latest version of Python is preferred. You can use any operating
+system.
 
 Install development dependencies inside a virtual environment of your choice, for
 example:
 
 ```console
 $ python3 -m venv .venv
-$ source .venv/bin/activate
+$ source .venv/bin/activate # activation for linux and mac
+$ .venv\Scripts\activate # activation for windows
+
 (.venv)$ pip install -r test_requirements.txt
 (.venv)$ pip install -e .[d]
 (.venv)$ pre-commit install
@@ -30,6 +32,9 @@ the root of the black repo:
 
 # Optional Fuzz testing
 (.venv)$ tox -e fuzz
+
+# Format Black itself
+(.venv)$ tox -e run_self
 ```
 
 ### News / Changelog Requirement
@@ -62,7 +67,7 @@ If you make changes to docs, you can test they still build locally too.
 
 ```console
 (.venv)$ pip install -r docs/requirements.txt
-(.venv)$ pip install [-e] .[d]
+(.venv)$ pip install -e .[d]
 (.venv)$ sphinx-build -a -b html -W docs/ docs/_build/
 ```
 

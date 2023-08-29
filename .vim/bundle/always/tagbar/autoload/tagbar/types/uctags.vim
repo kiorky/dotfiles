@@ -187,6 +187,28 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ {'short' : 'v', 'long' : 'patterns',  'fold' : 0, 'stl' : 1}
     \ ]
     let types.beta = type_beta
+    " BibTeX {{{1
+    let type_bibtex = tagbar#prototypes#typeinfo#new()
+    let type_bibtex.ctagstype = 'bibtex'
+    let type_bibtex.kinds = [
+        \ {'short' : 'a', 'long' : 'article', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'b', 'long' : 'book', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'B', 'long' : 'booklet', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'c', 'long' : 'conference', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'i', 'long' : 'inbook', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'I', 'long' : 'incollection', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'j', 'long' : 'inproceedings', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'm', 'long' : 'manual', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'M', 'long' : 'mastersthesis', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'n', 'long' : 'misc', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'p', 'long' : 'phdthesis', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'P', 'long' : 'proceedings', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 's', 'long' : 'string', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 't', 'long' : 'techreport', 'fold' : 0, 'stl' : 0},
+        \ {'short' : 'u', 'long' : 'unpublished', 'fold' : 0, 'stl' : 0},
+    \ ]
+    let types.bibtex = type_bibtex
+    let types.bib = type_bibtex
     " C {{{1
     let type_c = tagbar#prototypes#typeinfo#new()
     let type_c.ctagstype = 'c'
@@ -560,6 +582,16 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ 'struct' : 's'
     \ }
     let types.go = type_go
+    " Haskell {{{1
+    let type_haskell = tagbar#prototypes#typeinfo#new()
+    let type_haskell.ctagstype = 'haskell'
+    let type_haskell.kinds = [
+        \ {'short' : 'm', 'long' : 'module',         'fold' : 0, 'stl' : 0},
+        \ {'short' : 't', 'long' : 'types',          'fold' : 0, 'stl' : 0},
+        \ {'short' : 'c', 'long' : 'constructors',   'fold' : 0, 'stl' : 0},
+        \ {'short' : 'f', 'long' : 'functions',      'fold' : 0, 'stl' : 1}
+    \ ]
+    let types.haskell = type_haskell
     " HTML {{{1
     let type_html = tagbar#prototypes#typeinfo#new()
     let type_html.ctagstype = 'html'
@@ -713,6 +745,7 @@ function! tagbar#types#uctags#init(supported_types) abort
     let type_markdown.sro = '""'
     let type_markdown.sort = 0
     let types.markdown = type_markdown
+    let types.pandoc = type_markdown
     " Matlab {{{1
     let type_matlab = tagbar#prototypes#typeinfo#new()
     let type_matlab.ctagstype = 'matlab'
@@ -983,7 +1016,8 @@ function! tagbar#types#uctags#init(supported_types) abort
         \ {'short' : 'M', 'long' : 'macro',           'fold' : 0, 'stl' : 1},
         \ {'short' : 'm', 'long' : 'struct field',    'fold' : 0, 'stl' : 1},
         \ {'short' : 'e', 'long' : 'enum variant',    'fold' : 0, 'stl' : 1},
-        \ {'short' : 'P', 'long' : 'method',          'fold' : 0, 'stl' : 1}
+        \ {'short' : 'P', 'long' : 'method',          'fold' : 0, 'stl' : 1},
+        \ {'short' : 'C', 'long' : 'constant',        'fold' : 0, 'stl' : 0},
     \ ]
     let type_rust.sro        = '::'
     let type_rust.kind2scope = {

@@ -2,45 +2,17 @@
 Parse Python code and perform AST validation.
 """
 import ast
-import platform
 import sys
-from typing import Any, Iterable, Iterator, List, Set, Tuple, Type, Union
+from typing import Final, Iterable, Iterator, List, Set, Tuple
 
-if sys.version_info < (3, 8):
-    from typing_extensions import Final
-else:
-    from typing import Final
-
-# lib2to3 fork
-from blib2to3.pytree import Node, Leaf
+from black.mode import VERSION_TO_FEATURES, Feature, TargetVersion, supports_feature
+from black.nodes import syms
 from blib2to3 import pygram
 from blib2to3.pgen2 import driver
 from blib2to3.pgen2.grammar import Grammar
 from blib2to3.pgen2.parse import ParseError
 from blib2to3.pgen2.tokenize import TokenError
-
-from black.mode import TargetVersion, Feature, supports_feature
-from black.nodes import syms
-
-ast3: Any
-
-_IS_PYPY = platform.python_implementation() == "PyPy"
-
-try:
-    from typed_ast import ast3
-except ImportError:
-    # Either our python version is too low, or we're on pypy
-    if sys.version_info < (3, 7) or (sys.version_info < (3, 8) and not _IS_PYPY):
-        print(
-            "The typed_ast package is required but not installed.\n"
-            "You can upgrade to Python 3.8+ or install typed_ast with\n"
-            "`python3 -m pip install typed-ast`.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    else:
-        ast3 = ast
-
+from blib2to3.pytree import Leaf, Node
 
 PY2_HINT: Final = "Python 2 support was removed in version 22.0."
 
@@ -53,7 +25,7 @@ def get_grammars(target_versions: Set[TargetVersion]) -> List[Grammar]:
     if not target_versions:
         # No target_version specified, so try all grammars.
         return [
-            # Python 3.7+
+            # Python 3.7-3.9
             pygram.python_grammar_no_print_statement_no_exec_statement_async_keywords,
             # Python 3.0-3.6
             pygram.python_grammar_no_print_statement_no_exec_statement,
@@ -73,7 +45,7 @@ def get_grammars(target_versions: Set[TargetVersion]) -> List[Grammar]:
     if not supports_feature(target_versions, Feature.ASYNC_KEYWORDS):
         # Python 3.0-3.6
         grammars.append(pygram.python_grammar_no_print_statement_no_exec_statement)
-    if supports_feature(target_versions, Feature.PATTERN_MATCHING):
+    if any(Feature.PATTERN_MATCHING in VERSION_TO_FEATURES[v] for v in target_versions):
         # Python 3.10+
         grammars.append(pygram.python_grammar_soft_keywords)
 
@@ -149,36 +121,34 @@ def lib2to3_unparse(node: Node) -> str:
 
 
 def parse_single_version(
-    src: str, version: Tuple[int, int]
-) -> Union[ast.AST, ast3.AST]:
+    src: str, version: Tuple[int, int], *, type_comments: bool
+) -> ast.AST:
     filename = "<unknown>"
-    # typed_ast is needed because of feature version limitations in the builtin ast
-    if sys.version_info >= (3, 8) and version >= (3,):
-        return ast.parse(src, filename, feature_version=version)
-    elif version >= (3,):
-        if _IS_PYPY:
-            return ast3.parse(src, filename)
-        else:
-            return ast3.parse(src, filename, feature_version=version[1])
-    raise AssertionError("INTERNAL ERROR: Tried parsing unsupported Python version!")
+    return ast.parse(
+        src, filename, feature_version=version, type_comments=type_comments
+    )
 
 
-def parse_ast(src: str) -> Union[ast.AST, ast3.AST]:
+def parse_ast(src: str) -> ast.AST:
     # TODO: support Python 4+ ;)
     versions = [(3, minor) for minor in range(3, sys.version_info[1] + 1)]
 
     first_error = ""
     for version in sorted(versions, reverse=True):
         try:
-            return parse_single_version(src, version)
+            return parse_single_version(src, version, type_comments=True)
         except SyntaxError as e:
             if not first_error:
                 first_error = str(e)
 
+    # Try to parse without type comments
+    for version in sorted(versions, reverse=True):
+        try:
+            return parse_single_version(src, version, type_comments=False)
+        except SyntaxError:
+            pass
+
     raise SyntaxError(first_error)
-
-
-ast3_AST: Final[Type[ast3.AST]] = ast3.AST
 
 
 def _normalize(lineend: str, value: str) -> str:
@@ -191,23 +161,25 @@ def _normalize(lineend: str, value: str) -> str:
     return normalized.strip()
 
 
-def stringify_ast(node: Union[ast.AST, ast3.AST], depth: int = 0) -> Iterator[str]:
+def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
     """Simple visitor generating strings to compare ASTs by content."""
 
-    node = fixup_ast_constants(node)
+    if (
+        isinstance(node, ast.Constant)
+        and isinstance(node.value, str)
+        and node.kind == "u"
+    ):
+        # It's a quirk of history that we strip the u prefix over here. We used to
+        # rewrite the AST nodes for Python version compatibility and we never copied
+        # over the kind
+        node.kind = None
 
     yield f"{'  ' * depth}{node.__class__.__name__}("
 
-    type_ignore_classes: Tuple[Type[Any], ...]
     for field in sorted(node._fields):  # noqa: F402
-        # TypeIgnore will not be present using pypy < 3.8, so need for this
-        if not (_IS_PYPY and sys.version_info < (3, 8)):
-            # TypeIgnore has only one field 'lineno' which breaks this comparison
-            type_ignore_classes = (ast3.TypeIgnore,)
-            if sys.version_info >= (3, 8):
-                type_ignore_classes += (ast.TypeIgnore,)
-            if isinstance(node, type_ignore_classes):
-                break
+        # TypeIgnore has only one field 'lineno' which breaks this comparison
+        if isinstance(node, ast.TypeIgnore):
+            break
 
         try:
             value: object = getattr(node, field)
@@ -222,51 +194,34 @@ def stringify_ast(node: Union[ast.AST, ast3.AST], depth: int = 0) -> Iterator[st
                 # parentheses and they change the AST.
                 if (
                     field == "targets"
-                    and isinstance(node, (ast.Delete, ast3.Delete))
-                    and isinstance(item, (ast.Tuple, ast3.Tuple))
+                    and isinstance(node, ast.Delete)
+                    and isinstance(item, ast.Tuple)
                 ):
-                    for item in item.elts:
-                        yield from stringify_ast(item, depth + 2)
+                    for elt in item.elts:
+                        yield from stringify_ast(elt, depth + 2)
 
-                elif isinstance(item, (ast.AST, ast3.AST)):
+                elif isinstance(item, ast.AST):
                     yield from stringify_ast(item, depth + 2)
 
-        # Note that we are referencing the typed-ast ASTs via global variables and not
-        # direct module attribute accesses because that breaks mypyc. It's probably
-        # something to do with the ast3 variables being marked as Any leading
-        # mypy to think this branch is always taken, leaving the rest of the code
-        # unanalyzed. Tighting up the types for the typed-ast AST types avoids the
-        # mypyc crash.
-        elif isinstance(value, (ast.AST, ast3_AST)):
+        elif isinstance(value, ast.AST):
             yield from stringify_ast(value, depth + 2)
 
         else:
             normalized: object
-            # Constant strings may be indented across newlines, if they are
-            # docstrings; fold spaces after newlines when comparing. Similarly,
-            # trailing and leading space may be removed.
             if (
                 isinstance(node, ast.Constant)
                 and field == "value"
                 and isinstance(value, str)
             ):
+                # Constant strings may be indented across newlines, if they are
+                # docstrings; fold spaces after newlines when comparing. Similarly,
+                # trailing and leading space may be removed.
                 normalized = _normalize("\n", value)
+            elif field == "type_comment" and isinstance(value, str):
+                # Trailing whitespace in type comments is removed.
+                normalized = value.rstrip()
             else:
                 normalized = value
             yield f"{'  ' * (depth+2)}{normalized!r},  # {value.__class__.__name__}"
 
     yield f"{'  ' * depth})  # /{node.__class__.__name__}"
-
-
-def fixup_ast_constants(node: Union[ast.AST, ast3.AST]) -> Union[ast.AST, ast3.AST]:
-    """Map ast nodes deprecated in 3.8 to Constant."""
-    if isinstance(node, (ast.Str, ast3.Str, ast.Bytes, ast3.Bytes)):
-        return ast.Constant(value=node.s)
-
-    if isinstance(node, (ast.Num, ast3.Num)):
-        return ast.Constant(value=node.n)
-
-    if isinstance(node, (ast.NameConstant, ast3.NameConstant)):
-        return ast.Constant(value=node.value)
-
-    return node

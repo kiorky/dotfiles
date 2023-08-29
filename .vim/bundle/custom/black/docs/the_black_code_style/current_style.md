@@ -8,9 +8,10 @@ deliberately limited and rarely added. Previous formatting is taken into account
 little as possible, with rare exceptions like the magic trailing comma. The coding style
 used by _Black_ can be viewed as a strict subset of PEP 8.
 
-_Black_ reformats entire files in place. It doesn't reformat blocks that start with
-`# fmt: off` and end with `# fmt: on`, or lines that ends with `# fmt: skip`.
-`# fmt: on/off` have to be on the same level of indentation. It also recognizes
+_Black_ reformats entire files in place. It doesn't reformat lines that end with
+`# fmt: skip` or blocks that start with `# fmt: off` and end with `# fmt: on`.
+`# fmt: on/off` must be on the same level of indentation and in the same block, meaning
+no unindents beyond the initial indentation level between them. It also recognizes
 [YAPF](https://github.com/google/yapf)'s block comments to the same effect, as a
 courtesy for straddling code.
 
@@ -84,6 +85,19 @@ def very_important_function(
         ...
 ```
 
+If a data structure literal (tuple, list, set, dict) or a line of "from" imports cannot
+fit in the allotted length, it's always split into one element per line. This minimizes
+diffs as well as enables readers of code to find which commit introduced a particular
+entry. This also makes _Black_ compatible with
+[isort](../guides/using_black_with_other_tools.md#isort) with the ready-made `black`
+profile or manual configuration.
+
+You might have noticed that closing brackets are always dedented and that a trailing
+comma is always added. Such formatting produces smaller diffs; when you add or remove an
+element, it's always just one line. Also, having the closing bracket dedented provides a
+clear delimiter between two distinct sections of the code that otherwise share the same
+indentation level (like the arguments list and the docstring in the example above).
+
 (labels/why-no-backslashes)=
 
 _Black_ prefers parentheses over backslashes, and will remove backslashes if found.
@@ -126,18 +140,7 @@ If you're reaching for backslashes, that's a clear signal that you can do better
 slightly refactor your code. I hope some of the examples above show you that there are
 many ways in which you can do it.
 
-You might have noticed that closing brackets are always dedented and that a trailing
-comma is always added. Such formatting produces smaller diffs; when you add or remove an
-element, it's always just one line. Also, having the closing bracket dedented provides a
-clear delimiter between two distinct sections of the code that otherwise share the same
-indentation level (like the arguments list and the docstring in the example above).
-
-If a data structure literal (tuple, list, set, dict) or a line of "from" imports cannot
-fit in the allotted length, it's always split into one element per line. This minimizes
-diffs as well as enables readers of code to find which commit introduced a particular
-entry. This also makes _Black_ compatible with
-[isort](../guides/using_black_with_other_tools.md#isort) with the ready-made `black`
-profile or manual configuration.
+(labels/line-length)=
 
 ### Line length
 
@@ -157,33 +160,35 @@ harder to work with line lengths exceeding 100 characters. It also adversely aff
 side-by-side diff review on typical screen resolutions. Long lines also make it harder
 to present code neatly in documentation or talk slides.
 
-If you're using Flake8, you can bump `max-line-length` to 88 and mostly forget about it.
-However, it's better if you use [Bugbear](https://github.com/PyCQA/flake8-bugbear)'s
-B950 warning instead of E501, and bump the max line length to 88 (or the `--line-length`
-you used for black), which will align more with black's _"try to respect
-`--line-length`, but don't become crazy if you can't"_. You'd do it like this:
+#### Flake8
 
-```ini
-[flake8]
-max-line-length = 88
-...
-select = C,E,F,W,B,B950
-extend-ignore = E203, E501
-```
+If you use Flake8, you have a few options:
 
-Explanation of why E203 is disabled can be found further in this documentation. And if
-you're curious about the reasoning behind B950,
-[Bugbear's documentation](https://github.com/PyCQA/flake8-bugbear#opinionated-warnings)
-explains it. The tl;dr is "it's like highway speed limits, we won't bother you if you
-overdo it by a few km/h".
+1. Recommended is using [Bugbear](https://github.com/PyCQA/flake8-bugbear) and enabling
+   its B950 check instead of using Flake8's E501, because it aligns with Black's 10%
+   rule. Install Bugbear and use the following config:
 
-**If you're looking for a minimal, black-compatible flake8 configuration:**
+   ```ini
+   [flake8]
+   max-line-length = 80
+   ...
+   select = C,E,F,W,B,B950
+   extend-ignore = E203, E501
+   ```
 
-```ini
-[flake8]
-max-line-length = 88
-extend-ignore = E203
-```
+   The rationale for E950 is explained in
+   [Bugbear's documentation](https://github.com/PyCQA/flake8-bugbear#opinionated-warnings).
+
+2. For a minimally compatible config:
+
+   ```ini
+   [flake8]
+   max-line-length = 88
+   extend-ignore = E203
+   ```
+
+An explanation of why E203 is disabled can be found in the [Slices section](#slices) of
+this page.
 
 ### Empty lines
 
@@ -193,7 +198,45 @@ that in-function vertical whitespace should only be used sparingly.
 _Black_ will allow single empty lines inside functions, and single and double empty
 lines on module level left by the original editors, except when they're within
 parenthesized expressions. Since such expressions are always reformatted to fit minimal
-space, this whitespace is lost.
+space, this whitespace is lost. The other exception is that it will remove any empty
+lines immediately following a statement that introduces a new indentation level.
+
+```python
+# in:
+
+def foo():
+
+    print("All the newlines above me should be deleted!")
+
+
+if condition:
+
+    print("No newline above me!")
+
+    print("There is a newline above me, and that's OK!")
+
+
+class Point:
+
+    x: int
+    y: int
+
+# out:
+
+def foo():
+    print("All the newlines above me should be deleted!")
+
+
+if condition:
+    print("No newline above me!")
+
+    print("There is a newline above me, and that's OK!")
+
+
+class Point:
+    x: int
+    y: int
+```
 
 It will also insert proper spacing before and after function definitions. It's one line
 before and after inner functions and two lines before and after module-level functions
@@ -211,11 +254,12 @@ required due to an inner function starting immediately after.
 
 _Black_ does not format comment contents, but it enforces two spaces between code and a
 comment on the same line, and a space before the comment text begins. Some types of
-comments that require specific spacing rules are respected: doc comments (`#: comment`),
-section comments with long runs of hashes, and Spyder cells. Non-breaking spaces after
-hashes are also preserved. Comments may sometimes be moved because of formatting
-changes, which can break tools that assign special meaning to them. See
-[AST before and after formatting](#ast-before-and-after-formatting) for more discussion.
+comments that require specific spacing rules are respected: shebangs (`#! comment`), doc
+comments (`#: comment`), section comments with long runs of hashes, and Spyder cells.
+Non-breaking spaces after hashes are also preserved. Comments may sometimes be moved
+because of formatting changes, which can break tools that assign special meaning to
+them. See [AST before and after formatting](#ast-before-and-after-formatting) for more
+discussion.
 
 ### Trailing commas
 
@@ -233,6 +277,8 @@ manually and _Black_ will keep it.
 A pre-existing trailing comma informs _Black_ to always explode contents of the current
 bracket pair into one item per line. Read more about this in the
 [Pragmatism](#pragmatism) section below.
+
+(labels/strings)=
 
 ### Strings
 
@@ -399,16 +445,16 @@ recommended code style for those files is more terse than PEP 8:
 _Black_ enforces the above rules. There are additional guidelines for formatting `.pyi`
 file that are not enforced yet but might be in a future version of the formatter:
 
-- all function bodies should be empty (contain `...` instead of the body);
-- do not use docstrings;
 - prefer `...` over `pass`;
-- for arguments with a default, use `...` instead of the actual default;
 - avoid using string literals in type annotations, stub files support forward references
   natively (like Python 3.7 code with `from __future__ import annotations`);
 - use variable annotations instead of type comments, even for stubs that target older
-  versions of Python;
-- for arguments that default to `None`, use `Optional[]` explicitly;
-- use `float` instead of `Union[int, float]`.
+  versions of Python.
+
+### Line endings
+
+_Black_ will normalize line endings (`\n` or `\r\n`) based on the first line ending of
+the file.
 
 ## Pragmatism
 
@@ -417,6 +463,8 @@ initial author. This was fine at the time as it made the implementation simpler 
 there were not many users anyway. Not many edge cases were reported. As a mature tool,
 _Black_ does make some exceptions to rules it otherwise holds. This section documents
 what those exceptions are and why this is the case.
+
+(labels/magic-trailing-comma)=
 
 ### The magic trailing comma
 
@@ -454,17 +502,19 @@ default by (among others) GitHub and Visual Studio Code, differentiates between
 r-strings and R-strings. The former are syntax highlighted as regular expressions while
 the latter are treated as true raw strings with no special semantics.
 
+(labels/ast-changes)=
+
 ### AST before and after formatting
 
-When run with `--safe`, _Black_ checks that the code before and after is semantically
-equivalent. This check is done by comparing the AST of the source with the AST of the
-target. There are three limited cases in which the AST does differ:
+When run with `--safe` (the default), _Black_ checks that the code before and after is
+semantically equivalent. This check is done by comparing the AST of the source with the
+AST of the target. There are three limited cases in which the AST does differ:
 
 1. _Black_ cleans up leading and trailing whitespace of docstrings, re-indenting them if
    needed. It's been one of the most popular user-reported features for the formatter to
    fix whitespace issues with docstrings. While the result is technically an AST
-   difference, due to the various possibilities of forming docstrings, all realtime use
-   of docstrings that we're aware of sanitizes indentation and leading/trailing
+   difference, due to the various possibilities of forming docstrings, all real-world
+   uses of docstrings that we're aware of sanitize indentation and leading/trailing
    whitespace anyway.
 
 1. _Black_ manages optional parentheses for some statements. In the case of the `del`
