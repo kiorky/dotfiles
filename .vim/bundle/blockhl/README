@@ -1,0 +1,14 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=104
+
+Blockhl.vim supports block-oriented highlighting of leading white space for C/C++.
+
+For dark backgrounds, as one gets deeper into curly braces, the leading indentation will change to ever lighter colors (up to 7 such levels, then it cycles).
+
+For light backgrounds, increasing curly brace depths will cause ever darker colors to be used (again, 7 levels).
+
+You will need to source the <blockhl.vim> file in if you change colorschemes.
+
+	Required: gvim
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#BLOCKHL)
+

@@ -1,0 +1,19 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=628
+
+Usage:  :SeeTab    -- toggles SeeTab on and off
+
+If expandtabs is off, then leading tabs show up with one bar per tab.
+
+If expandtabs is on, then one leading whitespace at intervals
+specified by your tabstop is marked by a highlighted space.
+
+To change the default colors of foreground as magenta and background as black,
+just use something like the following setting in your <.vimrc>:
+
+    let g:SeeTabCtermFG="black"
+    let g:SeeTabCtermBG="red"
+    let g:SeeTabGuiFG="black"
+    let g:SeeTabGuiBG="orange"
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#SEETAB)
+
