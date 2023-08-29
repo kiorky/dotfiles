@@ -1,0 +1,132 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=195
+
+There are a fair number of ispell/aspell based spelling checkers out there -- but engspchk isn't one of them.  The engspchk source uses Vim's native syntax highlighting to catch spelling errors, so you get quick on-the-fly spellchecking!  An optional external program, agrep, may be used to suggest alternative spellings. With the optional <engspchk.rare> dictionary, <engspchk.vim> now provides over 186730 words (over 189000 when including proper names)!
+
+Engspchk flags rare/unusual words and allows the user to specify his/her preferred dialect (let g:spchkdialect="usa", "uk", or "can").  Click-N-Fix by enabling the mouse (example: :set mouse=n) and a leftmouse click in the document will advance the cursor to the next spelling error; a leftmouse click in the alternative spellings window will substitute the selected word for the misspelled word.  A rightmouse click will do that substitute for all such misspellings in your file.
+
+Engspchk is no longer English-only: it supports multiple languages.  You can tell it what language (dictionary) to use by either renaming it (ex.  engspchk.vim -> frspchk.vim for French) or by specifying the variable g:spchklang (ex. let g:spchklang="ger" for German).  See http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_scripts for some dictionaries: currently, that includes Dutch, French, Galician, German, Hungarian, Italian, Polish, Russian, Spanish, and Yiddish.
+
+The engspchk s/w includes maps for jumping to the next and preceding spelling errors, alternative spellings, and for saving words either permanently in a custom dictionary or just for the current session.
+
+Engspchk's dictionaries are optional.  SpellChecker, for example, claims to load faster because it doesn't handle unusual words.  Merely deleting <CVIMSYN/engspchk.rare> will speed up loading (which is pretty fast anyway).  Both support flagging dialect-sensitive words, but only Engspchk has Click-N-Fix and rare word support.  Telling the difference between "or the" and "ort he" is easy -- the "ort" will show up with RareWord highlighting (default: black on cyan).
+
+To begin checking your spelling with engspchk, and assuming that <engspchk.vim> has been put into your .vim/plugin directory, simply start up engspchk by applying the English Check map:
+
+    \ec
+
+and your spelling errors will show up highlighted in white-on-red.  Alternatively, if you're using gvim, select DrChip:Load Spelling Checker from the menu.
+
+If you want to change languages, engspchk provides a lot of ways to help you:
+
+  * set g:spchklang appropriately and \ec will load that language's dictionary.  The backslash is actually using <mapleader>, so you can customize the backslash to whatever you want.
+  * you may embed a modeline at the beginning or at the end of the file:  ex. spchk: lang=nl.
+  * using gvim, there's a "Load AltLang Spelling Checker" submenu for choosing whatever language(s) for which you have dictionaries!
+  * engspchk looks over your dictionaries and constructs simple commands: :Engspchk  :Frspchk  :Gerspchk  :Nlspchk  :Spanspchk  etc,
+
+It will work with some cooperating syntax files to check out spelling in comments, including:
+
+amiga, bib, c, cpp, csh, d, dcl, dtml, elmfilt, exports, fortran, html, java, lex, lisp, mail, maple, sh, sm, smarty, tcsh, tex, vim, and xmath
+
+If your favorite computer language isn't on that list, perhaps you can talk that language's maintainer into making it engspchk compatible.
+
+More Features:
+
+Version 42-45:
+  click'n'fix button support improved: with a click, one can re-try alternates, accept misspellings (skip by them), and apply corrected spelling to entire document.  (see :he engspchk-clicknfix)
+
+  The alternative spellings window can now be either on the bottom or on the right hand side. (see :he engspchk-variables)
+
+  PreProc highlighting used to emphasize word selected for alternate spellings
+
+  A number of bug fixes -- see   :help |engspchk-history| (after downloading, of course!)
+
+Version 41:
+    Engspchk can be loaded into multiple windows concurrently; one can force spell checking of non-highlighted text with the g:spchknonhl variable; RareWord and Dialect added to the @Spell cluster; and the 'hidden' option is set to allow preserve engspchk highlighting (\ee will restore the user's hidden setting).
+
+Version 40:
+    *@Spell cluster utilized.
+    *Allow two or more sequential capitalized
+     letters to be ignored (English only, acronym support).
+    *Yura Kloubakov's inclusion of the user's
+     mapleader in the DrChip menu and removal
+     of \ec after use
+    *Entered dozens of city names into <engspchk.proper>
+
+Version 34:
+    The latest engspchk includes:
+    differentiating between common, dialect, and rare words, saving/restoring gdefault option maps to make a word a temporary/permanent BadWord
+    Click-N-Fix
+
+Version 32:
+    English dialects supported (usa can uk); bug fixes (ending engspchk, alternatives, etc)
+
+
+Version 30:
+    Engspchk, the native Vim spelling checker, is better than ever!
+
+    * Click'n'Fix:
+      - leftmouse to move to the next error
+      - leftmouse to select correctly spelled word
+      - rightmouse to fix all instances of
+        misspelled word
+      Makes spell-checking a document Fast and Easy!
+
+    * New maps:
+      - \eS, \eT to take a word under the cursor
+        out of the user dictionary (permanently
+        or just this session)
+      - \ee to end engspchk; restores prior maps
+        and restores normal highlighting
+      - <tab> in alternative-word window does
+        a global replace of the misspelled word
+        with the user-selected correctly spelled
+        word
+
+    * optional auto-jump to next spelling error
+      for \es, \et, and \ea.
+    * will signal if syntax highlighting is off.
+    * Plus a bugfix for Mac users
+
+    Plus engspchk supports a non-English languages,
+    checks for spelling inside comments for C, C++,
+    Fortran, DCL (VMS), csh/sh/ksh/bash, tex, and
+    more.
+
+Version 27: New features for the Vim-based spelling checker!
+
+    * Maps to remove words from the user dictionary
+      (\eT, \eS).
+
+    * If g:spchk_autonext exists, then \et, \es, and
+      \ea (if a word is selected) will automatically
+      do a \en jump to the next spelling error.
+
+    * \en and \ep will now examine words inside folds,
+      opening the fold as necessary to display spelling
+      errors.
+
+Version 23:
+    Can handle English, French, German, Spanish, Dutch,
+    Hungarian -- just set up a dictionary and set a
+    g:spchklang variable!  Native vim code, no external
+    programs necessary
+
+Version 19:
+    Now contains: engspchk.vim engspchk.dict
+    engspchk.wb engspchk.txt Over 187192 words!
+    non-English support menus, documentation, English
+    punctuation checking (g:spchkpunc)
+
+
+Alternative Spelling Checkers
+    SpellChecker - Ajit Thakkar                   - syntax     - vimscript#499
+    vimspell          - Mathieu Clabaut            - [ia]spell   - vimscript#465
+    spellcheck      - Matthias Veit                 - ispell       - vimscript#131
+    spell                - Yegappan Lakshmanan - spell        - vimscript#232
+    vim-spell         - Luc Hermite                    - [ia]spell  - vimscript#135
+
+
+Thank you for ranking engspchk!
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#ENGSPCHK)
+

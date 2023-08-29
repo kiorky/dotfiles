@@ -1,0 +1,122 @@
+*EasyAccents.txt*	EasyAccents				Sep 08, 2008
+
+Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*easyaccents-copyright*
+           The VIM LICENSE applies to EasyAccents.vim and EasyAccents.txt
+           (see |copyright|) except use "EasyAccents" instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Contents    				*easyaccents* *easyaccents-contents*
+
+	1. Contents.................: |easyaccents-contents|
+	2. EasyAccents Manual.......: |easyaccents-manual|
+	3. Installation.............: |easyaccents-install|
+	4. EasyAccents History......: |easyaccents-history|
+
+==============================================================================
+
+2. EasyAccents Manual  					*easyaccents-manual*
+	
+TOGGLING EASYACCENTS ON AND OFF				*\eza*
+	The map >
+		\eza
+<	will toggle EasyAccents on and off.  Actually, its >
+		<Leader>eza
+<	so you may specify the leading character for the map.
+
+							*:EZA*
+	Alternatively, you may use the >
+		:EZA
+<	command to toggle EasyAccents between on and off.
+
+USING EASYACCENTS
+	 These maps all work during insert mode.  Type a' a` A' c, etc and
+	 accented characters result.  ([aeioubcAEIOUBC], then accent)
+	
+	 If you want a vowel (or [bBcC]) to be followed by an accent,
+	 use a backslash to escape it:  a\'  for example will become a'
+	
+	 Sourcing this file acts as a toggle to switch EasyAccents on
+	 and off.  By default, the mapping <Leader>eza will toggle
+	 EasyAccents, too, by calling <Plug>ToggleEasyAccents .
+	
+	 If g:EasyAccents_VowelFirst is set to zero in your <.vimrc>,
+	   then                'a `a `A ,b ,c  etc.
+	   (gvim) will map to   á  à  À  ß  ç
+	   (accent, then [aeioubcAEIOUBC])
+	
+	 If g:EasyAccents_VowelFirst is set to one in your <.vimrc> (also default)
+	   then                a' a` A` b, c,  etc.
+	   (gvim) will map to  á  à  À  ß  ç
+	   ([aeioubcAEIOUBC], then accent)
+	
+	 New with version 6:
+	   Also          a@ A@ D@ e@ E@ N~ p@ u@ x@
+	   (gvim) map to  å Å  Ð  æ  Æ  Ñ  Þ  µ  ×
+
+	 New with version 9: (thanks to Kevin Monceaux)
+	                 ?@ !@ n~ o~ d@
+			 ¿  ¡  ñ  õ  ð
+	
+	Caveat: the maps will not work if "set paste" is on, so that's
+	        another way to bypass EasyAccents as needed.
+
+						*easyaccents-table*
+		    EasyAccent Sequence : Output Table
+	     +------------------------------------------------+
+	     | S  O     S  O     S  O    S  O    S  O    S  O |
+	     | E  U     E  U     E  U    E  U    E  U    E  U |
+	     | Q  T     Q  T     Q  T    Q  T    Q  T    Q  T |
+	     +------------------------------------------------+
+	     | a' á     e' é     i' í    o' ó    u' ú    y' ý |
+	     | a` à     e` è     i` ì    o` ò    u` ù    y` ỳ |
+	     | a~ ã     e~ ẽ     i~ ĩ    o~ õ    u~ ũ    y~ ỹ |
+	     | a: ä     e: ë     i^ î    o: ö    u: ü    y: ÿ |
+	     | a^ â     e^ ê     i: ï    o^ ô    u^ û    y^ ŷ |
+	     | A' Á     E' É     I' Í    o@ œ    U' Ú    Y' Ý |
+	     | A` À     E` È     I` Ì    O' Ó    U` Ù    Y` Ỳ |
+	     | A~ Ã     E~ Ẽ     I~ Ĩ    O` Ò    U~ Ũ    Y~ Ỹ |
+	     | A: Ä     E: Ë     I: Ï    O~ Õ    U: Ü    Y: Ÿ |
+	     | A^ Â     E^ Ê     I^ Î    O: Ö    U^ Û    Y^ Ŷ |
+	     | a@ å     e@ æ             O^ Ô    u@ µ         |
+	     | A@ Å     E@ Æ             O@ Œ                 |
+	     +------------------------------------------------+
+             | b, ß     C, Ç     D@ Ð    r@ ř    x@ ×    !@ ¡ |
+             | c, ç     d@ ð     N~ Ñ    x@ ×    ?@ ¿    @@ Ø |
+	     +------------------------------------------------+
+
+
+==============================================================================
+
+3. Installation						*easyaccents-install*
+
+	EasyAccents is now designed to be toggled on and off.  When on it may
+	interfere with programming languages which often use characters such
+	as single-quotes, backquotes, etc.
+
+
+==============================================================================
+
+4. EasyAccents History					*easyaccents-history*
+
+v9 Jan 28, 2005 : * moved usage and installation instructions to this help file
+                  * g:loaded_EasyAccents (containing version number when loaded)
+		    is now separated from b:EasyAccentsOn, which indicates if
+		    EasyAccents is enabled/disabled on a buffer-by-buffer basis
+		  * Now includes mappings for y and Y as vowels
+		  * Now includes a mapping for r@ (ř)
+   Feb 04, 2008   * Included additional accented character support
+   		    (ñ ð ¿ ¡ and a \@ fix, tnx to Kevin Monceaux)
+   Aug 12, 2008   * :EZA command implemented
+v8 May 25, 2004 : * changed \ea to \eza to make EasyAccents cooperate with
+                    engspchk
+v7 May 19, 2004 : * bugfix: first-column, no virtual edit -> no accented
+                    character.  Fixed
+v6 Nov 18, 2003 : * maps for a@ A@ D@ e@ E@ N~ p@ u@ x@ now included
+v5 Aug 21, 2003 : * included g:EasyAccents_VowelFirst option
+                  * fixed insert vs append bug
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:ma:fenc=utf8:noma
