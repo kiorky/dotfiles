@@ -24,16 +24,11 @@ import zipfile
 from base64 import b64encode
 from io import BytesIO
 from pathlib import Path
-from typing import Any
+from typing import Any, Final, Literal
 
 import click
 import urllib3
 from packaging.version import Version
-
-if sys.version_info >= (3, 8):
-    from typing import Final, Literal
-else:
-    from typing_extensions import Final, Literal
 
 COMMENT_FILE: Final = ".pr-comment.json"
 DIFF_STEP_NAME: Final = "Generate HTML diff report"
@@ -119,7 +114,7 @@ def main() -> None:
 @main.command("config", help="Acquire run configuration and metadata.")
 @click.argument("event", type=click.Choice(["push", "pull_request"]))
 def config(event: Literal["push", "pull_request"]) -> None:
-    import diff_shades
+    import diff_shades  # type: ignore[import-not-found]
 
     if event == "push":
         jobs = [{"mode": "preview-changes", "force-flag": "--force-preview-style"}]

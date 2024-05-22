@@ -10,6 +10,60 @@
 	display: legacy;
 }
 
+@position-try --anchor-position-1 {
+	anchor-name: auto;
+	anchor-scope: auto;
+	inset-area: auto;
+	position-anchor: auto;
+	position-try: auto;
+	position-try-options: auto;
+	position-try-order: auto;
+	display: span-left;
+	display: span-right;
+	display: span-x-start;
+	display: span-x-end;
+	display: x-self-start;
+	display: x-self-end;
+	display: span-x-self-start;
+	display: span-x-self-end;
+	display: span-all;
+	display: span-top;
+	display: span-bottom;
+	display: span-y-start;
+	display: span-y-end;
+	display: y-self-start;
+	display: y-self-end;
+	display: span-y-self-start;
+	display: span-y-self-end;
+	display: span-block-start;
+	display: span-block-end;
+	display: self-block-start;
+	display: self-block-end;
+	display: span-self-block-start;
+	display: span-self-block-end;
+	display: span-inline-start;
+	display: span-inline-end;
+	display: self-inline-start;
+	display: self-inline-end;
+	display: span-self-inline-start;
+	display: span-self-inline-end;
+	display: span-start;
+	display: span-end;
+	display: span-self-start;
+	display: span-self-end;
+	display: implicit;
+	display: anchor-center;
+	display: most-width;
+	display: most-height;
+	display: most-block-size;
+	display: most-inline-size;
+	display: flip-block;
+	display: flip-inline;
+	display: flip-start;
+	display: anchor(--x 50%);
+	display: anchor-size(--foo height);
+}
+
 .animations-1 {
 	display: auto;
 }
@@ -100,6 +154,8 @@
 .color-5 {
 	display: device-cmyk(0, 81%, 81%, 30%);
 	display: color-mix(red yellow 65%);
+	display: light-dark(white, black);
+	display: contrast-color(red max);
 }
 
 @color-profile swopc {
@@ -142,8 +198,8 @@
 }
 
 @supports (display: auto) or
-(display: auto) not
-(display: auto) {
+	(display: auto) not
+	(display: auto) {
 	.conditional-3 {
 		display: auto;
 	}
@@ -157,7 +213,10 @@
 
 @when media(screen) {
 	.conditional-5 {
-		display: auto;
+		container-type: auto;
+		container-name: auto;
+		container: auto;
+		display: inline-size;
 	}
 } @else {
 	.conditional-5 {
@@ -371,10 +430,10 @@
 }
 
 .fonts-4 {
+	font-synthesis-position: auto;
 	font-synthesis-weight: auto;
 	font-synthesis-style: auto;
 	font-synthesis-small-caps: auto;
-	font-variation-settings: auto;
 	font-named-instance: auto;
 	font-display: auto;
 	ascent-override: auto;
@@ -672,6 +731,7 @@ mask {
 .page-3 {
 	marks: auto;
 	bleed: auto;
+	page-orientation: auto;
 }
 
 .page-floats-3 {
@@ -845,6 +905,15 @@ mask {
 	display: y;
 	display: mandatory;
 	display: proximity;
+}
+
+.scroll-snap-2,
+.scroll-snap-2:snapped-x,
+.scroll-snap-2:snapped-y,
+.scroll-snap-3:snapped-inline,
+.scroll-snap-2:snapped-block,
+.scroll-snap-2:snapped {
+	scroll-start-target: auto;
 }
 
 .scrollbars-1 {
@@ -1108,7 +1177,8 @@ view {
 	text-spacing-trim: auto;
 	text-spacing: auto;
 	word-boundary-detection: auto;
-	word-boundary-expansion: auto;
+	word-space-transform: auto;
+	display: math-auto;
 	display: preserve-breaks;
 	display: preserve-spaces;
 	display: discard-inner;
@@ -1120,13 +1190,10 @@ view {
 	display: pre-wrap-auto;
 	display: no-limit;
 	display: spread;
-	display: trim-start;
-	display: space-start;
+	display: space-all;
+	display: trim-both;
 	display: space-first;
-	display: trim-end;
-	display: space-end;
-	display: trim-adjacent;
-	display: space-adjacent;
+	display: trim-all;
 	display: no-compress;
 	display: ideograph-alpha;
 	display: ideograph-numeric;
@@ -1190,6 +1257,12 @@ view {
 
 .transitions-1 {
 	display: auto;
+}
+
+@starting-style {
+	.transitions-2 {
+		display: auto;
+	}
 }
 
 .typed-om-1 {
@@ -1269,7 +1342,6 @@ view {
 	display: exp(1);
 	display: abs(-1);
 	display: sign(-4);
-	display: mix(33%; 1px; 2px);
 }
 
 .variables-1 {
@@ -1282,6 +1354,13 @@ view {
 .view-transitions-1::view-transition-old(*),
 .view-transitions-1::view-transition-new(*) {
 	view-transition-name: auto;
+}
+
+.view-transitions-2:active-view-transition,
+.view-transitions-2:active-view-transition-type(slide-in) {
+	view-transition-class: auto;
+	navigation: auto;
+	types: auto;
 }
 
 .web-animations-1 {

@@ -1,9 +1,11 @@
 """
 Parse Python code and perform AST validation.
 """
+
 import ast
 import sys
-from typing import Final, Iterable, Iterator, List, Set, Tuple
+import warnings
+from typing import Iterable, Iterator, List, Set, Tuple
 
 from black.mode import VERSION_TO_FEATURES, Feature, TargetVersion, supports_feature
 from black.nodes import syms
@@ -13,8 +15,6 @@ from blib2to3.pgen2.grammar import Grammar
 from blib2to3.pgen2.parse import ParseError
 from blib2to3.pgen2.tokenize import TokenError
 from blib2to3.pytree import Leaf, Node
-
-PY2_HINT: Final = "Python 2 support was removed in version 22.0."
 
 
 class InvalidInput(ValueError):
@@ -26,9 +26,9 @@ def get_grammars(target_versions: Set[TargetVersion]) -> List[Grammar]:
         # No target_version specified, so try all grammars.
         return [
             # Python 3.7-3.9
-            pygram.python_grammar_no_print_statement_no_exec_statement_async_keywords,
+            pygram.python_grammar_async_keywords,
             # Python 3.0-3.6
-            pygram.python_grammar_no_print_statement_no_exec_statement,
+            pygram.python_grammar,
             # Python 3.10+
             pygram.python_grammar_soft_keywords,
         ]
@@ -39,12 +39,10 @@ def get_grammars(target_versions: Set[TargetVersion]) -> List[Grammar]:
         target_versions, Feature.ASYNC_IDENTIFIERS
     ) and not supports_feature(target_versions, Feature.PATTERN_MATCHING):
         # Python 3.7-3.9
-        grammars.append(
-            pygram.python_grammar_no_print_statement_no_exec_statement_async_keywords
-        )
+        grammars.append(pygram.python_grammar_async_keywords)
     if not supports_feature(target_versions, Feature.ASYNC_KEYWORDS):
         # Python 3.0-3.6
-        grammars.append(pygram.python_grammar_no_print_statement_no_exec_statement)
+        grammars.append(pygram.python_grammar)
     if any(Feature.PATTERN_MATCHING in VERSION_TO_FEATURES[v] for v in target_versions):
         # Python 3.10+
         grammars.append(pygram.python_grammar_soft_keywords)
@@ -89,14 +87,6 @@ def lib2to3_parse(src_txt: str, target_versions: Iterable[TargetVersion] = ()) -
         # Choose the latest version when raising the actual parsing error.
         assert len(errors) >= 1
         exc = errors[max(errors)]
-
-        if matches_grammar(src_txt, pygram.python_grammar) or matches_grammar(
-            src_txt, pygram.python_grammar_no_print_statement
-        ):
-            original_msg = exc.args[0]
-            msg = f"{original_msg}\n{PY2_HINT}"
-            raise InvalidInput(msg) from None
-
         raise exc from None
 
     if isinstance(result, Leaf):
@@ -120,13 +110,20 @@ def lib2to3_unparse(node: Node) -> str:
     return code
 
 
-def parse_single_version(
+class ASTSafetyError(Exception):
+    """Raised when Black's generated code is not equivalent to the old AST."""
+
+
+def _parse_single_version(
     src: str, version: Tuple[int, int], *, type_comments: bool
 ) -> ast.AST:
     filename = "<unknown>"
-    return ast.parse(
-        src, filename, feature_version=version, type_comments=type_comments
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", SyntaxWarning)
+        warnings.simplefilter("ignore", DeprecationWarning)
+        return ast.parse(
+            src, filename, feature_version=version, type_comments=type_comments
+        )
 
 
 def parse_ast(src: str) -> ast.AST:
@@ -136,7 +133,7 @@ def parse_ast(src: str) -> ast.AST:
     first_error = ""
     for version in sorted(versions, reverse=True):
         try:
-            return parse_single_version(src, version, type_comments=True)
+            return _parse_single_version(src, version, type_comments=True)
         except SyntaxError as e:
             if not first_error:
                 first_error = str(e)
@@ -144,7 +141,7 @@ def parse_ast(src: str) -> ast.AST:
     # Try to parse without type comments
     for version in sorted(versions, reverse=True):
         try:
-            return parse_single_version(src, version, type_comments=False)
+            return _parse_single_version(src, version, type_comments=False)
         except SyntaxError:
             pass
 
@@ -161,9 +158,20 @@ def _normalize(lineend: str, value: str) -> str:
     return normalized.strip()
 
 
-def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
+def stringify_ast(node: ast.AST) -> Iterator[str]:
     """Simple visitor generating strings to compare ASTs by content."""
+    return _stringify_ast(node, [])
 
+
+def _stringify_ast_with_new_parent(
+    node: ast.AST, parent_stack: List[ast.AST], new_parent: ast.AST
+) -> Iterator[str]:
+    parent_stack.append(new_parent)
+    yield from _stringify_ast(node, parent_stack)
+    parent_stack.pop()
+
+
+def _stringify_ast(node: ast.AST, parent_stack: List[ast.AST]) -> Iterator[str]:
     if (
         isinstance(node, ast.Constant)
         and isinstance(node.value, str)
@@ -174,7 +182,7 @@ def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
         # over the kind
         node.kind = None
 
-    yield f"{'  ' * depth}{node.__class__.__name__}("
+    yield f"{'    ' * len(parent_stack)}{node.__class__.__name__}("
 
     for field in sorted(node._fields):  # noqa: F402
         # TypeIgnore has only one field 'lineno' which breaks this comparison
@@ -186,7 +194,7 @@ def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
         except AttributeError:
             continue
 
-        yield f"{'  ' * (depth+1)}{field}="
+        yield f"{'    ' * (len(parent_stack) + 1)}{field}="
 
         if isinstance(value, list):
             for item in value:
@@ -198,13 +206,15 @@ def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
                     and isinstance(item, ast.Tuple)
                 ):
                     for elt in item.elts:
-                        yield from stringify_ast(elt, depth + 2)
+                        yield from _stringify_ast_with_new_parent(
+                            elt, parent_stack, node
+                        )
 
                 elif isinstance(item, ast.AST):
-                    yield from stringify_ast(item, depth + 2)
+                    yield from _stringify_ast_with_new_parent(item, parent_stack, node)
 
         elif isinstance(value, ast.AST):
-            yield from stringify_ast(value, depth + 2)
+            yield from _stringify_ast_with_new_parent(value, parent_stack, node)
 
         else:
             normalized: object
@@ -212,6 +222,10 @@ def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
                 isinstance(node, ast.Constant)
                 and field == "value"
                 and isinstance(value, str)
+                and len(parent_stack) >= 2
+                # Any standalone string, ideally this would
+                # exactly match black.nodes.is_docstring
+                and isinstance(parent_stack[-1], ast.Expr)
             ):
                 # Constant strings may be indented across newlines, if they are
                 # docstrings; fold spaces after newlines when comparing. Similarly,
@@ -222,6 +236,9 @@ def stringify_ast(node: ast.AST, depth: int = 0) -> Iterator[str]:
                 normalized = value.rstrip()
             else:
                 normalized = value
-            yield f"{'  ' * (depth+2)}{normalized!r},  # {value.__class__.__name__}"
+            yield (
+                f"{'    ' * (len(parent_stack) + 1)}{normalized!r},  #"
+                f" {value.__class__.__name__}"
+            )
 
-    yield f"{'  ' * depth})  # /{node.__class__.__name__}"
+    yield f"{'    ' * len(parent_stack)})  # /{node.__class__.__name__}"

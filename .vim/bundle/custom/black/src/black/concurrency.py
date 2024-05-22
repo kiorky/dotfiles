@@ -9,6 +9,7 @@ import logging
 import os
 import signal
 import sys
+import traceback
 from concurrent.futures import Executor, ProcessPoolExecutor, ThreadPoolExecutor
 from multiprocessing import Manager
 from pathlib import Path
@@ -37,7 +38,7 @@ def maybe_install_uvloop() -> None:
         pass
 
 
-def cancel(tasks: Iterable["asyncio.Task[Any]"]) -> None:
+def cancel(tasks: Iterable["asyncio.Future[Any]"]) -> None:
     """asyncio signal handler that cancels all `tasks` and reports to stderr."""
     err("Aborted!")
     for task in tasks:
@@ -170,8 +171,10 @@ async def schedule_formatting(
             src = tasks.pop(task)
             if task.cancelled():
                 cancelled.append(task)
-            elif task.exception():
-                report.failed(src, str(task.exception()))
+            elif exc := task.exception():
+                if report.verbose:
+                    traceback.print_exception(type(exc), exc, exc.__traceback__)
+                report.failed(src, str(exc))
             else:
                 changed = Changed.YES if task.result() else Changed.NO
                 # If the file was written back or was successfully checked as
