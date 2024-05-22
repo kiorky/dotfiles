@@ -102,9 +102,13 @@ The following commands are useful to open and close folds:
                                                               *vim-markdown-zM*
 - 'zM': folds everything all the way
                                                               *vim-markdown-za*
-- 'za': open a fold your cursor is on
+- 'za': toggle a fold your cursor is on
                                                               *vim-markdown-zA*
-- 'zA': open a fold your cursor is on recursively
+- 'zA': toggle a fold your cursor is on recursively
+                                                              *vim-markdown-zo*
+- 'zo': open a fold your cursor is on
+                                                              *vim-markdown-zO*
+- 'zO': open a fold your cursor is on recursively
                                                               *vim-markdown-zc*
 - 'zc': close a fold your cursor is on
                                                               *vim-markdown-zC*
@@ -490,6 +494,30 @@ Change how to open new files ~
 >
   let g:vim_markdown_edit_url_in = 'tab'
 <
+-------------------------------------------------------------------------------
+                                    *vim-markdown-support-borderless-tables*
+Support borderless tables ~
+
+                                              *g:vim_markdown_borderless_table*
+- 'g:vim_markdown_borderless_table'
+
+  Add support for borderless tables, such as:
+>
+  header 1|header 2
+  --|--
+  data 1|data 2
+<
+  if set to 1:
+>
+  let g:vim_markdown_borderless_table = 1
+<
+  the table would be formatted as usual:
+>
+  | header 1 | header 2 |
+  |----------|----------|
+  | data 1   | data 2   |
+<
+
 ===============================================================================
                                                         *vim-markdown-mappings*
 Mappings ~

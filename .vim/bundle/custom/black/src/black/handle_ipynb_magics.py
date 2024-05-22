@@ -17,36 +17,30 @@ else:
 from black.output import out
 from black.report import NothingChanged
 
-TRANSFORMED_MAGICS = frozenset(
-    (
-        "get_ipython().run_cell_magic",
-        "get_ipython().system",
-        "get_ipython().getoutput",
-        "get_ipython().run_line_magic",
-    )
-)
-TOKENS_TO_IGNORE = frozenset(
-    (
-        "ENDMARKER",
-        "NL",
-        "NEWLINE",
-        "COMMENT",
-        "DEDENT",
-        "UNIMPORTANT_WS",
-        "ESCAPED_NL",
-    )
-)
-PYTHON_CELL_MAGICS = frozenset(
-    (
-        "capture",
-        "prun",
-        "pypy",
-        "python",
-        "python3",
-        "time",
-        "timeit",
-    )
-)
+TRANSFORMED_MAGICS = frozenset((
+    "get_ipython().run_cell_magic",
+    "get_ipython().system",
+    "get_ipython().getoutput",
+    "get_ipython().run_line_magic",
+))
+TOKENS_TO_IGNORE = frozenset((
+    "ENDMARKER",
+    "NL",
+    "NEWLINE",
+    "COMMENT",
+    "DEDENT",
+    "UNIMPORTANT_WS",
+    "ESCAPED_NL",
+))
+PYTHON_CELL_MAGICS = frozenset((
+    "capture",
+    "prun",
+    "pypy",
+    "python",
+    "python3",
+    "time",
+    "timeit",
+))
 TOKEN_HEX = secrets.token_hex
 
 
@@ -300,8 +294,8 @@ def _is_ipython_magic(node: ast.expr) -> TypeGuard[ast.Attribute]:
 def _get_str_args(args: List[ast.expr]) -> List[str]:
     str_args = []
     for arg in args:
-        assert isinstance(arg, ast.Str)
-        str_args.append(arg.s)
+        assert isinstance(arg, ast.Constant) and isinstance(arg.value, str)
+        str_args.append(arg.value)
     return str_args
 
 
