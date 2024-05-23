@@ -35,7 +35,7 @@ def SetBreakpoint(strings=None):
     nLine = int( vim.eval( 'line(".")'))
 
     strLine = vim.current.line
-    strWhite = re.search( '^(\s*)', strLine).group(1)
+    strWhite = re.search( r'^(\s*)', strLine).group(1)
 
     for brline in strings:
         vim.current.buffer.append(
@@ -100,4 +100,4 @@ vim.command('map <s-b> :'
 vim.command( 'map <f7>  :'+py+' SetIPShell()<cr>')
 vim.command( 'map <f8>  :'+py+' RemoveIPShell()<cr>')
 EOF
-" vim:set et sts=4 sw=4:
+" vim:set et sts=5 sw=4:

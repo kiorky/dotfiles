@@ -1,9 +1,10 @@
+ no use anymore
 if has("python3")
     let b:py="python3"
 else
     let b:py="python"
 endif
-exe b:py.' << EOF' 
+exe b:py.' << EOF'
 import sys
 import vim
 py = vim.eval('b:py')
@@ -89,12 +90,12 @@ def SqlDecaps(mode):
         vim.command(range+"s/nvl (/nvl(/iegc")
 
         for i in header_match_exact:
-            vim.command(range+"s/\s*"+i+"/ "+i.lower()+"/Iegc")
+            vim.command(range+r"s/\s*"+i+"/ "+i.lower()+"/Iegc")
 
         for i in header:
-            vim.command(range+"s/\(^\("+i+"\)\|\s"+i+"\)\(\s\|$\)/ "+i.lower()+" /Iegc")
-            vim.command(range+"s/\(^\("+i+"\)\|\s"+i+"\)\((\)/ "+i.lower()+"(/Iegc")
-            vim.command(range+"s/\(^\("+i+"\)\|\s"+i+"\)\(;\)/ "+i.lower()+";/Iegc")
+            vim.command(range+r"s/\(^\("+i+r"\)\|\s"+i+r"\)\(\s\|$\)/ "+i.lower()+" /Iegc")
+            vim.command(range+r"s/\(^\("+i+r"\)\|\s"+i+r"\)\((\)/ "+i.lower()+"(/Iegc")
+            vim.command(range+r"s/\(^\("+i+r"\)\|\s"+i+r"\)\(;\)/ "+i.lower()+";/Iegc")
     except:
         pass
 vim.command('autocmd FileType sql map ,,u  :'+py+' SqlDecaps("normal")<cr>')
