@@ -16,6 +16,7 @@ declare -A CUSTOMREPOS
 if [ "x${nodeploy}" = "x" ];then
     ./deploy.sh
 fi
+REPOS[ale]="https://github.com/dense-analysis/ale.git"
 REPOS[blockhl]="https://github.com/vim-scripts/BlockHL.git"
 REPOS[gruvbox]="https://github.com/morhetz/gruvbox.git"
 REPOS[inkpot]="https://github.com/ciaranm/inkpot.git"
@@ -60,13 +61,15 @@ REPOS[GetLatestVimScripts]="https://github.com/vim-scripts/GetLatestVimScripts.g
 REPOS[gnupg]="https://github.com/vim-scripts/gnupg.vim.git"
 REPOS[javascript]="https://github.com/pangloss/vim-javascript.git"
 REPOS[netrw]="https://github.com/vim-scripts/netrw.vim.git"
-REPOS[syntastic]="https://github.com/scrooloose/syntastic.git"
+# REPOS[syntastic]="https://github.com/scrooloose/syntastic.git"
 REPOS[vim-markdown]="https://github.com/plasticboy/vim-markdown.git"
 REPOS[tagbar]="https://github.com/majutsushi/tagbar.git"
 REPOS[Astronaut]="https://github.com/vim-scripts/Astronaut.git"
 REPOS[decho]="https://github.com/vim-scripts/Decho.git"
 REPOS[po]="https://github.com/vim-scripts/po.vim.git"
 REPOS[toml]="https://github.com/cespare/vim-toml.git"
+# https://vimcolorschemes.com/rafi/awesome-vim-colorschemes
+REPOS[avscheme]="https://github.com/rafi/awesome-vim-colorschemes.git"
 CUSTOMREPOS[black]="https://github.com/python/black"
 #REPOS[vim-hugo]="https://github.com/robertbasic/vim-hugo-helper.git"
 
@@ -103,7 +106,7 @@ if [ "x${nodl}" = "x" ];then
         fi
         cd "${repo}"
         git fetch --all 1>/dev/null
-        git reset --hard $(git ls-remote ${clone_url}|grep HEAD|awk '{print $1}')
+        git reset --hard $( git ls-remote ${clone_url}|grep HEAD|awk '{print $1}' )
     done
 fi
 rsync -azv "${d}/dl/" "${d}/bundle/" --exclude=.git --delete
