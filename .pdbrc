@@ -6,3 +6,5 @@
 !termios_echo = termios.tcgetattr(termios_fd)
 !termios_echo[3] = termios_echo[3] | termios.ECHO
 !termios_result = termios.tcsetattr(termios_fd, termios.TCSADRAIN, termios_echo) 
+from pprint import pprint
+alias ppr pprint(%1)
