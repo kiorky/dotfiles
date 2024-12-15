@@ -34,9 +34,6 @@
         cot = checkout --theirs
         df = diff
         lg = log -p
-        sbon = config user.email "sylvain.boureliou@makina-corpus.com"
-        sboe = config user.name 'Sylvain Boureliou'
-        sbo =  !git sbon && git sboe
         mpan = config user.email "mpa@makina-corpus.com"
         mpae = config user.name 'Mathieu Le Marec - Pasquet'
         mpa =  !git mpan && git mpae
