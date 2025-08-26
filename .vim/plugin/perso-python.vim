@@ -19,7 +19,7 @@ epdbstrs=[epdbstr4]
 pdbclonestr="from pdb_clone import pdb as pdbc;pdbc.set_trace_remote()"
 pdbclonestrs=[pdbclonestr]
 
-remotepdbstr="import os as ros;ros.environ['REMOTE_PDB_PORT']=4444;from remote_pdb import set_trace;set_trace()"
+remotepdbstr="import os as ros;ros.environ['REMOTE_PDB_PORT']='4444';from remote_pdb import set_trace;set_trace()"
 remotepdbstrs=[remotepdbstr]
 
 ipshell_str="from IPython.Shell import IPShellEmbed; ipshell = IPShellEmbed();ipshell()"
